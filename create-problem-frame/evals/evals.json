@@ -1,0 +1,116 @@
+{
+  "skill_name": "create-problem-frame",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Frame the problem around our API response times. We've been getting complaints from enterprise customers that our dashboard takes forever to load, especially the analytics page. Our p95 latency went from 800ms to 3.2s over the last quarter. We're on PostgreSQL with a Node.js backend. Team is 4 engineers. No budget for new infrastructure this quarter.",
+      "expected_output": "A PROBLEM-FRAME.md that identifies the root cause beyond 'API is slow', explores whether the issue is query optimization, data volume growth, missing indexes, or architecture. Should not jump to 'add caching' as a solution. Constraints should capture the no-new-infra budget limit.",
+      "assertions": [
+        {
+          "id": "template-structure",
+          "text": "Output follows the template structure with all required sections: Situation Context, Problem Statement with Stress Test, Root Cause Analysis with Why Chain and Root Cause, Constraints & Boundaries, Success Definition, Alternative Framings, Chosen Frame",
+          "type": "structural"
+        },
+        {
+          "id": "no-solution-framing",
+          "text": "Problem statement focuses on the problem (latency degradation, user impact) rather than jumping to a solution (caching, CDN, etc.)",
+          "type": "quality"
+        },
+        {
+          "id": "why-chain-depth",
+          "text": "Why Chain goes beyond surface-level 'API is slow' and explores underlying causes (query performance, data growth, missing indexes, architecture)",
+          "type": "quality"
+        },
+        {
+          "id": "constraints-captured",
+          "text": "Hard Constraints include the no-new-infrastructure budget limit and the 4-engineer team size",
+          "type": "completeness"
+        },
+        {
+          "id": "measurable-signals",
+          "text": "Success Definition includes specific measurable signals (e.g., p95 latency target, not just 'faster API')",
+          "type": "quality"
+        },
+        {
+          "id": "alternative-framings",
+          "text": "At least 2 alternative framings are proposed that offer genuinely different angles on the problem",
+          "type": "structural"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I think we need to frame a problem. Basically our users aren't engaging with the new features we ship. We launch stuff and nobody uses it. Last 3 features had under 5% adoption after 30 days. We're a B2B SaaS with about 2000 active accounts.",
+      "expected_output": "A PROBLEM-FRAME.md that digs into WHY features aren't adopted — is it discoverability, relevance, onboarding, or wrong features entirely? The 5 Whys should resist the surface-level 'users don't know about features' and probe deeper. Alternative framings should explore different angles (product-market fit vs UX vs communication).",
+      "assertions": [
+        {
+          "id": "template-structure",
+          "text": "Output follows the template structure with all required sections: Situation Context, Problem Statement with Stress Test, Root Cause Analysis with Why Chain and Root Cause, Constraints & Boundaries, Success Definition, Alternative Framings, Chosen Frame",
+          "type": "structural"
+        },
+        {
+          "id": "beyond-surface",
+          "text": "Why Chain resists the surface-level 'users don't know about features' and probes deeper into discoverability, relevance, user research gaps, or product-market fit",
+          "type": "quality"
+        },
+        {
+          "id": "data-referenced",
+          "text": "The document references the specific data provided: <5% adoption, 30-day window, 2000 accounts, last 3 features",
+          "type": "completeness"
+        },
+        {
+          "id": "diverse-framings",
+          "text": "Alternative framings explore genuinely different angles (e.g., product-market fit vs UX/discoverability vs communication/change management vs customer research gaps)",
+          "type": "quality"
+        },
+        {
+          "id": "no-premature-solutions",
+          "text": "Document does not prescribe solutions (no 'add feature tours', 'send announcement emails', etc.) — stays in problem space",
+          "type": "quality"
+        },
+        {
+          "id": "measurable-signals",
+          "text": "Success Definition includes specific measurable signals tied to adoption metrics, not vague 'improve engagement'",
+          "type": "quality"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We need a problem frame — basically we need to rebuild our auth system to support SSO. Our biggest customers keep asking for it and we lost 2 deals last quarter because of it.",
+      "expected_output": "A PROBLEM-FRAME.md that redirects from the solution (SSO) back to the problem (enterprise customers can't meet their security/compliance requirements with our current auth). The skill should catch the solution-framing and reframe around the actual pain. Root cause analysis should explore why current auth doesn't meet enterprise needs.",
+      "assertions": [
+        {
+          "id": "template-structure",
+          "text": "Output follows the template structure with all required sections: Situation Context, Problem Statement with Stress Test, Root Cause Analysis with Why Chain and Root Cause, Constraints & Boundaries, Success Definition, Alternative Framings, Chosen Frame",
+          "type": "structural"
+        },
+        {
+          "id": "solution-redirected",
+          "text": "The problem statement frames around the actual pain (enterprise customers can't meet security/compliance needs, deal losses) rather than the proposed solution (SSO/rebuild auth)",
+          "type": "quality"
+        },
+        {
+          "id": "why-chain-explores-auth",
+          "text": "Why Chain explores WHY current auth doesn't meet enterprise needs — goes beyond 'we don't have SSO' to examine compliance requirements, procurement blockers, security policies",
+          "type": "quality"
+        },
+        {
+          "id": "business-impact",
+          "text": "Document captures the business impact: lost deals, revenue implications, enterprise customer retention risk",
+          "type": "completeness"
+        },
+        {
+          "id": "alternative-framings",
+          "text": "Alternative framings explore different angles — e.g., 'enterprise readiness gap' vs 'security compliance gap' vs 'sales enablement gap' — not just 'add SSO'",
+          "type": "quality"
+        },
+        {
+          "id": "opens-solution-space",
+          "text": "The chosen frame opens the solution space rather than pre-committing to SSO — acknowledges SSO may be part of the solution but doesn't assume it's the only answer",
+          "type": "quality"
+        }
+      ]
+    }
+  ]
+}

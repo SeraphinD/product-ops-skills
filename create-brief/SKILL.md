@@ -81,11 +81,29 @@ Work section by section. For each section:
 
 ## Step-by-Step Process
 
-### Step 0 — Initial Context Gathering
+### Step 0 — Check for Existing Problem Frame
+
+Before gathering context, check whether a `PROBLEM-FRAME.md` already exists in the target feature directory (`docs/features/{feature-name}/PROBLEM-FRAME.md`). If the feature name is not yet known, check after confirming it in Step 1.
+
+**If `PROBLEM-FRAME.md` exists:**
+1. Read it fully
+2. Use it as the primary source for the brief — the validated problem statement, root cause, constraints, success definition, and chosen frame should flow directly into the brief's Problem Statement, Scope, and Success Criteria sections
+3. Inform the user: *"I found a PROBLEM-FRAME.md for this feature. I'll use the validated problem statement and constraints as the foundation for the brief."*
+4. Ask fewer questions in later steps — the problem frame has already answered most of them
+5. If the problem frame's chosen framing conflicts with what the user says, flag it: *"The problem frame says X, but you're describing Y. Which should the brief follow?"*
+
+**If `PROBLEM-FRAME.md` does not exist:**
+Proceed normally with context gathering below. The problem frame is optional — the brief works fine without it.
+
+Also check for `DECISION.md` in the same directory. If it exists, read it and treat all ✅ Accepted decisions as hard constraints.
+
+### Step 0.5 — Initial Context Gathering
 
 Start by asking the user to describe the feature or project in their own words. One open question is enough:
 
 > "Describe the feature or project you want to brief — what it does, who it's for, and any constraints you have in mind."
+
+If a `PROBLEM-FRAME.md` was found, you can skip this question and instead summarize what the problem frame covers, then ask: *"The problem frame covers the problem and constraints. What solution are you thinking of, and are there any additional objectives or scope items beyond what the frame covers?"*
 
 From their answer, extract what you can for each section. Identify gaps before proceeding.
 
@@ -118,7 +136,9 @@ Propose a draft, ask for approval or adjustments.
 
 Structure: opening sentence → 3+ bullet pain points → closing consequence sentence.
 
-If the pain points aren't clear, ask:
+**If a `PROBLEM-FRAME.md` exists:** Derive the pain points directly from the problem frame's Problem Statement, Root Cause Analysis, and Stress Test. The framing sentence should align with the chosen frame's Selected Problem Statement. Propose the draft and confirm — the user may want to adjust the language for a brief audience.
+
+If the pain points aren't clear (and no problem frame exists), ask:
 > *"What specific problems or frustrations does this solve? What happens today without this feature?"*
 
 Once the pain points are drafted, ask if the user has verbatims to reinforce them:
@@ -173,6 +193,8 @@ Propose the list. Confirm.
 
 3 to 8 explicit exclusions. Be specific about what is NOT being built.
 
+**If a `PROBLEM-FRAME.md` exists:** Seed the out-of-scope list from the problem frame's Problem Boundaries and the Chosen Frame's Deprioritizes list. These were deliberately excluded during problem framing and should carry forward.
+
 Think about adjacent features, future ideas, and common assumptions that could creep into scope. If unsure, ask:
 > *"What are the things people might expect from this feature that you deliberately don't want to include right now?"*
 
@@ -186,6 +208,8 @@ Propose the list. Confirm.
 - **Binary** — pass or fail
 - **Specific** — include exact commands, outputs, or behaviors where relevant
 - **Verifiable** — someone else can check it without ambiguity
+
+**If a `PROBLEM-FRAME.md` exists:** Use the problem frame's Measurable Signals and Target State as a starting point. Convert them into binary pass/fail criteria where possible. The problem frame's "What Success is NOT" section can inform what to explicitly exclude from criteria.
 
 Derive from the acceptance criteria implied by the scope and solution. If criteria are vague, ask:
 > *"How will you know this feature is done and working correctly? What would you test or check?"*
@@ -320,6 +344,18 @@ Actions:
 2. Draft most sections directly from context, asking fewer questions
 3. Confirm each section, write to `docs/features/jwt-auth-endpoint/BRIEF.md`
 Result: A complete BRIEF.md produced faster due to rich initial context, with fewer clarifying questions
+
+### Example 4: Problem frame exists upstream
+User says: "Create a brief for enterprise auth gaps"
+Actions:
+1. Check `docs/features/enterprise-auth-gaps/` — find existing `PROBLEM-FRAME.md` and `DECISION.md`
+2. Read the problem frame: chosen framing is about identity infrastructure gaps blocking enterprise adoption, root cause is SMB-era auth architecture, constraints include backward compatibility
+3. Summarize: "I found a problem frame that identifies enterprise identity infrastructure gaps as the core problem. I'll use that as the foundation. What solution approach are you thinking of?"
+4. Derive Problem Statement pain points from the frame's root cause analysis and stress test
+5. Seed Out of Scope from the frame's Problem Boundaries and Deprioritizes list
+6. Seed Success Criteria from the frame's Measurable Signals
+7. Ask fewer questions — focus on Solution, Objectives, and In Scope (which the problem frame doesn't cover)
+Result: A complete BRIEF.md grounded in the validated problem frame, produced faster with fewer questions because the problem definition is already done
 
 ---
 

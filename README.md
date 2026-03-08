@@ -21,18 +21,19 @@ This pipeline enforces the discipline that prevents those failures:
 ## How It Works
 
 ```
-BRIEF → [BENCHMARK] → SPEC → [DESIGN] → PLAN → TASKS
+[PROBLEM FRAME] → BRIEF → [BENCHMARK] → SPEC → [DESIGN] → PLAN → TASKS
 ```
 
-| Stage | What it produces | Optional? |
-|---|---|---|
-| **create-brief** | `BRIEF.md` — problem, solution, objectives, scope, success criteria | No — starting point |
-| **brief-to-benchmark** | `BENCHMARK.md` — competitors, standards, metrics, gap analysis | ✅ Yes |
-| **brief-to-specs** | `SPEC.md` — user stories, MoSCoW/WSJF scores, Given/When/Then ACs | No |
-| **spec-to-design** | `DESIGN.md` — design system, components, wireframes, flows *(web)* | ✅ Yes |
-| **spec-to-mobile-design** | `DESIGN.md` — same, but for native iOS/Android | ✅ Yes |
-| **spec-to-plan** | `PLAN.md` — phased implementation steps, file tree, critical files, verification checklist | No |
-| **plan-to-tasks** | `TASKS.md` — flat, atomic task list with statuses and optional skill assignments | No |
+| Stage | What it produces | Why | Optional? |
+|---|---|---|---|
+| **create-problem-frame** | `PROBLEM-FRAME.md` — situation context, root cause analysis, constraints, alternative framings | Prevents building the right solution to the wrong problem | ✅ Yes |
+| **create-brief** | `BRIEF.md` — problem, solution, objectives, scope, success criteria | Aligns everyone on what to build and why before any work starts | No — starting point |
+| **brief-to-benchmark** | `BENCHMARK.md` — competitors, standards, metrics, gap analysis | Grounds decisions in real-world data instead of assumptions | ✅ Yes |
+| **brief-to-specs** | `SPEC.md` — user stories, MoSCoW/WSJF scores, Given/When/Then ACs | Turns intent into testable requirements with clear priority | No |
+| **spec-to-design** | `DESIGN.md` — design system, components, wireframes, flows *(web)* | Catches UX issues on paper before they become code | ✅ Yes |
+| **spec-to-mobile-design** | `DESIGN.md` — same, but for native iOS/Android | Same, with platform-specific patterns for iOS and Android | ✅ Yes |
+| **spec-to-plan** | `PLAN.md` — phased implementation steps, file tree, critical files, verification checklist | Gives engineering a buildable sequence, not just a wish list | No |
+| **plan-to-tasks** | `TASKS.md` — flat, atomic task list with statuses and optional skill assignments | Makes the plan trackable — every task maps to a plan step | No |
 
 > **Design note:** `spec-to-design` (web) and `spec-to-mobile-design` (native mobile) both write to `DESIGN.md`. Run one or the other for a given feature, not both.
 
@@ -47,7 +48,7 @@ Clone the repo and symlink each skill into your user-level Claude Code skills di
 ```bash
 REPO="/path/to/product-ops-skills"
 
-for skill in create-brief brief-to-benchmark brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks; do
+for skill in create-problem-frame create-brief brief-to-benchmark brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks; do
   ln -sf "$REPO/$skill" "$HOME/.claude/skills/$skill"
 done
 ```
@@ -68,11 +69,34 @@ Here is a full run-through for a fictional feature: **"Push Notifications for a 
 
 ---
 
+### Step 0 — Frame the Problem (optional)
+
+> **You:** Frame the problem around push notification engagement in our React Native app
+
+Claude triggers `create-problem-frame` and walks you through structured Q&A to clarify the problem before anyone jumps to solutions. It captures the current situation, crafts a single-sentence problem statement, runs an adaptive root cause analysis (5 Whys), maps constraints, defines what success looks like, and stress-tests the framing by proposing 2–3 alternative angles.
+
+**Output:** `docs/features/push-notifications/PROBLEM-FRAME.md`
+
+```
+Situation Context       ← what's happening now, who's affected, what triggered this
+Problem Statement       ← single sentence: [who] struggles with [what] because [why]
+  Stress Test           ← root or symptom? evidence basis? cost of inaction?
+Root Cause Analysis     ← adaptive Why Chain (2–5 levels) + root cause
+Constraints & Boundaries← hard constraints + excluded adjacent problems
+Success Definition      ← target state, measurable signals, what success is NOT
+Alternative Framings    ← 2–3 reframes with strength ratings
+Chosen Frame            ← selected framing + rationale + prioritizes/deprioritizes
+```
+
+Skip this step if the problem is already well-understood and validated.
+
+---
+
 ### Step 1 — Create the Brief
 
 > **You:** Create a brief for push notifications in our React Native app
 
-Claude triggers `create-brief` and walks you through a Q&A covering: what problem you're solving, what the solution is, objectives (3–7), in-scope and out-of-scope items, and success criteria.
+Claude triggers `create-brief` and walks you through a Q&A covering: what problem you're solving, what the solution is, objectives (3–7), in-scope and out-of-scope items, and success criteria. If a `PROBLEM-FRAME.md` exists, the brief is grounded in its validated problem statement and root cause.
 
 **Output:** `docs/features/push-notifications/BRIEF.md`
 
@@ -201,7 +225,8 @@ After the full pipeline, your feature folder looks like this:
 
 ```
 docs/features/push-notifications/
-├── BRIEF.md        ← problem definition
+├── PROBLEM-FRAME.md← validated problem definition (optional)
+├── BRIEF.md        ← problem, solution, objectives, scope
 ├── BENCHMARK.md    ← competitive research (optional)
 ├── SPEC.md         ← user stories + acceptance criteria
 ├── DESIGN.md       ← UI/UX design (optional)
@@ -210,7 +235,7 @@ docs/features/push-notifications/
 └── DECISION.md     ← full log of every decision made
 ```
 
-You can enter the pipeline at any stage — if you already have a SPEC, start from Step 3. If you have a PLAN, start from Step 6.
+You can enter the pipeline at any stage — if you already have a SPEC, start from Step 3. If you have a PLAN, start from Step 6. If the problem is already clear, skip Step 0 and start with the Brief.
 
 ---
 
