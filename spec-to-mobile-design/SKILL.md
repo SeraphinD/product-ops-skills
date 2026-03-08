@@ -69,7 +69,7 @@ If the SPEC has no MoSCoW labels, treat all User Stories as MUST and proceed nor
 
 ---
 
-### Step 1.2 — Load Prior Decisions
+### Step 2 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the SPEC.
 
@@ -80,7 +80,7 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 1.3 — Load BRIEF (context)
+### Step 3 — Load BRIEF (context)
 
 Check whether a `BRIEF.md` exists in the same `docs/features/{feature-name}/` directory.
 
@@ -94,7 +94,7 @@ If no BRIEF is found, proceed with SPEC data only.
 
 ---
 
-### Step 1.4 — Load Benchmark Visual References (if available)
+### Step 4 — Load Benchmark Visual References (if available)
 
 Check whether a `BENCHMARK.md` exists in the same `docs/features/{feature-name}/` directory.
 
@@ -107,7 +107,7 @@ If no BENCHMARK.md exists, proceed without it — this input is optional.
 
 ---
 
-### Step 1.5 — Detect Mobile Feature
+### Step 5 — Detect Mobile Feature
 
 This skill only applies to features targeting native mobile platforms. Before proceeding, verify the SPEC describes a mobile feature.
 
@@ -124,21 +124,21 @@ Log the feature type detection to `DECISION.md`.
 
 ---
 
-### Step 1.6 — Detect Existing Design System
+### Step 6 — Detect Existing Design System
 
 Before asking the user anything about design tokens, proactively scan the codebase for an existing mobile design system. **See `references/platforms.md` → "Design System Detection Patterns" for per-platform file patterns and package names to search for (React Native, Flutter, iOS, Android).**
 
 **What to do with findings:**
 
-- **Existing design system found** → store the extracted values internally. In Step 3, **reuse them as-is** instead of proposing new ones. Inform the user: *"I found an existing design system in `{path}`. I'll extend it rather than create a new one."* Log this to `DECISION.md`.
-- **UI library detected but no custom tokens** → note the library. In Step 3, propose tokens that align with the library's conventions. Inform the user: *"The project uses {library}. I'll align the design system with its conventions."*
-- **Nothing found** → proceed normally. Step 3 will propose a new design system from scratch.
+- **Existing design system found** → store the extracted values internally. In Step 9, **reuse them as-is** instead of proposing new ones. Inform the user: *"I found an existing design system in `{path}`. I'll extend it rather than create a new one."* Log this to `DECISION.md`.
+- **UI library detected but no custom tokens** → note the library. In Step 9, propose tokens that align with the library's conventions. Inform the user: *"The project uses {library}. I'll align the design system with its conventions."*
+- **Nothing found** → proceed normally. Step 9 will propose a new design system from scratch.
 
 ---
 
-### Step 1.7 — Analyze gaps before writing
+### Step 7 — Analyze gaps before writing
 
-After reading the SPEC and scanning the codebase (Step 1.6), scan for remaining information needed to write a complete mobile design document:
+After reading the SPEC and scanning the codebase (Step 6), scan for remaining information needed to write a complete mobile design document:
 
 - **Target platforms** — iOS only? Android only? Both? Cross-platform framework?
 - **Framework** — SwiftUI, UIKit, Jetpack Compose, XML Views, React Native, Flutter, Expo?
@@ -152,7 +152,7 @@ After reading the SPEC and scanning the codebase (Step 1.6), scan for remaining 
 
 If you find ambiguities, **ask all clarifying questions in a single message** — group them by topic, be specific, and propose a default answer when you have a reasonable one. Do not proceed to writing until the user has answered.
 
-If the SPEC is complete enough to write every section without inventing details, skip straight to Step 2.
+If the SPEC is complete enough to write every section without inventing details, skip straight to Step 8.
 
 **Example of a good clarifying message (React Native project found):**
 
@@ -176,7 +176,7 @@ If the SPEC is complete enough to write every section without inventing details,
 
 ---
 
-### Step 2 — Design Overview, Goals, and Platform Strategy
+### Step 8 — Design Overview, Goals, and Platform Strategy
 
 Derive the Design Overview from:
 - SPEC overview and user story benefits
@@ -199,14 +199,14 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 3 — Define the Design System
+### Step 9 — Define the Design System
 
 Generate Color Palette, Typography, and Spacing & Safe Areas — with platform-specific tokens.
 
 **Rules:**
-- **If Step 1.6 found an existing design system, you MUST reuse it.** Import the detected values directly into the Design System section. Do not propose alternatives for values that already exist — only extend with new tokens the feature requires. Clearly mark which values are inherited (`Existing`) vs new (`New`).
-- If Step 1.6 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
-- If Step 1.6 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
+- **If Step 6 found an existing design system, you MUST reuse it.** Import the detected values directly into the Design System section. Do not propose alternatives for values that already exist — only extend with new tokens the feature requires. Clearly mark which values are inherited (`Existing`) vs new (`New`).
+- If Step 6 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
+- If Step 6 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
 - All colors must meet WCAG 2.1 AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 - **Typography must use platform-native units:** pt for iOS, sp for Android text, dp for Android non-text elements. Include the font families that are default for each platform (SF Pro for iOS, Roboto for Android) unless the project uses custom fonts.
 - **Spacing must use platform-native units:** pt for iOS, dp for Android. Define safe area insets (top for status bar / Dynamic Island / notch, bottom for home indicator / navigation bar).
@@ -218,7 +218,7 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 4 — Design Native Components (MoSCoW-aware)
+### Step 10 — Design Native Components (MoSCoW-aware)
 
 For each User Story in the SPEC (excluding WON'T), extract implied components from the functional scope. Tag each component with its source story and MoSCoW label.
 
@@ -240,7 +240,7 @@ Propose components in batches (group by source story). Confirm each batch before
 
 ---
 
-### Step 5 — Design Screen Layouts
+### Step 11 — Design Screen Layouts
 
 For each distinct screen implied by the SPEC:
 
@@ -255,7 +255,7 @@ Propose each layout as a draft. Confirm before moving on.
 
 ---
 
-### Step 6 — Define Navigation Architecture
+### Step 12 — Define Navigation Architecture
 
 Mobile navigation is structural — it shapes the entire app experience. Define:
 
@@ -276,7 +276,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 7 — Define User Flows
+### Step 13 — Define User Flows
 
 For each acceptance criteria scenario in the SPEC that involves user interaction:
 
@@ -292,7 +292,7 @@ Propose the flows. Confirm before moving on.
 
 ---
 
-### Step 8 — Define Gestures & Haptics
+### Step 14 — Define Gestures & Haptics
 
 Mobile apps rely on gestures and haptic feedback in ways web apps don't. Define:
 
@@ -311,7 +311,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 9 — Define Interactions & Animations
+### Step 15 — Define Interactions & Animations
 
 Cover screen transitions, touch feedback, loading states, and error state animations.
 
@@ -326,7 +326,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 10 — Define Accessibility Requirements
+### Step 16 — Define Accessibility Requirements
 
 Mobile accessibility spans both platform-specific assistive technologies and universal standards. **See `references/platforms.md` → "Accessibility Checklists" for the full VoiceOver (iOS), TalkBack (Android), and Universal checklists.**
 
@@ -343,7 +343,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 11 — Dark Mode and Adaptive Layout
+### Step 17 — Dark Mode and Adaptive Layout
 
 **Dark Mode:**
 - Mobile apps typically follow system appearance (light/dark mode set at the OS level)
@@ -360,7 +360,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 12 — Design Decisions & Rationale
+### Step 18 — Design Decisions & Rationale
 
 Summarize the key design choices made during this interaction. These complement the DECISION.md entries but are embedded in the DESIGN.md for readers who don't check the decision log.
 
@@ -374,7 +374,7 @@ Keep this section concise — 3–6 decisions that genuinely shape the design.
 
 ---
 
-### Step 13 — Determine Output Path
+### Step 19 — Determine Output Path
 
 The `DESIGN.md` is **always** written to:
 
@@ -394,7 +394,7 @@ Where `{feature-name}` is the kebab-case version of the feature name.
 
 ---
 
-### Step 14 — Write the File
+### Step 20 — Write the File
 
 Once all sections are confirmed:
 1. Assemble the complete `DESIGN.md` using the template
@@ -479,14 +479,14 @@ User: *"Create mobile design from our onboarding spec"*
 
 ### Problem: SPEC describes a web feature, not a mobile app
 **Cause:** The skill was triggered for a feature targeting web browsers.
-**Solution:** The skill will detect this in Step 1.5 and inform the user: "This SPEC describes a web feature. DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?" If ambiguous, it asks for clarification.
+**Solution:** The skill will detect this in Step 5 and inform the user: "This SPEC describes a web feature. DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?" If ambiguous, it asks for clarification.
 
 ### Problem: SPEC targets both web and mobile
 **Cause:** The feature has both web and native mobile components.
 **Solution:** Both skills write to `DESIGN.md`. Run one skill at a time and let the user decide which design to keep, or inform them: "This feature has both web and mobile components. Running both spec-to-design and spec-to-mobile-design will overwrite the same `DESIGN.md`. Decide which platform to design first, then the other."
 
 ### Problem: Existing design system uses a different convention than proposed
-**Cause:** Step 1.6 detected a design system but the proposed design tokens conflict with existing patterns.
+**Cause:** Step 6 detected a design system but the proposed design tokens conflict with existing patterns.
 **Solution:** Always reuse existing tokens. Mark inherited values as `Existing` and only add new tokens the feature requires. Never override or propose alternatives to established design tokens.
 
 ### Problem: iOS and Android designs diverge significantly

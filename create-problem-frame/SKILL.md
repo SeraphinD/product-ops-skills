@@ -42,7 +42,7 @@ Work section by section. For each section:
 
 ## Step-by-Step Process
 
-### Step 0 — Initial Context Gathering
+### Step 1 — Initial Context Gathering
 
 Start by asking the user to describe the situation in their own words. One open question is enough:
 
@@ -52,7 +52,7 @@ From their answer, extract what you can. Identify gaps before proceeding.
 
 ---
 
-### Step 1 — Working Title
+### Step 2 — Working Title
 
 Confirm a short working title for the problem frame. This becomes the heading and the `{feature-name}` slug.
 
@@ -63,7 +63,7 @@ The title should describe the problem space, not a solution (e.g., "Onboarding D
 
 ---
 
-### Step 2 — Situation Context
+### Step 3 — Situation Context
 
 Draft 2–4 sentences covering:
 - **What is happening right now** — the current state
@@ -78,7 +78,7 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 3 — Problem Statement
+### Step 4 — Problem Statement
 
 Craft a single sentence that captures the core problem. This is the hardest and most important step — a blurry problem statement poisons everything downstream.
 
@@ -98,7 +98,7 @@ Propose the statement. Ask: *"Does this capture the core problem? Is any part of
 
 ---
 
-### Step 4 — Root Cause Analysis (Adaptive 5 Whys)
+### Step 5 — Root Cause Analysis (Adaptive 5 Whys)
 
 Starting from the problem statement, drill into root causes by asking "why" iteratively.
 
@@ -124,7 +124,7 @@ Propose the chain. Ask for confirmation.
 
 ---
 
-### Step 5 — Constraints & Boundaries
+### Step 6 — Constraints & Boundaries
 
 Identify what can't change and what's out of scope for this problem. Two categories:
 
@@ -149,7 +149,7 @@ Propose the lists. Confirm.
 
 ---
 
-### Step 6 — Success Definition
+### Step 7 — Success Definition
 
 Define what "problem solved" looks like. This is not about features or solutions — it's about the observable change in the world.
 
@@ -165,7 +165,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 7 — Alternative Framings
+### Step 8 — Alternative Framings
 
 This is the stress-test. The skill proposes 2–3 different ways to frame the same problem. The goal is to check whether the chosen framing is actually the best angle of attack — or whether a reframe unlocks a better approach.
 
@@ -191,7 +191,7 @@ The user can:
 
 ---
 
-### Step 8 — Chosen Frame
+### Step 9 — Chosen Frame
 
 Record which framing was selected and why. This becomes the anchor for everything downstream.
 
@@ -205,7 +205,7 @@ Log the choice to `DECISION.md`.
 
 ---
 
-### Step 9 — Assemble and Write
+### Step 10 — Assemble and Write
 
 Once all sections are confirmed:
 1. Read `references/template.md` for the exact output format

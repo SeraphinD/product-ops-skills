@@ -79,7 +79,7 @@ Read the file in full. If no plan is found or the path is ambiguous, ask:
 
 If the PLAN references a `DESIGN.md` (visible in its Implementation Details or Project Structure), optionally read the `DESIGN.md` from the same feature directory for additional context when writing task descriptions — particularly for component implementation tasks where the DESIGN.md specifies states, variants, and accessibility requirements that should appear in the task description.
 
-### Step 1.2 — Load Prior Decisions
+### Step 2 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the PLAN.
 
@@ -90,7 +90,7 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 2 — Parse the Plan Structure
+### Step 3 — Parse the Plan Structure
 
 Identify every phase and every numbered step within each phase. For each step, determine:
 - Is it an **atomic action** (a single file to create, a single function to implement)?
@@ -104,7 +104,7 @@ Only break a step into sub-tasks when you have enough context to name the sub-ta
 
 ---
 
-### Step 3 — Clarify Gaps Before Writing
+### Step 4 — Clarify Gaps Before Writing
 
 After parsing, before generating anything, scan for information needed to produce a complete, unambiguous task list:
 
@@ -124,11 +124,11 @@ If any are ambiguous, **ask all clarifying questions in a single message**, grou
 >
 > Let me know if anything needs adjusting.
 
-If everything is clear, skip straight to Step 4.
+If everything is clear, skip straight to Step 5.
 
 ---
 
-### Step 4 — Generate the Task List
+### Step 5 — Generate the Task List
 
 For **every** action item in the plan, create exactly one task entry. Rules:
 
@@ -143,7 +143,7 @@ All tasks start with status `⬜ pending` unless the user has indicated otherwis
 
 ---
 
-### Step 5 — Final Review & Confirm
+### Step 6 — Final Review & Confirm
 
 Once all phases have been confirmed individually, show the complete `TASKS.md` content to the user for a final review:
 
@@ -155,7 +155,7 @@ Wait for the user to confirm before writing the file.
 
 ---
 
-### Step 6 — Determine Output Path
+### Step 7 — Determine Output Path
 
 `TASKS.md` is written to the **same directory as the source PLAN** by default.
 
@@ -167,7 +167,7 @@ Wait for the user to confirm before writing the file.
 
 ---
 
-### Step 7 — Write the File
+### Step 8 — Write the File
 
 1. Assemble the complete `TASKS.md` using the template above.
 2. Write the file using the Write tool.

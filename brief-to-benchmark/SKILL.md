@@ -145,7 +145,7 @@ Read the file in full. If no BRIEF is found, ask:
 
 ---
 
-### Step 1.2 — Load Prior Decisions
+### Step 2 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the BRIEF.
 
@@ -156,7 +156,7 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 1.5 — Detect Feature Type
+### Step 3 — Detect Feature Type
 
 Read the BRIEF and determine whether this is a **frontend feature** — one that involves UI, screens, pages, components, interactions, or visual design. Look for keywords like: UI, interface, page, component, screen, button, form, layout, design, dashboard, modal, flow, animation, visual.
 
@@ -168,7 +168,7 @@ Log this decision to `DECISION.md`.
 
 ---
 
-### Step 2 — Research Comparable Solutions
+### Step 4 — Research Comparable Solutions
 
 Search for 3–5 real-world solutions that address the same problem as the brief:
 
@@ -180,7 +180,7 @@ Propose each comparable solution as a draft entry. Confirm with the user before 
 
 ---
 
-### Step 3 — Research Technical Standards
+### Step 5 — Research Technical Standards
 
 Search for established standards, conventions, and common patterns in the feature's domain:
 - Protocols, specs, or RFCs (e.g., OAuth 2.0, WCAG 2.1, OpenAPI)
@@ -191,7 +191,7 @@ Use `WebSearch` where helpful. Flag anything unverified. Propose a draft list an
 
 ---
 
-### Step 4 — Gather Key Metrics & Baselines
+### Step 6 — Gather Key Metrics & Baselines
 
 Identify 3–6 measurable metrics that will eventually inform acceptance criteria in the SPEC:
 - Performance targets (load time, response time, throughput, bundle size)
@@ -204,9 +204,9 @@ Propose the table as a draft. Confirm before continuing.
 
 ---
 
-### Step 5 — Write the Gap Analysis
+### Step 7 — Write the Gap Analysis
 
-Synthesize findings from Steps 2–4 into three parts:
+Synthesize findings from Steps 4–6 into three parts:
 
 1. **What existing solutions don't cover** — the specific unmet need the brief addresses
 2. **What the brief overlaps with** — where existing tools already solve part of the problem (important for scoping)
@@ -220,7 +220,7 @@ Propose a draft. Confirm with the user.
 
 ---
 
-### Step 6 — Write Spec Recommendations
+### Step 8 — Write Spec Recommendations
 
 Surface 3–8 concrete recommendations for the SPEC writer, grounded in benchmark findings:
 - **Include** — features or behaviors supported by research
@@ -233,7 +233,7 @@ Propose a draft. Confirm with the user.
 
 ---
 
-### Step 7 — Visual References (frontend features only)
+### Step 9 — Visual References (frontend features only)
 
 Skip this step entirely if the feature is not a frontend feature.
 
@@ -247,7 +247,7 @@ Propose each diagram as a draft. Confirm before moving on.
 
 ---
 
-### Step 8 — Determine Output Path
+### Step 10 — Determine Output Path
 
 `BENCHMARK.md` is written to the **same directory as the source BRIEF** by default.
 
@@ -259,7 +259,7 @@ Propose each diagram as a draft. Confirm before moving on.
 
 ---
 
-### Step 9 — Final Review & Write
+### Step 11 — Final Review & Write
 
 Once all sections are confirmed:
 1. Assemble the complete `BENCHMARK.md` using the template above.

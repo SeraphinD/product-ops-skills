@@ -55,7 +55,7 @@ When reading User Stories, extract the MoSCoW label from each header (e.g., `## 
 
 If the SPEC has no MoSCoW labels (generated before this convention), treat all User Stories as MUST and proceed normally.
 
-### Step 1.2 — Load Prior Decisions
+### Step 2 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the SPEC.
 
@@ -66,7 +66,7 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 1.3 — Load DESIGN.md (if available)
+### Step 3 — Load DESIGN.md (if available)
 
 Check whether a `DESIGN.md` exists in the same `docs/features/{feature-name}/` directory as the SPEC.
 
@@ -84,7 +84,7 @@ If no `DESIGN.md` is found, proceed without it — this phase is optional.
 
 ---
 
-### Step 1.5 — Analyze gaps before writing
+### Step 4 — Analyze gaps before writing
 
 After reading the SPEC, before generating anything, scan each section for information that would be needed to produce a complete, unambiguous plan:
 
@@ -98,7 +98,7 @@ After reading the SPEC, before generating anything, scan each section for inform
 
 If any of these are ambiguous, **ask all clarifying questions in a single message** — group them by section (e.g., "Stack", "Project structure"), propose a sensible default for each, and wait for the user to confirm or correct.
 
-If the spec is complete enough to fill every section without guessing, skip straight to Step 2.
+If the spec is complete enough to fill every section without guessing, skip straight to Step 5.
 
 **Example of a good clarifying message:**
 
@@ -114,7 +114,7 @@ If the spec is complete enough to fill every section without guessing, skip stra
 
 ---
 
-### Step 2 — Extract the Requirements Summary
+### Step 5 — Extract the Requirements Summary
 
 From the spec, pull out the key facts that define the feature:
 - The primary command, endpoint, or entry point
@@ -126,7 +126,7 @@ Stick to what the spec states. Do not add requirements not grounded in the spec.
 
 ---
 
-### Step 3 — Design the Project Structure
+### Step 6 — Design the Project Structure
 
 Build a realistic file tree based on the spec's implied or explicit structure. Rules:
 - Always include `docs/features/{feature-name}/SPEC.md` and `PLAN.md` in the tree — so the plan is self-contained and reviewable in context alongside its source spec
@@ -138,7 +138,7 @@ Build a realistic file tree based on the spec's implied or explicit structure. R
 
 ---
 
-### Step 4 — Define Implementation Phases
+### Step 7 — Define Implementation Phases
 
 Organize phases by MoSCoW priority order, then add Testing and Documentation at the end:
 
@@ -160,13 +160,13 @@ Each step within a phase must be specific: name the file and describe what it co
 
 ---
 
-### Step 5 — Identify Critical Files
+### Step 8 — Identify Critical Files
 
 List only the files whose absence would break the feature — the entry point, core logic file, and test file. Not every file in the tree is "critical." Keeping this list short forces reviewers to focus on what matters most, and signals to implementors which files to get right first.
 
 ---
 
-### Step 6 — Write the Verification Checklist
+### Step 9 — Write the Verification Checklist
 
 Pull directly from the spec's acceptance criteria. Each item must be a concrete, checkable statement:
 - Prefer exact commands: `python -m app hello Alice` → `Hello, Alice!` (exit 0) — exact commands prevent ambiguous checks that developers interpret differently and miss in review
@@ -174,7 +174,7 @@ Pull directly from the spec's acceptance criteria. Each item must be a concrete,
 
 ---
 
-### Step 7 — Fill in Implementation Details
+### Step 10 — Fill in Implementation Details
 
 For each non-obvious technical choice (CLI parsing library, routing pattern, error format), add a subsection explaining:
 - What to use — so implementors don't make inconsistent choices independently
@@ -192,7 +192,7 @@ Only include what the spec and design specify or what is needed to implement the
 
 ---
 
-### Step 8 — Determine Output Path
+### Step 11 — Determine Output Path
 
 The `PLAN.md` is **always** written to:
 
@@ -212,7 +212,7 @@ Where `{feature-name}` is the kebab-case version of the feature name (e.g., "JWT
 
 ---
 
-### Step 9 — Write the File
+### Step 12 — Write the File
 
 1. Assemble the complete `PLAN.md` using the template above
 2. Show the full content to the user for review

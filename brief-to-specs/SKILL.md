@@ -49,7 +49,7 @@ Find the BRIEF.md file. Look first at:
 
 Read the file. If no BRIEF is found, ask the user to provide the path or paste the content.
 
-### Step 1.2 — Load Prior Decisions
+### Step 2 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the BRIEF.
 
@@ -60,7 +60,7 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 1.3 — Load Benchmark (if available)
+### Step 3 — Load Benchmark (if available)
 
 Check whether a `BENCHMARK.md` exists in the same `docs/features/{feature-name}/` directory as the BRIEF.
 
@@ -76,7 +76,7 @@ If no `BENCHMARK.md` is found, proceed without it — this phase is optional.
 
 ---
 
-### Step 1.5 — Analyze gaps before writing
+### Step 4 — Analyze gaps before writing
 
 After reading the BRIEF, before generating anything, scan each section for ambiguities that would prevent writing precise, testable specs:
 
@@ -88,7 +88,7 @@ After reading the BRIEF, before generating anything, scan each section for ambig
 
 If you find ambiguities, **ask all your clarifying questions in a single message** — group them by section, be specific, and propose a default answer when you have a reasonable one. Do not proceed to writing until the user has answered.
 
-If the BRIEF is complete enough to write every section without inventing details, skip straight to Step 2.
+If the BRIEF is complete enough to write every section without inventing details, skip straight to Step 5.
 
 **Example of a good clarifying message:**
 
@@ -102,7 +102,7 @@ If the BRIEF is complete enough to write every section without inventing details
 
 ---
 
-### Step 2 — Extract User Stories
+### Step 5 — Extract User Stories
 
 From the brief, derive one User Story per **distinct actor + capability pair**. The formula is always:
 
@@ -117,11 +117,11 @@ Rules for extracting User Stories:
 
 ---
 
-### Step 2.5 — Prioritize User Stories (MoSCoW + WSJF)
+### Step 6 — Prioritize User Stories (MoSCoW + WSJF)
 
 This step is **mandatory for every SPEC**, regardless of whether a BENCHMARK.md is available.
 
-After all User Stories are confirmed in Step 2, prioritize each one individually before writing any Functional Scope or Acceptance Criteria. Use **MoSCoW**:
+After all User Stories are confirmed in Step 5, prioritize each one individually before writing any Functional Scope or Acceptance Criteria. Use **MoSCoW**:
 
 | Label | Meaning |
 |-------|---------|
@@ -169,7 +169,7 @@ For **each User Story**, present a WSJF scorecard with your recommended MoSCoW l
 
 ---
 
-### Step 3 — Define Functional Scope per User Story
+### Step 7 — Define Functional Scope per User Story
 
 For each **MUST**, **SHOULD**, and **COULD** User Story, list the concrete features it entails. **Skip WON'T stories entirely** — they appear only in the "WON'T Stories" section at the end of the SPEC.
 
@@ -182,7 +182,7 @@ Keep each feature bullet specific and action-oriented (e.g., "Accept a name as a
 
 ---
 
-### Step 4 — Write Acceptance Criteria
+### Step 8 — Write Acceptance Criteria
 
 For each User Story, write **at least 2 scenarios**. Coverage requirements:
 
@@ -217,7 +217,7 @@ If a scenario requires a specific value (an error message, an HTTP code, an outp
 
 ---
 
-### Step 5 — Write Implementation Notes
+### Step 9 — Write Implementation Notes
 
 Extract concrete technical constraints and guidelines directly from the brief. Focus on:
 - Command invocation pattern (e.g., `python -m app`, `npm run`, `go run`)
@@ -231,7 +231,7 @@ Do NOT add implementation notes that are pure inference or good practice not gro
 
 ---
 
-### Step 6 — Determine Output Path
+### Step 10 — Determine Output Path
 
 The `SPEC.md` is **always** written to:
 
@@ -251,7 +251,7 @@ Where `{feature-name}` is the kebab-case version of the feature name from the br
 
 ---
 
-### Step 7 — Write the File
+### Step 11 — Write the File
 
 1. Assemble the complete `SPEC.md`
 2. Show the full content to the user for review
@@ -329,7 +329,7 @@ Append decisions to `DECISION.md` as they happen during the interaction — do n
 5. **English always** — write the SPEC.md in English regardless of the language used during the conversation.
 6. **Interactive and thorough** — scan the brief for gaps before writing. Ask all clarifying questions upfront in a single message (grouped by section). Then propose each major section (User Stories, Functional Scope, Acceptance Criteria, Implementation Notes) as a draft and confirm with the user before moving on. Do not generate the full SPEC in one shot without section-by-section confirmation.
 7. **Multiple USs when warranted** — if the brief covers distinct actors or fundamentally different capabilities, split into separate User Stories each with their own Functional Scope and AC blocks. Do not artificially merge or split.
-8. **Always prioritize** — Step 2.5 (MoSCoW + WSJF) runs for every SPEC, with or without a BENCHMARK.md. Never skip it. WON'T stories must be listed in the SPEC even if excluded from all other sections.
+8. **Always prioritize** — Step 6 (MoSCoW + WSJF) runs for every SPEC, with or without a BENCHMARK.md. Never skip it. WON'T stories must be listed in the SPEC even if excluded from all other sections.
 
 ---
 

@@ -97,9 +97,9 @@ Work section by section. For each section:
 
 ## Step-by-Step Process
 
-### Step 0 — Check for Existing Problem Frame
+### Step 1 — Check for Existing Problem Frame
 
-Before gathering context, check whether a `PROBLEM-FRAME.md` already exists in the target feature directory (`docs/features/{feature-name}/PROBLEM-FRAME.md`). If the feature name is not yet known, check after confirming it in Step 1.
+Before gathering context, check whether a `PROBLEM-FRAME.md` already exists in the target feature directory (`docs/features/{feature-name}/PROBLEM-FRAME.md`). If the feature name is not yet known, check after confirming it in Step 3.
 
 **If `PROBLEM-FRAME.md` exists:**
 1. Read it fully
@@ -113,7 +113,7 @@ Proceed normally with context gathering below. The problem frame is optional —
 
 Also check for `DECISION.md` in the same directory. If it exists, read it and treat all ✅ Accepted decisions as hard constraints.
 
-### Step 0.5 — Initial Context Gathering
+### Step 2 — Initial Context Gathering
 
 Start by asking the user to describe the feature or project in their own words. One open question is enough:
 
@@ -125,7 +125,7 @@ From their answer, extract what you can for each section. Identify gaps before p
 
 ---
 
-### Step 1 — Feature Name
+### Step 3 — Feature Name
 
 Confirm the exact name to use in the `# Project Brief:` heading.
 
@@ -134,7 +134,7 @@ Confirm the exact name to use in the `# Project Brief:` heading.
 
 ---
 
-### Step 2 — Executive Summary
+### Step 4 — Executive Summary
 
 Write 2–3 sentences covering:
 - **What** the feature is
@@ -148,7 +148,7 @@ Propose a draft, ask for approval or adjustments.
 
 ---
 
-### Step 3 — Problem Statement
+### Step 5 — Problem Statement
 
 Structure: opening sentence → 3+ bullet pain points → closing consequence sentence.
 
@@ -172,7 +172,7 @@ Propose a draft. Ask: *"Does this capture the problem accurately? Anything to ad
 
 ---
 
-### Step 4 — Solution
+### Step 6 — Solution
 
 One paragraph describing the high-level solution. Bold the core design principle.
 
@@ -183,7 +183,7 @@ Propose a draft. Confirm before continuing.
 
 ---
 
-### Step 5 — Key Objectives
+### Step 7 — Key Objectives
 
 3 to 7 objectives, each prefixed with `✓`. Action-oriented, one line each.
 
@@ -194,7 +194,7 @@ Propose the list. Ask for confirmation.
 
 ---
 
-### Step 6 — Scope: In Scope
+### Step 8 — Scope: In Scope
 
 5 to 10 concrete deliverable items. Be specific — avoid vague entries like "good UX" or "proper implementation".
 
@@ -205,7 +205,7 @@ Propose the list. Confirm.
 
 ---
 
-### Step 7 — Scope: Out of Scope
+### Step 9 — Scope: Out of Scope
 
 3 to 8 explicit exclusions. Be specific about what is NOT being built.
 
@@ -218,7 +218,7 @@ Propose the list. Confirm.
 
 ---
 
-### Step 8 — Assumptions & Risks
+### Step 10 — Assumptions & Risks
 
 Surface the bets the brief is making. All three subsections are optional — include only those that genuinely apply. There is no minimum or maximum item count.
 
@@ -239,7 +239,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 9 — Success Criteria
+### Step 11 — Success Criteria
 
 3 to 8 criteria, all marked `[x]`. Each must be:
 - **Binary** — pass or fail
@@ -255,7 +255,7 @@ Propose the list. Confirm.
 
 ---
 
-### Step 10 — Output Location
+### Step 12 — Output Location
 
 The file is **always** written to:
 
@@ -263,7 +263,7 @@ The file is **always** written to:
 docs/features/{feature-name}/BRIEF.md
 ```
 
-Where `{feature-name}` is the kebab-case version of the feature name confirmed in Step 1 (e.g., "User Authentication" → `user-authentication`).
+Where `{feature-name}` is the kebab-case version of the feature name confirmed in Step 3 (e.g., "User Authentication" → `user-authentication`).
 
 - Create the directory if it does not exist.
 - If a `BRIEF.md` already exists at the target path, inform the user and ask for confirmation before overwriting.
@@ -272,7 +272,7 @@ Where `{feature-name}` is the kebab-case version of the feature name confirmed i
 
 ---
 
-### Step 11 — Write the File
+### Step 13 — Write the File
 
 Once all sections are confirmed:
 1. Assemble the final `BRIEF.md` content

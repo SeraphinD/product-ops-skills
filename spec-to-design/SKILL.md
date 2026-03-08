@@ -67,7 +67,7 @@ If the SPEC has no MoSCoW labels (generated before this convention), treat all U
 
 ---
 
-### Step 1.2 — Load Prior Decisions
+### Step 2 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the SPEC.
 
@@ -78,7 +78,7 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 1.3 — Load BRIEF (context)
+### Step 3 — Load BRIEF (context)
 
 Check whether a `BRIEF.md` exists in the same `docs/features/{feature-name}/` directory.
 
@@ -92,7 +92,7 @@ If no BRIEF is found, proceed with SPEC data only.
 
 ---
 
-### Step 1.4 — Load Benchmark Visual References (if available)
+### Step 4 — Load Benchmark Visual References (if available)
 
 Check whether a `BENCHMARK.md` exists in the same `docs/features/{feature-name}/` directory.
 
@@ -105,7 +105,7 @@ If no BENCHMARK.md exists, proceed without it — this input is optional.
 
 ---
 
-### Step 1.5 — Detect Frontend Feature
+### Step 5 — Detect Frontend Feature
 
 This skill only applies to features with a user interface. Before proceeding, verify the SPEC describes a frontend feature.
 
@@ -122,7 +122,7 @@ Log the feature type detection to `DECISION.md`.
 
 ---
 
-### Step 1.6 — Detect Existing Design System
+### Step 6 — Detect Existing Design System
 
 Before asking the user anything about design tokens, proactively scan the codebase for an existing design system. Search for:
 
@@ -149,27 +149,27 @@ Before asking the user anything about design tokens, proactively scan the codeba
 
 **What to do with findings:**
 
-- **Existing design system found** → store the extracted values internally. In Step 3, **reuse them as-is** instead of proposing new ones. Inform the user: *"I found an existing design system in `{path}`. I'll extend it rather than create a new one."* Log this to `DECISION.md`.
-- **UI library detected but no custom tokens** → note the library. In Step 3, propose tokens that align with the library's conventions. Inform the user: *"The project uses {library}. I'll align the design system with its conventions."*
-- **Nothing found** → proceed normally. Step 3 will propose a new design system from scratch.
+- **Existing design system found** → store the extracted values internally. In Step 9, **reuse them as-is** instead of proposing new ones. Inform the user: *"I found an existing design system in `{path}`. I'll extend it rather than create a new one."* Log this to `DECISION.md`.
+- **UI library detected but no custom tokens** → note the library. In Step 9, propose tokens that align with the library's conventions. Inform the user: *"The project uses {library}. I'll align the design system with its conventions."*
+- **Nothing found** → proceed normally. Step 9 will propose a new design system from scratch.
 
 ---
 
-### Step 1.7 — Analyze gaps before writing
+### Step 7 — Analyze gaps before writing
 
-After reading the SPEC and scanning the codebase (Step 1.6), scan for remaining information needed to write a complete design document:
+After reading the SPEC and scanning the codebase (Step 6), scan for remaining information needed to write a complete design document:
 
 - **UI components** — Does the spec imply specific components (forms, tables, cards, navigation, modals)?
 - **Pages/screens** — Are routes, views, or screens mentioned or implied?
 - **User flows** — Are the acceptance criteria detailed enough to derive step-by-step user flows?
-- **Tech stack** — Is a CSS framework or component library mentioned? (Skip if already resolved by Step 1.6 codebase scan.)
+- **Tech stack** — Is a CSS framework or component library mentioned? (Skip if already resolved by Step 6 codebase scan.)
 - **Responsive requirements** — Is mobile/tablet/desktop behavior mentioned?
 - **Accessibility** — Are there specific accessibility requirements beyond the default WCAG 2.1 AA?
 - **Dark mode** — Is dark mode mentioned or expected?
 
 If you find ambiguities, **ask all clarifying questions in a single message** — group them by topic, be specific, and propose a default answer when you have a reasonable one. Do not proceed to writing until the user has answered.
 
-If the SPEC is complete enough to write every section without inventing details, skip straight to Step 2.
+If the SPEC is complete enough to write every section without inventing details, skip straight to Step 8.
 
 **Example of a good clarifying message (when existing design system was found):**
 
@@ -193,7 +193,7 @@ If the SPEC is complete enough to write every section without inventing details,
 
 ---
 
-### Step 2 — Design Overview and Goals
+### Step 8 — Design Overview and Goals
 
 Derive the Design Overview from:
 - SPEC overview and user story benefits
@@ -209,14 +209,14 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 3 — Define the Design System
+### Step 9 — Define the Design System
 
 Generate Color Palette, Typography, and Spacing & Layout.
 
 **Rules:**
-- **If Step 1.6 found an existing design system, you MUST reuse it.** Import the detected values (colors, typography, spacing, breakpoints) directly into the Design System section. Do not propose alternatives for values that already exist — only extend with new tokens the feature requires. Clearly mark which values are inherited (`✦ Existing`) vs new (`★ New`).
-- If Step 1.6 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
-- If Step 1.6 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
+- **If Step 6 found an existing design system, you MUST reuse it.** Import the detected values (colors, typography, spacing, breakpoints) directly into the Design System section. Do not propose alternatives for values that already exist — only extend with new tokens the feature requires. Clearly mark which values are inherited (`✦ Existing`) vs new (`★ New`).
+- If Step 6 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
+- If Step 6 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
 - All colors must meet WCAG 2.1 AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 - Typography must include at least H1, H2, Body, Button, and Caption
 - Spacing must define a base unit, a spacing scale, and breakpoints
@@ -226,7 +226,7 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 4 — Design Components (MoSCoW-aware)
+### Step 10 — Design Components (MoSCoW-aware)
 
 For each User Story in the SPEC (excluding WON'T), extract implied components from the functional scope. Tag each component with its source story and MoSCoW label.
 
@@ -244,7 +244,7 @@ Propose components in batches (group by source story). Confirm each batch before
 
 ---
 
-### Step 5 — Design Page Layouts
+### Step 11 — Design Page Layouts
 
 For each distinct page or screen implied by the SPEC:
 
@@ -259,7 +259,7 @@ Propose each layout as a draft. Confirm before moving on.
 
 ---
 
-### Step 6 — Define User Flows
+### Step 12 — Define User Flows
 
 For each acceptance criteria scenario in the SPEC that involves user interaction:
 
@@ -274,7 +274,7 @@ Propose the flows. Confirm before moving on.
 
 ---
 
-### Step 7 — Define Interactions & Animations
+### Step 13 — Define Interactions & Animations
 
 Cover page transitions, hover effects, loading states, and error state animations.
 
@@ -288,7 +288,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 8 — Define Accessibility Requirements
+### Step 14 — Define Accessibility Requirements
 
 Start with the standard WCAG 2.1 AA checklist from the template. Then add SPEC-specific requirements:
 
@@ -303,7 +303,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 9 — Dark Mode and Responsive Details
+### Step 15 — Dark Mode and Responsive Details
 
 **Dark Mode:**
 - Only include if the SPEC, BRIEF, or user explicitly mentions dark mode
@@ -313,14 +313,14 @@ Propose a draft. Confirm.
 **Responsive Details:**
 - Always include mobile and desktop sections
 - Include tablet if the SPEC mentions it or the feature has complex layouts
-- Derive layout changes from page layouts defined in Step 5
+- Derive layout changes from page layouts defined in Step 11
 - Specify touch target sizes for mobile (minimum 44x44px)
 
 Propose a draft. Confirm.
 
 ---
 
-### Step 10 — Design Decisions & Rationale
+### Step 16 — Design Decisions & Rationale
 
 Summarize the key design choices made during this interaction. These complement the DECISION.md entries but are embedded in the DESIGN.md for readers who don't check the decision log.
 
@@ -334,7 +334,7 @@ Keep this section concise — 3–6 decisions that genuinely shape the design.
 
 ---
 
-### Step 11 — Determine Output Path
+### Step 17 — Determine Output Path
 
 The `DESIGN.md` is **always** written to:
 
@@ -354,7 +354,7 @@ Where `{feature-name}` is the kebab-case version of the feature name.
 
 ---
 
-### Step 12 — Write the File
+### Step 18 — Write the File
 
 Once all sections are confirmed:
 1. Assemble the complete `DESIGN.md` using the template above
@@ -472,10 +472,10 @@ Result: A DESIGN.md with a complete new design system and full component/layout 
 
 ### Problem: SPEC describes a backend-only feature
 **Cause:** The skill was triggered for a feature with no user interface.
-**Solution:** The skill will detect this in Step 1.5 and inform the user: "This SPEC describes a backend/CLI feature. DESIGN.md is for features with a UI. Would you like to skip to PLAN?" If ambiguous, it asks for clarification.
+**Solution:** The skill will detect this in Step 5 and inform the user: "This SPEC describes a backend/CLI feature. DESIGN.md is for features with a UI. Would you like to skip to PLAN?" If ambiguous, it asks for clarification.
 
 ### Problem: Existing design system uses a different convention than proposed
-**Cause:** Step 1.6 detected a design system but the proposed design tokens conflict with existing patterns.
+**Cause:** Step 6 detected a design system but the proposed design tokens conflict with existing patterns.
 **Solution:** Always reuse existing tokens. Mark inherited values as `Existing` and only add new tokens the feature requires. Never override or propose alternatives to established design tokens.
 
 ### Problem: SPEC has no MoSCoW labels
