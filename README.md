@@ -21,7 +21,7 @@ This pipeline enforces the discipline that prevents those failures:
 ## How It Works
 
 ```
-[PROBLEM FRAME] → BRIEF → [BENCHMARK] → SPEC → [DESIGN] → PLAN → TASKS
+[PROBLEM FRAME] → BRIEF → [BENCHMARK] → [OPPORTUNITY] → SPEC → [DESIGN] → PLAN → TASKS
 ```
 
 | Stage | What it produces | Why | Optional? |
@@ -29,6 +29,7 @@ This pipeline enforces the discipline that prevents those failures:
 | **create-problem-frame** | `PROBLEM-FRAME.md` — situation context, root cause analysis, constraints, alternative framings | Prevents building the right solution to the wrong problem | ✅ Yes |
 | **create-brief** | `BRIEF.md` — problem, solution, objectives, scope, success criteria | Aligns everyone on what to build and why before any work starts | No — starting point |
 | **brief-to-benchmark** | `BENCHMARK.md` — competitors, standards, metrics, gap analysis | Grounds decisions in real-world data instead of assumptions | ✅ Yes |
+| **brief-to-opportunity** | `OPPORTUNITY.md` — RICE score card for a single brief | Quantifies priority with structured scoring before investing in specs | ✅ Yes |
 | **brief-to-specs** | `SPEC.md` — user stories, MoSCoW/WSJF scores, Given/When/Then ACs | Turns intent into testable requirements with clear priority | No |
 | **spec-to-design** | `DESIGN.md` — design system, components, wireframes, flows *(web)* | Catches UX issues on paper before they become code | ✅ Yes |
 | **spec-to-mobile-design** | `DESIGN.md` — same, but for native iOS/Android | Same, with platform-specific patterns for iOS and Android | ✅ Yes |
@@ -48,7 +49,7 @@ Clone the repo and symlink each skill into your user-level Claude Code skills di
 ```bash
 REPO="/path/to/product-ops-skills"
 
-for skill in create-problem-frame create-brief brief-to-benchmark brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks; do
+for skill in create-problem-frame create-brief brief-to-benchmark brief-to-opportunity brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks; do
   ln -sf "$REPO/$skill" "$HOME/.claude/skills/$skill"
 done
 ```
@@ -69,7 +70,7 @@ Here is a full run-through for a fictional feature: **"Push Notifications for a 
 
 ---
 
-### Step 0 — Frame the Problem (optional)
+### Step 1 — Frame the Problem (optional)
 
 > **You:** Frame the problem around push notification engagement in our React Native app
 
@@ -92,7 +93,8 @@ Skip this step if the problem is already well-understood and validated.
 
 ---
 
-### Step 1 — Create the Brief
+### Step 2 — Create the Brief
+
 
 > **You:** Create a brief for push notifications in our React Native app
 
@@ -112,7 +114,7 @@ Success Criteria        ← how you'll know it worked
 
 ---
 
-### Step 2 — Benchmark (optional)
+### Step 3 — Benchmark (optional)
 
 > **You:** Benchmark the brief
 
@@ -124,7 +126,24 @@ Skip this step if you already know the competitive landscape.
 
 ---
 
-### Step 3 — Generate the Spec
+### Step 4 — Opportunity Scoring (optional)
+
+> **You:** Score this brief
+
+Claude triggers `brief-to-opportunity` and walks you through RICE scoring: Reach (% of users), four Impact dimensions (strategic, business, user, internal) on a Fibonacci scale, Confidence, and Effort. If a BENCHMARK.md exists, it calibrates scores with verified data.
+
+**Output:** `docs/features/push-notifications/OPPORTUNITY.md`
+
+```
+RICE Score             ← computed score from all factors
+Score card             ← factor-by-factor breakdown with rationale
+```
+
+Skip this step if priorities are already clear.
+
+---
+
+### Step 5 — Generate the Spec
 
 > **You:** Generate specs from the brief
 
@@ -144,7 +163,7 @@ Then I receive a push notification within 3 seconds
 
 ---
 
-### Step 4 — Design (optional)
+### Step 6 — Design (optional)
 
 **Web feature:**
 > **You:** Design the feature from the spec
@@ -172,7 +191,7 @@ PermissionPrompt — modal with allow/deny, TalkBack-labelled
 
 ---
 
-### Step 5 — Generate the Plan
+### Step 7 — Generate the Plan
 
 > **You:** Generate a plan from the spec
 
@@ -198,7 +217,7 @@ Claude triggers `spec-to-plan`, reads the SPEC (and DESIGN.md if present), and p
 
 ---
 
-### Step 6 — Generate the Task List
+### Step 8 — Generate the Task List
 
 > **You:** Turn the plan into tasks
 
@@ -229,6 +248,7 @@ docs/features/push-notifications/
 ├── PROBLEM-FRAME.md← validated problem definition (optional)
 ├── BRIEF.md        ← problem, solution, objectives, scope
 ├── BENCHMARK.md    ← competitive research (optional)
+├── OPPORTUNITY.md  ← RICE score card (optional)
 ├── SPEC.md         ← user stories + acceptance criteria
 ├── DESIGN.md       ← UI/UX design (optional)
 ├── PLAN.md         ← phased implementation steps
@@ -236,7 +256,7 @@ docs/features/push-notifications/
 └── DECISION.md     ← full log of every decision made
 ```
 
-You can enter the pipeline at any stage — if you already have a SPEC, start from Step 3. If you have a PLAN, start from Step 6. If the problem is already clear, skip Step 0 and start with the Brief.
+You can enter the pipeline at any stage — if you already have a SPEC, start from Step 5. If you have a PLAN, start from Step 8. If the problem is already clear, skip Step 1 and start with the Brief.
 
 ---
 

@@ -1,0 +1,126 @@
+{
+  "skill_name": "brief-to-opportunity",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Score the push notifications brief. Here's the context: it's a React Native app with 50,000 MAU. The brief covers FCM integration, permission prompts, notification preferences, and quiet hours. There's a BENCHMARK.md that found OneSignal has 95% delivery rate and industry opt-in rate is 60%. The feature addresses the #1 customer complaint. Team estimates 6-8 weeks of work for 3 engineers.",
+      "expected_output": "An OPPORTUNITY.md score card for push notifications. Should have high User Impact (addresses #1 complaint), moderate-to-high Reach (notifications affect most users), and Confidence should be 80-100% since benchmark data exists. Effort should be on the higher end of Fibonacci (8 or 13). All impact and effort values must be valid Fibonacci.",
+      "assertions": [
+        {
+          "id": "template-structure",
+          "text": "Output follows the template structure: title (# Opportunity: ...), header with Generated from / Method / Impact weights / Date, RICE Score header (## RICE Score: ...), and factor breakdown table",
+          "type": "structural"
+        },
+        {
+          "id": "fibonacci-values",
+          "text": "All four impact scores and effort use valid Fibonacci values (1, 2, 3, 5, 8, or 13) — no non-Fibonacci numbers like 4, 6, 7, 9, 10, 11, 12",
+          "type": "structural"
+        },
+        {
+          "id": "four-impact-dimensions",
+          "text": "Score card includes all four impact dimensions: Strategic Impact, Business Impact, User Impact, and Internal Impact, each with a separate score and rationale",
+          "type": "structural"
+        },
+        {
+          "id": "reach-percentage",
+          "text": "Reach is expressed as a percentage of the user base (1-100%), not as an absolute number",
+          "type": "structural"
+        },
+        {
+          "id": "confidence-valid",
+          "text": "Confidence is one of the three valid values: 50%, 80%, or 100%",
+          "type": "structural"
+        },
+        {
+          "id": "rice-formula-correct",
+          "text": "RICE score is correctly computed: (Reach × weighted_avg_impact × Confidence) / Effort, and the weighted average impact is the mean of the four impact scores",
+          "type": "quality"
+        },
+        {
+          "id": "benchmark-informed",
+          "text": "At least one factor rationale references the benchmark data (delivery rate, opt-in rate, or competitor findings) to justify the score",
+          "type": "quality"
+        },
+        {
+          "id": "user-impact-high",
+          "text": "User Impact is scored 8 or 13 given that the feature addresses the #1 customer complaint",
+          "type": "quality"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "RICE score for our admin dashboard redesign. We're a B2B SaaS with 800 accounts, about 200 admin users. The brief says the current dashboard is hard to navigate, admin tasks take 3x longer than they should, and it's the top support ticket category. No benchmark was done. The team is 2 frontend engineers, estimated 4-5 weeks.",
+      "expected_output": "An OPPORTUNITY.md score card for the admin dashboard. Reach should be low (200 out of total users is a small percentage). User Impact should be high (3x slower, top support category). Confidence should be 50-80% since no benchmark exists. Internal Impact could be moderate (reduces support tickets). All values must be Fibonacci.",
+      "assertions": [
+        {
+          "id": "template-structure",
+          "text": "Output follows the template structure: title (# Opportunity: ...), header metadata, RICE Score header, and factor breakdown table with weighted average impact row",
+          "type": "structural"
+        },
+        {
+          "id": "fibonacci-values",
+          "text": "All four impact scores and effort use valid Fibonacci values (1, 2, 3, 5, 8, or 13)",
+          "type": "structural"
+        },
+        {
+          "id": "reach-reflects-small-audience",
+          "text": "Reach percentage reflects that only ~200 admin users are affected out of the broader user base, resulting in a low-to-moderate percentage",
+          "type": "quality"
+        },
+        {
+          "id": "no-benchmark-noted",
+          "text": "Confidence is not 100%, reflecting the absence of benchmark data",
+          "type": "quality"
+        },
+        {
+          "id": "support-impact-captured",
+          "text": "The top-support-ticket-category signal is reflected in either User Impact or Internal Impact rationale",
+          "type": "quality"
+        },
+        {
+          "id": "rice-formula-correct",
+          "text": "RICE score is correctly computed using the formula and matches the individual factor values shown",
+          "type": "quality"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Score the API rate limiting brief. We have a developer platform with 3,000 API consumers. The brief covers implementing tiered rate limits, usage dashboards, and throttling notifications. This is critical for platform stability — we've had 3 outages in the last month caused by uncontrolled API usage. There's a benchmark showing industry standards (Stripe, GitHub, Twilio rate limiting patterns). Engineering estimates 3 weeks for 2 backend engineers.",
+      "expected_output": "An OPPORTUNITY.md score card for API rate limiting. Strategic Impact should be high (platform stability is foundational). Internal Impact should be high (prevents outages, reduces operational burden). Confidence should be 80-100% (benchmark exists with verified industry patterns). Reach should reflect the full developer platform user base.",
+      "assertions": [
+        {
+          "id": "template-structure",
+          "text": "Output follows the template structure: title (# Opportunity: ...), header metadata, RICE Score header, factor breakdown table with all four impact dimensions and weighted average",
+          "type": "structural"
+        },
+        {
+          "id": "fibonacci-values",
+          "text": "All four impact scores and effort use valid Fibonacci values (1, 2, 3, 5, 8, or 13)",
+          "type": "structural"
+        },
+        {
+          "id": "strategic-impact-high",
+          "text": "Strategic Impact is scored 8 or 13 given that platform stability is foundational infrastructure",
+          "type": "quality"
+        },
+        {
+          "id": "internal-impact-high",
+          "text": "Internal Impact is scored 5 or higher given the 3 outages in the last month and operational burden",
+          "type": "quality"
+        },
+        {
+          "id": "benchmark-boosts-confidence",
+          "text": "Confidence is 80% or 100%, with the rationale citing the benchmark data from Stripe/GitHub/Twilio",
+          "type": "quality"
+        },
+        {
+          "id": "outage-data-referenced",
+          "text": "At least one rationale references the 3 outages in the last month as evidence supporting the score",
+          "type": "quality"
+        }
+      ]
+    }
+  ]
+}
