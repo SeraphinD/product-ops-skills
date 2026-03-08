@@ -17,7 +17,7 @@ The final `TASKS.md` must follow **exactly** this structure:
 - **Status:** ⬜ pending
 - **Description:** {1–2 sentences — what exactly needs to happen and why}
 - **PLAN Reference:** {relative path to PLAN}, Phase {N}, Step {N}
-- **Skill/Agent:** {skill name and role, e.g. `feature-dev` (code generation)}
+- **Skill/Agent:** {skill name and role, e.g. `frontend-design`} *(optional — only include when a task maps to an installed skill)*
 - **Notes:** {constraints, dependencies on other tasks, or "none"}
 
 {...repeat for every task in this phase}
@@ -34,6 +34,6 @@ The final `TASKS.md` must follow **exactly** this structure:
 
 | Phase | Name | Tasks | Skills Involved |
 |-------|------|-------|-----------------|
-| Phase 1 | {name} | {N} | {skill-a, skill-b} |
+| Phase 1 | {name} | {N} | {skill-a, skill-b, or "—" if none} |
 | **Total** | | **{N}** | |
 ```

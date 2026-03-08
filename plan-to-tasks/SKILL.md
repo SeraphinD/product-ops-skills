@@ -1,6 +1,6 @@
 ---
 name: plan-to-tasks
-description: Transforms a PLAN.md into a TASKS.md — a flat, atomic task checklist where every action is traceable to a plan phase and step, has a status (pending/in-progress/completed/blocked), and is assigned to a skill or agent. Trigger on phrases like "generate tasks", "create TASKS.md", "tasks from plan", "plan to tasks", "convert plan to tasks", "make a task list from the plan", "extract tasks from plan", "turn the plan into tasks", or when the user has a PLAN.md and wants an actionable, trackable task list — even if they don't say "TASKS.md" explicitly. Do NOT use for generating a plan from specs (use spec-to-plan), generating specs from a brief (use brief-to-specs), or for executing tasks — this skill only produces the task list document.
+description: Transforms a PLAN.md into a TASKS.md — a flat, atomic task checklist where every action is traceable to a plan phase and step, has a status (pending/in-progress/completed/blocked), and is optionally assigned to an installed skill. Trigger on phrases like "generate tasks", "create TASKS.md", "tasks from plan", "plan to tasks", "convert plan to tasks", "make a task list from the plan", "extract tasks from plan", "turn the plan into tasks", or when the user has a PLAN.md and wants an actionable, trackable task list — even if they don't say "TASKS.md" explicitly. Do NOT use for generating a plan from specs (use spec-to-plan), generating specs from a brief (use brief-to-specs), or for executing tasks — this skill only produces the task list document.
 allowed-tools: "Read Write Glob"
 metadata:
   author: seraphindesumeur
@@ -36,20 +36,18 @@ The TASKS document contains: a header with generation metadata and status counts
 
 ## Skill/Agent Assignment Guide
 
-When assigning a skill/agent to a task, use these conventions. If none fit, write `manual` or leave a note:
+Skill assignment is **optional**. Only assign a skill when a task clearly maps to an installed skill. If no skill fits, **omit the Skill/Agent field entirely** — Claude Code will execute the task using its built-in tools. For tasks that require human action (e.g., infrastructure decisions, manual deployments), note it in the task description instead.
+
+When a task does map to a known skill, use these conventions:
 
 | Task Nature | Skill/Agent |
 |-------------|-------------|
-| Create or edit source code files | `feature-dev` (code generation) |
 | Build UI components or pages | `frontend-design` |
 | Integrate or call an AI/Claude API | `claude-developer-platform` |
-| Write tests or test suites | `feature-dev` (testing) |
 | Generate a specification from a brief | `brief-to-specs` |
 | Generate a plan from a spec | `spec-to-plan` |
-| Write or update documentation | `feature-dev` (docs) or `manual` |
-| Refactor or restructure code | `feature-dev` (refactor) |
-| Configure infrastructure, CI/CD | `manual` (human decision) |
-| Database schema or migrations | `feature-dev` (data layer) |
+
+> **Note:** This table is not exhaustive. If the user has other skills installed, assign them when relevant. If unsure whether a skill exists, omit the field — it's better to leave it blank than to reference a non-existent skill.
 
 ---
 
@@ -109,7 +107,7 @@ Only break a step into sub-tasks when you have enough context to name the sub-ta
 
 After parsing, before generating anything, scan for information needed to produce a complete, unambiguous task list:
 
-- **Skill assignment** — Are there tasks whose nature is unclear (e.g., infrastructure tasks, ambiguous refactors)?
+- **Skill assignment** — Are there tasks that clearly map to an installed skill? For tasks that don't, the Skill/Agent field will be omitted.
 - **Dependencies** — Are there tasks that can only start after another task is complete? Should dependency links be added?
 - **Output path** — Where should `TASKS.md` be written? Default: same directory as the source PLAN.
 
@@ -117,7 +115,7 @@ If any are ambiguous, **ask all clarifying questions in a single message**, grou
 
 > **Before I generate the task list, I have a few questions:**
 >
-> **Skill assignment** — Task "Deploy to production" in Phase 3 doesn't map cleanly to a skill. I'll mark it as `manual`. OK?
+> **Skill assignment** — Task "Deploy to production" in Phase 3 doesn't map to any installed skill, so I'll omit the Skill/Agent field for it. Tasks like "Build dashboard component" will be assigned to `frontend-design`. OK?
 >
 > **Dependencies** — Task "Write tests" depends on "Create core module". Should I add a `Depends on:` line to make that explicit?
 >
@@ -137,7 +135,7 @@ For **every** action item in the plan, create exactly one task entry. Rules:
 2. **Title must be imperative and specific** — "Create `app/routes.py` — API route definitions", not "Add routes".
 3. **Description must explain the what and why** — reference the plan's intent, not just the file name.
 4. **PLAN Reference must be exact** — include the relative file path, phase number, and step number (e.g., `PLAN.md Phase 2, Step 3`).
-5. **Skill/Agent must come from the assignment guide** — if uncertain, use `manual` and add a note.
+5. **Skill/Agent is optional** — only include it when the task clearly maps to an installed skill from the assignment guide. Omit the field entirely when no skill fits.
 6. **Notes must name dependencies** — if Task B requires Task A to be done first, write "Depends on: [task title]".
 
 All tasks start with status `⬜ pending` unless the user has indicated otherwise.
@@ -183,7 +181,7 @@ Throughout the interaction, log every non-obvious decision to `docs/features/{fe
 ### What to log
 
 - **Explicit decisions** — choices the user made when you asked a clarifying question (e.g., task granularity, skill assignment, dependency links)
-- **Implicit decisions** — choices you made without asking because the plan was clear enough (e.g., assigning a skill to a task, deciding a step is atomic vs. needs splitting, marking a task as `manual`)
+- **Implicit decisions** — choices you made without asking because the plan was clear enough (e.g., assigning a skill to a task, deciding a step is atomic vs. needs splitting, omitting skill assignment for a task)
 - **Functional decisions** — choices about task scope or ordering that affect how the feature gets built (e.g., choosing to split a broad step into sub-tasks, deciding two tasks have no dependency)
 
 ### What NOT to log
@@ -241,7 +239,7 @@ Append decisions to `DECISION.md` as they happen during the interaction — do n
 1. **Complete coverage** — every action in the plan must become a task. Do not omit or merge steps.
 2. **Atomic tasks** — each task must be completable independently. If a step is too broad, break it or ask.
 3. **Traceable** — every task must reference the exact PLAN phase and step it comes from. No invented tasks.
-4. **Assigned** — every task must have a skill/agent. Use `manual` rather than leaving it blank.
+4. **Skill assignment is optional** — only assign a skill when the task clearly maps to an installed skill. Omit the Skill/Agent field when no skill fits. Never reference a skill that may not exist.
 5. **English always** — write `TASKS.md` in English regardless of the language used in the conversation.
 6. **Interactive and thorough** — ask all clarifying questions at once, grouped, with proposed defaults. Then propose each phase's tasks as a draft and confirm with the user before moving on. Do not generate the full task list in one shot without phase-by-phase confirmation.
 7. **Confirm before writing** — always show the task count summary and ask for confirmation before writing the file.
@@ -256,10 +254,10 @@ User says: "Generate tasks from the greeting tool plan"
 Actions:
 1. Locate `docs/features/greeting-tool/PLAN.md` — 3 phases (MUST, Testing, Docs)
 2. Parse 5 implementation steps → 5 atomic tasks
-3. Assign skills: 3x `feature-dev` (code), 1x `feature-dev` (testing), 1x `feature-dev` (docs)
+3. No tasks map to installed skills — Skill/Agent field omitted on all tasks
 4. Add dependency notes: "Write tests" depends on "Create core module"
 5. Write to `docs/features/greeting-tool/TASKS.md`
-Result: A TASKS.md with 5 tasks, all `pending`, with a summary table
+Result: A TASKS.md with 5 tasks, all `pending`, no skill assignments needed
 
 ### Example 2: Large feature with DESIGN.md references
 User says: "Turn the dashboard plan into tasks"
@@ -267,9 +265,9 @@ Actions:
 1. Locate PLAN — 5 phases, 18 steps. Load DESIGN.md for component details
 2. Parse each step — break 2 broad steps into sub-tasks after asking the user
 3. Generate 22 atomic tasks with specific descriptions referencing DESIGN.md specs
-4. Assign: `frontend-design` for UI components, `feature-dev` for logic, `manual` for CI/CD
+4. Assign `frontend-design` to UI component tasks; omit Skill/Agent for logic, testing, and infrastructure tasks
 5. Write to `docs/features/analytics-dashboard/TASKS.md`
-Result: A TASKS.md with 22 tasks across 5 phases, with skill assignments and dependency chains
+Result: A TASKS.md with 22 tasks across 5 phases, skill assigned only where relevant
 
 ---
 
@@ -279,9 +277,9 @@ Result: A TASKS.md with 22 tasks across 5 phases, with skill assignments and dep
 **Cause:** The plan step groups multiple actions (e.g., "Set up the project structure and configure dependencies").
 **Solution:** Ask: "Step {N} in Phase {X} looks broad. Should I break it into sub-tasks?" Only break when you have enough context to name sub-tasks precisely. Never invent sub-tasks.
 
-### Problem: Unclear which skill/agent to assign
-**Cause:** The task doesn't clearly map to any skill in the assignment guide (e.g., infrastructure setup, deployment).
-**Solution:** Assign `manual` and add a note explaining why: "Infrastructure task — requires human decision on hosting provider and CI/CD setup."
+### Problem: No skill fits a task
+**Cause:** The task doesn't clearly map to any installed skill (e.g., general code writing, infrastructure setup, deployment).
+**Solution:** Omit the Skill/Agent field entirely. Claude Code will execute the task using its built-in tools. If the task requires human action, note it in the task description (e.g., "Requires human: choose hosting provider and configure CI/CD").
 
 ### Problem: PLAN.md not found
 **Cause:** The file doesn't exist at the expected path, or the feature name doesn't match directory naming.
