@@ -470,18 +470,4 @@ Result: A DESIGN.md with a complete new design system and full component/layout 
 
 ## Troubleshooting
 
-### Problem: SPEC describes a backend-only feature
-**Cause:** The skill was triggered for a feature with no user interface.
-**Solution:** The skill will detect this in Step 5 and inform the user: "This SPEC describes a backend/CLI feature. DESIGN.md is for features with a UI. Would you like to skip to PLAN?" If ambiguous, it asks for clarification.
-
-### Problem: Existing design system uses a different convention than proposed
-**Cause:** Step 6 detected a design system but the proposed design tokens conflict with existing patterns.
-**Solution:** Always reuse existing tokens. Mark inherited values as `Existing` and only add new tokens the feature requires. Never override or propose alternatives to established design tokens.
-
-### Problem: SPEC has no MoSCoW labels
-**Cause:** The SPEC was generated before the prioritization convention was introduced.
-**Solution:** Treat all User Stories as MUST and proceed with full design treatment for every story. Note this in the DESIGN.md overview.
-
-### Problem: ASCII wireframes are too complex to be readable
-**Cause:** The page layout has many nested components.
-**Solution:** Break complex layouts into multiple diagrams — one for the overall page structure, and separate detail diagrams for complex component groups. Label each diagram clearly.
+For common issues and solutions, consult `references/troubleshooting.md`.

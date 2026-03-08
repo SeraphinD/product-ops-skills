@@ -324,18 +324,4 @@ Result: A PLAN.md with 5 phases, design system integration, and MoSCoW-ordered i
 
 ## Troubleshooting
 
-### Problem: SPEC has no clear tech stack
-**Cause:** The specification doesn't mention a language, framework, or runtime.
-**Solution:** Ask in the gap analysis phase: "The spec doesn't specify a tech stack. I'll assume {reasonable default based on context}. OK?" Propose a default based on any clues (file extensions mentioned, test frameworks, etc.).
-
-### Problem: Feature is too small for multiple phases
-**Cause:** The spec describes a trivial feature with 1-2 source files.
-**Solution:** Collapse into a single implementation phase. Don't artificially split small features into phases. The Testing and Documentation phases still exist separately.
-
-### Problem: DESIGN.md exists but conflicts with SPEC
-**Cause:** The design document was written before a spec change, or they were authored independently.
-**Solution:** The SPEC takes precedence for functional requirements. The DESIGN.md provides UI implementation guidance. Flag conflicts: "The DESIGN.md shows component X, but the SPEC doesn't mention this functionality. Should I include it in the plan?"
-
-### Problem: Verification checklist items are vague
-**Cause:** The spec's acceptance criteria use vague language that doesn't translate to concrete checks.
-**Solution:** Transform vague criteria into specific checkable statements. Instead of "handles errors properly", write: `python -m app hello "" → 'Error: Name cannot be empty' (exit 1)`. If the spec doesn't provide enough detail, flag the gap.
+For common issues and solutions, consult `references/troubleshooting.md`.

@@ -477,24 +477,4 @@ User: *"Create mobile design from our onboarding spec"*
 
 ## Troubleshooting
 
-### Problem: SPEC describes a web feature, not a mobile app
-**Cause:** The skill was triggered for a feature targeting web browsers.
-**Solution:** The skill will detect this in Step 5 and inform the user: "This SPEC describes a web feature. DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?" If ambiguous, it asks for clarification.
-
-### Problem: SPEC targets both web and mobile
-**Cause:** The feature has both web and native mobile components.
-**Solution:** Both skills write to `DESIGN.md`. Run one skill at a time and let the user decide which design to keep, or inform them: "This feature has both web and mobile components. Running both spec-to-design and spec-to-mobile-design will overwrite the same `DESIGN.md`. Decide which platform to design first, then the other."
-
-### Problem: Existing design system uses a different convention than proposed
-**Cause:** Step 6 detected a design system but the proposed design tokens conflict with existing patterns.
-**Solution:** Always reuse existing tokens. Mark inherited values as `Existing` and only add new tokens the feature requires. Never override or propose alternatives to established design tokens.
-
-### Problem: iOS and Android designs diverge significantly
-**Cause:** The feature requires genuinely different UX on each platform (e.g., iOS uses swipe navigation, Android uses bottom navigation bar).
-**Solution:** Document both variants in the component and screen layout sections. Use separate ASCII wireframes when layouts differ materially. Clearly label which platform each diagram represents.
-
-### Problem: SPEC has no MoSCoW labels
-**Solution:** Treat all User Stories as MUST and proceed with full design treatment. Note this in the DESIGN.md overview.
-
-### Problem: ASCII wireframes are too complex to be readable
-**Solution:** Break complex layouts into multiple diagrams — one for overall structure, separate detail diagrams for complex groups. If showing both platforms, use side-by-side diagrams or separate clearly labeled sections.
+For common issues and solutions, consult `references/troubleshooting.md`.

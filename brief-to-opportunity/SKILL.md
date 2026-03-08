@@ -364,10 +364,4 @@ Result: Updated score card replaces the old one
 
 ## Troubleshooting
 
-### Problem: User proposes a non-Fibonacci value for Impact or Effort
-**Cause:** Fibonacci scale is unfamiliar or the user feels "in between" two values.
-**Solution:** Show the nearest Fibonacci options: "7 isn't on the Fibonacci scale. Would you prefer 5 (Significant) or 8 (High)?" Explain that Fibonacci forces deliberate choices and prevents false precision.
-
-### Problem: BRIEF.md not found
-**Cause:** The file doesn't exist at the expected path.
-**Solution:** Ask: "Which BRIEF.md should I score?" If the BRIEF hasn't been created yet, suggest using the `create-brief` skill first.
+For common issues and solutions, consult `references/troubleshooting.md`.

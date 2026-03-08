@@ -274,18 +274,4 @@ Result: A TASKS.md with 22 tasks across 5 phases, skill assigned only where rele
 
 ## Troubleshooting
 
-### Problem: A plan step is too broad to be a single task
-**Cause:** The plan step groups multiple actions (e.g., "Set up the project structure and configure dependencies").
-**Solution:** Ask: "Step {N} in Phase {X} looks broad. Should I break it into sub-tasks?" Only break when you have enough context to name sub-tasks precisely. Never invent sub-tasks.
-
-### Problem: No skill fits a task
-**Cause:** The task doesn't clearly map to any installed skill (e.g., general code writing, infrastructure setup, deployment).
-**Solution:** Omit the Skill/Agent field entirely. Claude Code will execute the task using its built-in tools. If the task requires human action, note it in the task description (e.g., "Requires human: choose hosting provider and configure CI/CD").
-
-### Problem: PLAN.md not found
-**Cause:** The file doesn't exist at the expected path, or the feature name doesn't match directory naming.
-**Solution:** The skill will ask: "Which plan file should I use?" Provide the exact path. If the PLAN hasn't been created yet, use the `spec-to-plan` skill first.
-
-### Problem: Tasks have circular dependencies
-**Cause:** Two tasks appear to depend on each other, usually from ambiguous plan steps.
-**Solution:** Flag the circular dependency to the user: "Task A depends on Task B, but Task B also seems to need Task A. Can you clarify which should come first?" Resolve before writing.
+For common issues and solutions, consult `references/troubleshooting.md`.

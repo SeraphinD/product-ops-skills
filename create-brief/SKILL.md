@@ -398,18 +398,4 @@ Result: A complete BRIEF.md grounded in the validated problem frame, produced fa
 
 ## Troubleshooting
 
-### Problem: BRIEF.md already exists at the target path
-**Cause:** A previous session or manual creation left a file at `docs/features/{feature-name}/BRIEF.md`.
-**Solution:** The skill will inform you and ask for confirmation before overwriting. If you want to keep the old version, rename it manually before proceeding.
-
-### Problem: User provides all info in one message and expects instant output
-**Cause:** The skill is designed to be interactive — it works section by section.
-**Solution:** Even with rich context, the skill will still propose each section as a draft and ask for confirmation. This ensures quality. If the user explicitly requests "generate it all at once", remind them that section-by-section confirmation catches errors early.
-
-### Problem: Fewer than 3 objectives or success criteria
-**Cause:** The brief's scope is narrow or the user hasn't thought deeply about goals.
-**Solution:** Ask targeted questions: "What else should this feature achieve beyond what we've covered? Any technical, operational, or process goals?" If the user genuinely has fewer, explain the minimum range (3–7 objectives, 3–8 criteria) and help them reach it.
-
-### Problem: Success criteria are vague or not binary
-**Cause:** User provides subjective criteria like "app should feel fast" or "good error handling".
-**Solution:** Push for specifics: "What exact behavior would you check? Can you frame it as a pass/fail test?" Transform vague criteria into binary, verifiable statements.
+For common issues and solutions, consult `references/troubleshooting.md`.

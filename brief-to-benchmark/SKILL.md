@@ -366,18 +366,4 @@ Result: A BENCHMARK.md that includes both data research and visual competitor re
 
 ## Troubleshooting
 
-### Problem: Web search returns no relevant results for comparable solutions
-**Cause:** The feature domain is niche, or search queries are too specific.
-**Solution:** Broaden search terms: try the problem domain rather than the feature name. Use queries like `{problem category} tools comparison` or `{industry} solutions for {pain point}`. If truly no comparables exist, note this honestly in the Comparable Solutions section and focus more on Technical Standards and Metrics.
-
-### Problem: Metrics have no credible source
-**Cause:** Industry baselines for the specific domain are not publicly available.
-**Solution:** Mark with `⚠️ Unverified — validate before use` in the Source column. Include the metric anyway — an unverified baseline is more useful than no baseline. The spec writer can validate or discard it later.
-
-### Problem: BRIEF.md not found
-**Cause:** The file doesn't exist at the expected path, or the feature name doesn't match.
-**Solution:** The skill will ask: "Which BRIEF.md should I use?" Provide the exact path. If the BRIEF hasn't been created yet, use the `create-brief` skill first.
-
-### Problem: DECISION.md contains a decision that conflicts with benchmark findings
-**Cause:** A prior decision may have been made before research was available.
-**Solution:** Flag the conflict explicitly: "Decision {N} says X, but the research suggests Y. Which should take precedence?" Never silently override a logged decision.
+For common issues and solutions, consult `references/troubleshooting.md`.
