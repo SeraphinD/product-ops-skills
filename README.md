@@ -96,7 +96,7 @@ Skip this step if the problem is already well-understood and validated.
 
 > **You:** Create a brief for push notifications in our React Native app
 
-Claude triggers `create-brief` and walks you through a Q&A covering: what problem you're solving, what the solution is, objectives (3–7), in-scope and out-of-scope items, and success criteria. If a `PROBLEM-FRAME.md` exists, the brief is grounded in its validated problem statement and root cause.
+Claude triggers `create-brief` and walks you through a Q&A covering: what problem you're solving, what the solution is, objectives (3–7), in-scope and out-of-scope items, assumptions and risks, and success criteria. If a `PROBLEM-FRAME.md` exists, the brief is grounded in its validated problem statement and root cause.
 
 **Output:** `docs/features/push-notifications/BRIEF.md`
 
@@ -106,6 +106,7 @@ Problem Statement       ← why push notifications are needed
 Solution                ← what the feature does
 Key Objectives          ← measurable goals
 Scope                   ← what's in / what's out
+Assumptions & Risks     ← what we're betting on, what could go wrong (optional subsections)
 Success Criteria        ← how you'll know it worked
 ```
 

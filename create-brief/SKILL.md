@@ -1,6 +1,6 @@
 ---
 name: create-brief
-description: Interactively creates a BRIEF.md for a new feature or project through structured Q&A, producing a document with Executive Summary, Problem Statement, Solution, Objectives, Scope, and Success Criteria. Trigger on phrases like "create a brief", "write a brief", "generate BRIEF.md", "new feature brief", "start a brief", "I have an idea for a feature", "let's start a new feature", or "kick off a project". Do NOT use for converting a brief into specs (use brief-to-specs), benchmarking (use brief-to-benchmark), editing an existing brief, or any downstream pipeline step — this skill creates new briefs from scratch only.
+description: Interactively creates a BRIEF.md for a new feature or project through structured Q&A, producing a document with Executive Summary, Problem Statement, Solution, Objectives, Scope, Assumptions & Risks, and Success Criteria. Trigger on phrases like "create a brief", "write a brief", "generate BRIEF.md", "new feature brief", "start a brief", "I have an idea for a feature", "let's start a new feature", or "kick off a project". Do NOT use for converting a brief into specs (use brief-to-specs), benchmarking (use brief-to-benchmark), editing an existing brief, or any downstream pipeline step — this skill creates new briefs from scratch only.
 allowed-tools: "Read Write Glob"
 license: MIT
 metadata:
@@ -58,6 +58,22 @@ The final `BRIEF.md` must follow **exactly** this structure — no extra section
 - [Excluded item 2]
 - [Excluded item 3]
 - ...
+
+## Assumptions & Risks
+<!-- All three subsections are optional. Include only those that apply. -->
+<!-- No forced item count — list only what is genuinely relevant. -->
+
+### Assumptions
+<!-- Things we believe to be true but haven't validated. Omit if none. -->
+- [Assumption 1]
+
+### Risks
+<!-- What could go wrong or block success. Omit if none. -->
+- [Risk 1]
+
+### Mitigations
+<!-- How we'd reduce or handle a risk listed above. Omit if none. -->
+- [Mitigation 1]
 
 ## Success Criteria
 <!-- 3 to 8 criteria -->
@@ -202,7 +218,28 @@ Propose the list. Confirm.
 
 ---
 
-### Step 8 — Success Criteria
+### Step 8 — Assumptions & Risks
+
+Surface the bets the brief is making. All three subsections are optional — include only those that genuinely apply. There is no minimum or maximum item count.
+
+**Assumptions** — things the brief treats as true but that haven't been validated. These often hide in the Problem Statement ("users want X") and Solution ("the API supports Y"). Scan the brief for implicit beliefs and make them explicit.
+
+**If a `PROBLEM-FRAME.md` exists:** Pull assumptions from the problem frame's Stress Test (evidence basis) and Root Cause Analysis. Any "Why" answer that rests on an unverified belief is a candidate assumption.
+
+If assumptions aren't obvious, ask:
+> *"What are we taking for granted here? Is there anything in the problem, solution, or scope that we believe to be true but haven't actually confirmed?"*
+
+**Risks** — what could go wrong or block success. Think about: technical feasibility, dependencies on external systems, team capacity, user adoption, regulatory changes, or competitive moves.
+
+**Mitigations** — how to reduce or handle each risk. Only include if a risk has a known mitigation. If it doesn't, that's fine — an unmitigated risk is still useful to name.
+
+If there are genuinely no assumptions, risks, or mitigations worth stating, the section can be empty with a note: *"No significant assumptions or risks identified at this stage."* But probe before accepting that — most briefs have at least one hidden assumption.
+
+Propose a draft. Confirm.
+
+---
+
+### Step 9 — Success Criteria
 
 3 to 8 criteria, all marked `[x]`. Each must be:
 - **Binary** — pass or fail
@@ -218,7 +255,7 @@ Propose the list. Confirm.
 
 ---
 
-### Step 9 — Output Location
+### Step 10 — Output Location
 
 The file is **always** written to:
 
@@ -235,7 +272,7 @@ Where `{feature-name}` is the kebab-case version of the feature name confirmed i
 
 ---
 
-### Step 10 — Write the File
+### Step 11 — Write the File
 
 Once all sections are confirmed:
 1. Assemble the final `BRIEF.md` content
@@ -310,7 +347,7 @@ Append decisions to `DECISION.md` as they happen during the interaction — do n
 1. **Interactive first** — never generate the full brief from a single message without asking at least one clarifying question per ambiguous section.
 2. **Propose, don't impose** — always show a draft of each section and ask for feedback before locking it in.
 3. **No placeholders in the final file** — every field must contain real content.
-4. **Strict structure** — no extra sections (no Timeline, Stack, Dependencies, Risks, Stakeholders). Only the 7 sections defined in the template.
+4. **Strict structure** — no extra sections (no Timeline, Stack, Dependencies, Stakeholders). Only the 8 sections defined in the template. Assumptions & Risks subsections are optional — include only those that apply.
 5. **Counts** — 3–7 objectives, 5–10 in-scope items, 3–8 out-of-scope items, 3–8 success criteria. Stay within these ranges — ask for more input if below the minimum, trim if above the maximum.
 6. **Language** — write the BRIEF.md in English, regardless of the language the user uses to interact.
 7. **One section at a time** — do not dump all questions at once. Work through sections sequentially.
@@ -326,7 +363,7 @@ Actions:
 2. Confirm the feature name: "Dark Mode Toggle"
 3. Draft Executive Summary → confirm → Draft Problem Statement → confirm → ... (section by section)
 4. Write to `docs/features/dark-mode-toggle/BRIEF.md`
-Result: A complete BRIEF.md with all 7 sections, written interactively over ~10 exchanges
+Result: A complete BRIEF.md with all 8 sections, written interactively over ~10 exchanges
 
 ### Example 2: Vague initial input
 User says: "I need a brief for notifications"

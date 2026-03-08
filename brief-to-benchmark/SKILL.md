@@ -212,6 +212,8 @@ Synthesize findings from Steps 2–4 into three parts:
 2. **What the brief overlaps with** — where existing tools already solve part of the problem (important for scoping)
 3. **Risks & considerations** — things that could affect the SPEC (e.g., hard-to-match metrics, patterns that don't scale)
 
+**If the BRIEF has an Assumptions & Risks section:** Check each listed assumption against the research findings. If the benchmark data validates an assumption, note it. If the research contradicts an assumption, flag it explicitly in Risks & Considerations: *"The brief assumes X, but benchmark research suggests Y."* This is one of the highest-value outputs of the benchmark phase — catching bad assumptions before they reach the SPEC.
+
 Be analytical and honest. Overlaps aren't failures — they're useful scoping information.
 
 Propose a draft. Confirm with the user.

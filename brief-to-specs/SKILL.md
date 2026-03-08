@@ -84,6 +84,7 @@ After reading the BRIEF, before generating anything, scan each section for ambig
 - **Functional Scope**: Are any in-scope items too vague to write a concrete feature bullet? (e.g., "good error handling" — what error? what message?)
 - **Acceptance Criteria**: Are the expected outputs, commands, HTTP codes, or exit codes specified? Or would scenarios require pure invention?
 - **Implementation Notes**: Are there technical choices (language, framework, invocation pattern) that are mentioned but unclear?
+- **Assumptions & Risks**: If the brief has this section, review it. Unvalidated assumptions may need edge-case ACs. Listed risks may influence MoSCoW prioritization — a story that depends on a high-risk assumption might warrant a lower priority or an explicit boundary-condition scenario.
 
 If you find ambiguities, **ask all your clarifying questions in a single message** — group them by section, be specific, and propose a default answer when you have a reasonable one. Do not proceed to writing until the user has answered.
 
@@ -157,7 +158,7 @@ For **each User Story**, present a WSJF scorecard with your recommended MoSCoW l
 - Use Fibonacci scores (1, 2, 3, 5, 8, 13) kept consistent across all stories in the same session — scores are only meaningful relative to each other; the non-linear scale intentionally forces distinction between sizes
 - **User/Business Value**: draw from brief objectives and success criteria; benchmark Spec Recommendations "Include" items signal higher value
 - **Time Criticality**: draw from brief context and market timing; benchmark competitive urgency signals
-- **Risk Reduction**: high if this story unblocks others or addresses a benchmark-identified risk; low if it's independent
+- **Risk Reduction**: high if this story unblocks others or addresses a benchmark-identified risk or a risk listed in the brief's Assumptions & Risks section; low if it's independent
 - **Job Size**: estimate relative complexity from the story's implied scope — not a precise measure
 - A high WSJF score doesn't automatically mean MUST — the MoSCoW definition still applies. If the feature can ship and be useful without a story, that story cannot be MUST regardless of its score
 

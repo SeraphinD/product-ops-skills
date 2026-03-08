@@ -57,6 +57,7 @@ check_section "^## Key Objectives" "Key Objectives"
 check_section "^## Scope" "Scope"
 check_section "^### In Scope" "In Scope"
 check_section "^### Out of Scope" "Out of Scope"
+check_section "^## Assumptions & Risks" "Assumptions & Risks"
 check_section "^## Success Criteria" "Success Criteria"
 
 echo ""
