@@ -1,7 +1,8 @@
 ---
 name: spec-to-mobile-design
-description: Transforms a SPEC.md into a structured MOBILE-DESIGN.md for native mobile app features (iOS and Android) — covering platform-specific design tokens (colors, typography in pt/dp/sp, spacing), native components with states and variants, screen layouts with ASCII wireframes, navigation patterns, user flows, gestures and haptics, and accessibility requirements for both VoiceOver (iOS) and TalkBack (Android). Trigger on phrases like "mobile design from spec", "create mobile design", "spec to mobile design", "native app design", "iOS design from spec", "Android design from spec", "design the mobile app", "mobile UI design", "app screen design", "React Native design", "Flutter design", "SwiftUI design", "Jetpack Compose design", or when the user has a SPEC.md and the feature targets native mobile platforms — even if they say just "design" but the spec clearly describes a mobile app. Do NOT use for web or responsive web features (use spec-to-design instead), backend-only features, CLI tools, or API-only services. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
+description: Transforms a SPEC.md into a structured DESIGN.md for native mobile app features (iOS and Android) — covering platform-specific design tokens (colors, typography in pt/dp/sp, spacing), native components with states and variants, screen layouts with ASCII wireframes, navigation patterns, user flows, gestures and haptics, and accessibility requirements for both VoiceOver (iOS) and TalkBack (Android). Trigger on phrases like "mobile design from spec", "create mobile design", "spec to mobile design", "native app design", "iOS design from spec", "Android design from spec", "design the mobile app", "mobile UI design", "app screen design", "React Native design", "Flutter design", "SwiftUI design", "Jetpack Compose design", or when the user has a SPEC.md and the feature targets native mobile platforms — even if they say just "design" but the spec clearly describes a mobile app. Do NOT use for web or responsive web features (use spec-to-design instead), backend-only features, CLI tools, or API-only services. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
 allowed-tools: "Read Write Glob Grep"
+license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.0.0
@@ -11,12 +12,12 @@ metadata:
 
 # SPEC → MOBILE DESIGN Skill
 
-This skill transforms a `SPEC.md` into a structured `MOBILE-DESIGN.md` — a native mobile app design document covering platform-specific design tokens, native components, screen layouts, navigation patterns, user flows, gestures, haptics, and accessibility for both iOS and Android.
+This skill transforms a `SPEC.md` into a structured `DESIGN.md` — a native mobile app design document covering platform-specific design tokens, native components, screen layouts, navigation patterns, user flows, gestures, haptics, and accessibility for both iOS and Android.
 
 This is the **optional design phase** of the feature pipeline, specifically for native mobile features:
 
 ```
-BRIEF.md → [BENCHMARK.md] → SPEC.md → [MOBILE-DESIGN.md] → PLAN.md → TASKS.md
+BRIEF.md → [BENCHMARK.md] → SPEC.md → [DESIGN.md] → PLAN.md → TASKS.md
 ```
 
 Its purpose is to ensure mobile features have a concrete, reviewable design specification — grounded in iOS Human Interface Guidelines and Material Design 3 — before implementation planning begins. Users can skip this phase and go directly from SPEC to PLAN. This skill exists for when the feature targets native mobile platforms and the team wants design decisions documented upfront.
@@ -27,9 +28,9 @@ Its purpose is to ensure mobile features have a concrete, reviewable design spec
 
 ## Output Template
 
-**Before writing any output, read `references/template.md` for the exact MOBILE-DESIGN.md structure.**
+**Before writing any output, read `references/template.md` for the exact DESIGN.md structure.**
 
-The MOBILE DESIGN contains: Design Overview, Design Goals, Platform Strategy, Design System (Color Palette with platform tokens, Typography in pt/dp/sp, Spacing & Safe Areas), Native Components (with states/variants/platform differences/accessibility), Screen Layouts (with ASCII wireframes per platform), Navigation Architecture, User Flows, Gestures & Haptics, Interactions & Animations, Accessibility Requirements (VoiceOver + TalkBack), optional Dark Mode (via system appearance), Adaptive Layout Details, and a Checklist for Design Approval.
+The DESIGN contains: Design Overview, Design Goals, Platform Strategy, Design System (Color Palette with platform tokens, Typography in pt/dp/sp, Spacing & Safe Areas), Native Components (with states/variants/platform differences/accessibility), Screen Layouts (with ASCII wireframes per platform), Navigation Architecture, User Flows, Gestures & Haptics, Interactions & Animations, Accessibility Requirements (VoiceOver + TalkBack), optional Dark Mode (via system appearance), Adaptive Layout Details, and a Checklist for Design Approval.
 
 **After writing, run `bash scripts/validate-mobile-design.sh {path-to-design}` to verify structural completeness.**
 
@@ -43,7 +44,7 @@ Work section by section. For each section:
 3. Ask for confirmation or adjustments before moving on
 4. Never skip a section — if you can't write it confidently from the spec, ask a targeted question
 
-**Never generate the full MOBILE-DESIGN in one shot without confirming each major block** (Platform Strategy, Design System, Components, Screen Layouts, Navigation, User Flows, Gestures, Accessibility) with the user first.
+**Never generate the full DESIGN in one shot without confirming each major block** (Platform Strategy, Design System, Components, Screen Layouts, Navigation, User Flows, Gestures, Accessibility) with the user first.
 
 ---
 
@@ -116,8 +117,8 @@ This skill only applies to features targeting native mobile platforms. Before pr
 2. Also check the BRIEF (if loaded) for tech stack mentions.
 3. Classification:
    - **Clearly mobile** → proceed normally
-   - **Clearly web** → inform the user: *"This SPEC appears to describe a web feature. MOBILE-DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?"*
-   - **Ambiguous** → ask: *"I'm not sure if this feature targets native mobile or web. Is this a native app (iOS/Android/React Native/Flutter)? If yes, I'll create a MOBILE-DESIGN.md."*
+   - **Clearly web** → inform the user: *"This SPEC appears to describe a web feature. DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?"*
+   - **Ambiguous** → ask: *"I'm not sure if this feature targets native mobile or web. Is this a native app (iOS/Android/React Native/Flutter)? If yes, I'll create a DESIGN.md."*
 
 Log the feature type detection to `DECISION.md`.
 
@@ -125,33 +126,7 @@ Log the feature type detection to `DECISION.md`.
 
 ### Step 1.6 — Detect Existing Design System
 
-Before asking the user anything about design tokens, proactively scan the codebase for an existing mobile design system. Search for:
-
-**Cross-platform (React Native / Expo):**
-- `**/theme.ts`, `**/theme.js`, `**/tokens.ts` — exported theme objects with colors, fonts, spacing
-- `**/styles/**`, `**/theme/**`, `**/design-system/**` — directories suggesting a design system
-- `package.json` → look for `react-native`, `expo`, `react-native-paper`, `@shopify/restyle`, `nativewind`, `tamagui`, `gluestack-ui`, `react-native-elements`
-
-**Flutter:**
-- `**/theme.dart`, `**/app_theme.dart`, `**/colors.dart`, `**/typography.dart` — Dart theme files
-- `pubspec.yaml` → look for `flutter`, `material_design_icons_flutter`, `google_fonts`
-- `ThemeData(` patterns in lib/ files
-
-**iOS (Swift):**
-- `**/Theme.swift`, `**/Colors.swift`, `**/Typography.swift`, `**/DesignTokens.swift`
-- `Assets.xcassets/` → color sets and image sets
-- `*.xcodeproj` or `Package.swift` → confirms iOS project
-
-**Android (Kotlin):**
-- `**/ui/theme/`, `**/Theme.kt`, `**/Color.kt`, `**/Type.kt` — Jetpack Compose theme files
-- `res/values/colors.xml`, `res/values/themes.xml`, `res/values/styles.xml` — XML resources
-- `build.gradle*` → look for `com.google.android.material`, `androidx.compose`
-
-**What to extract when found:**
-- Color palette (names, hex values, semantic roles, platform-specific token names)
-- Typography scale (font families, sizes in pt/dp/sp, weights)
-- Spacing scale (base unit, scale values in pt/dp)
-- Existing component patterns (naming convention, file structure)
+Before asking the user anything about design tokens, proactively scan the codebase for an existing mobile design system. **See `references/platforms.md` → "Design System Detection Patterns" for per-platform file patterns and package names to search for (React Native, Flutter, iOS, Android).**
 
 **What to do with findings:**
 
@@ -181,7 +156,7 @@ If the SPEC is complete enough to write every section without inventing details,
 
 **Example of a good clarifying message (React Native project found):**
 
-> Before I write the MOBILE DESIGN, I have a few gaps:
+> Before I write the DESIGN, I have a few gaps:
 >
 > **Platforms** — I found a React Native project. I'll design for both iOS and Android, noting platform differences where they diverge. OK?
 >
@@ -191,7 +166,7 @@ If the SPEC is complete enough to write every section without inventing details,
 
 **Example of a good clarifying message (greenfield project):**
 
-> Before I write the MOBILE DESIGN, I have a few gaps:
+> Before I write the DESIGN, I have a few gaps:
 >
 > **Framework** — The SPEC doesn't mention a specific framework. Are you building with SwiftUI, Jetpack Compose, React Native, Flutter, or something else?
 >
@@ -247,21 +222,9 @@ Propose a draft. Ask for confirmation.
 
 For each User Story in the SPEC (excluding WON'T), extract implied components from the functional scope. Tag each component with its source story and MoSCoW label.
 
-**Use native component vocabulary** — not web component names. The mapping matters:
+**Use native component vocabulary** — not web component names. **See `references/platforms.md` → "Component Vocabulary Mapping" for the full web → iOS → Android translation table.**
 
-| Web concept | iOS equivalent | Android equivalent |
-|---|---|---|
-| Modal / Dialog | Sheet / Alert | Bottom Sheet / Dialog |
-| Dropdown / Select | Picker / Menu | Exposed Dropdown Menu |
-| Text input | TextField | OutlinedTextField / FilledTextField |
-| Checkbox | Toggle (often) | Checkbox |
-| Navigation bar | NavigationBar (top) | TopAppBar |
-| Tab bar | TabBar (bottom) | NavigationBar (bottom) |
-| Toast / Snackbar | (no native — use banner or alert) | Snackbar |
-| Card | (custom — rounded rectangle) | Card (Material 3) |
-| Floating action button | (not idiomatic iOS) | FloatingActionButton |
-
-When a component differs significantly between platforms, document both variants. When they're functionally identical, document once and note "same on both platforms."
+When a component differs significantly between platforms, document both variants. When functionally identical, document once and note "same on both platforms."
 
 **Treatment depth by MoSCoW:**
 
@@ -339,7 +302,7 @@ Mobile apps rely on gestures and haptic feedback in ways web apps don't. Define:
 - Edge cases: what happens at list boundaries, during loading states, or when a gesture conflicts with system gestures (e.g., swipe-from-edge for back navigation on iOS)
 
 **Haptics (iOS) / Vibration (Android):**
-- Which interactions trigger haptic feedback and what type (e.g., "success action: UIImpactFeedbackGenerator.medium on iOS, HapticFeedbackConstants.CONFIRM on Android")
+- Which interactions trigger haptic feedback and what type. See `references/platforms.md` → "Haptic Feedback APIs" for iOS `UIImpactFeedbackGenerator` and Android `HapticFeedbackConstants` reference.
 - Keep this minimal unless the spec explicitly calls for rich haptic patterns
 
 If the spec implies no custom gestures or haptics, state that and move on — don't invent requirements.
@@ -365,37 +328,16 @@ Propose a draft. Confirm.
 
 ### Step 10 — Define Accessibility Requirements
 
-Mobile accessibility spans both platform-specific assistive technologies and universal standards.
+Mobile accessibility spans both platform-specific assistive technologies and universal standards. **See `references/platforms.md` → "Accessibility Checklists" for the full VoiceOver (iOS), TalkBack (Android), and Universal checklists.**
 
-**Platform-specific requirements:**
+Key minimums to always enforce:
+- All interactive elements labelled (VoiceOver `accessibilityLabel` / TalkBack `contentDescription`)
+- Touch targets ≥ 44×44pt (iOS) / 48×48dp (Android)
+- WCAG 2.1 AA contrast: 4.5:1 normal text, 3:1 large text
+- Dynamic Type (iOS) / system font scale (Android) respected
+- Reduced motion respected on both platforms
 
-**iOS (VoiceOver):**
-- [ ] All interactive elements have `accessibilityLabel` set
-- [ ] Custom components implement `UIAccessibilityElement` or use `.accessibilityElement()` in SwiftUI
-- [ ] Logical focus order (`accessibilityElements` array or SwiftUI `.accessibilitySortPriority()`)
-- [ ] Dynamic Type support — text scales with user's preferred content size
-- [ ] `accessibilityTraits` correctly set (button, header, selected, adjustable, etc.)
-- [ ] Custom actions via `accessibilityCustomActions` where swipe gestures have non-gestural alternatives
-
-**Android (TalkBack):**
-- [ ] All interactive elements have `contentDescription` set
-- [ ] `importantForAccessibility` correctly configured
-- [ ] Logical focus order via `accessibilityTraversalBefore/After` or Compose semantics
-- [ ] Text scales with system font size preferences
-- [ ] Correct `Role` semantics in Jetpack Compose (Button, Checkbox, Tab, etc.)
-- [ ] Touch target sizes minimum 48x48dp (Material Design guideline)
-
-**Universal:**
-- [ ] WCAG 2.1 Level AA compliance target
-- [ ] Color contrast minimum 4.5:1 for normal text, 3:1 for large text
-- [ ] No information conveyed by color alone
-- [ ] Error messages associated with their inputs
-- [ ] Loading states announced to screen readers
-- [ ] Reduced motion respected on both platforms
-
-Add SPEC-specific accessibility items derived from the functional scope and acceptance criteria.
-
-If BENCHMARK.md mentioned accessibility standards, incorporate them.
+Add SPEC-specific accessibility items derived from the functional scope and acceptance criteria. If BENCHMARK.md mentioned accessibility standards, incorporate them.
 
 Propose a draft. Confirm.
 
@@ -405,22 +347,14 @@ Propose a draft. Confirm.
 
 **Dark Mode:**
 - Mobile apps typically follow system appearance (light/dark mode set at the OS level)
-- Only include this section if the SPEC, BRIEF, or user mentions dark mode, OR if the platform strategy targets both appearances (which is the default for modern iOS and Android apps)
-- If included, define the color mapping using platform conventions:
-  - iOS: use semantic colors (`systemBackground`, `label`, `secondaryLabel`) where possible
-  - Android: use Material 3 dynamic color tokens (`surface`, `onSurface`, `primary`, etc.)
+- Only include this section if the SPEC, BRIEF, or user mentions dark mode, OR if the platform strategy targets both appearances (the default for modern iOS and Android apps)
+- If included, use semantic color tokens — see `references/platforms.md` → "Dark Mode Token Mapping" for iOS semantic colors and Android Material 3 role-based tokens
 - If not in scope, add a note: *"Dark mode: Not in scope for this version. The app uses light appearance only."*
 
 **Adaptive Layout:**
-- Define behavior for different device sizes within the mobile category:
-  - **Compact** (iPhone SE / small Android phones): layout adjustments for narrow screens
-  - **Standard** (iPhone 15 / typical Android phones): the default design
-  - **Large** (iPhone 15 Pro Max / large Android phones): how extra width is used
-  - **Tablet** (iPad / Android tablets): only if the spec mentions tablet support. Define split view, master-detail, or adapted layouts.
+- Define behavior across: Compact (small phones), Standard (typical phones), Large (max-size phones), and Tablet (only if spec mentions it)
 - Specify orientation support: portrait only, or portrait + landscape?
-- Note platform-specific adaptive features:
-  - iOS: Size Classes (compact/regular width and height), `@Environment(\.horizontalSizeClass)`
-  - Android: Window Size Classes (compact/medium/expanded), `WindowSizeClass` API
+- For API references, see `references/platforms.md` → "Adaptive Layout APIs" (iOS Size Classes, Android Window Size Classes)
 
 Propose a draft. Confirm.
 
@@ -428,7 +362,7 @@ Propose a draft. Confirm.
 
 ### Step 12 — Design Decisions & Rationale
 
-Summarize the key design choices made during this interaction. These complement the DECISION.md entries but are embedded in the MOBILE-DESIGN.md for readers who don't check the decision log.
+Summarize the key design choices made during this interaction. These complement the DECISION.md entries but are embedded in the DESIGN.md for readers who don't check the decision log.
 
 For each notable choice:
 - What was decided
@@ -442,32 +376,32 @@ Keep this section concise — 3–6 decisions that genuinely shape the design.
 
 ### Step 13 — Determine Output Path
 
-The `MOBILE-DESIGN.md` is **always** written to:
+The `DESIGN.md` is **always** written to:
 
 ```
-docs/features/{feature-name}/MOBILE-DESIGN.md
+docs/features/{feature-name}/DESIGN.md
 ```
 
 Where `{feature-name}` is the kebab-case version of the feature name.
 
 **Resolution logic:**
 
-1. If the SPEC is already inside `docs/features/{feature-name}/`, write the MOBILE-DESIGN to the same directory.
-2. Otherwise, derive `{feature-name}` from the spec's title and write to `docs/features/{feature-name}/MOBILE-DESIGN.md` in the current working directory.
+1. If the SPEC is already inside `docs/features/{feature-name}/`, write the DESIGN to the same directory.
+2. Otherwise, derive `{feature-name}` from the spec's title and write to `docs/features/{feature-name}/DESIGN.md` in the current working directory.
 3. Create the directory if it does not exist.
-4. If a `MOBILE-DESIGN.md` already exists at that path, confirm with the user before overwriting.
-5. Never ask the user where to save — always derive the path. Inform the user before writing: *"I'll write the MOBILE DESIGN to `docs/features/{feature-name}/MOBILE-DESIGN.md`."*
+4. If a `DESIGN.md` already exists at that path, confirm with the user before overwriting.
+5. Never ask the user where to save — always derive the path. Inform the user before writing: *"I'll write the DESIGN to `docs/features/{feature-name}/DESIGN.md`."*
 
 ---
 
 ### Step 14 — Write the File
 
 Once all sections are confirmed:
-1. Assemble the complete `MOBILE-DESIGN.md` using the template
-2. Show a summary: *"Here's the full MOBILE-DESIGN.md — {N} components, {M} screen layouts, {K} user flows, targeting {platforms}. Ready to write it to `{path}`?"*
+1. Assemble the complete `DESIGN.md` using the template
+2. Show a summary: *"Here's the full DESIGN.md — {N} components, {M} screen layouts, {K} user flows, targeting {platforms}. Ready to write it to `{path}`?"*
 3. Wait for confirmation
 4. Write the file using the Write tool
-5. Confirm: *"Done — `MOBILE-DESIGN.md` written to `{path}`."*
+5. Confirm: *"Done — `DESIGN.md` written to `{path}`."*
 
 ---
 
@@ -487,50 +421,30 @@ Throughout the interaction, log every non-obvious decision to `docs/features/{fe
 
 - Obvious, mechanical actions (e.g., "wrote the file", "drew an ASCII diagram")
 - Formatting or template-structure decisions already defined by this skill
-- Design Decisions already captured in the MOBILE-DESIGN.md's "Design Decisions & Rationale" section (avoid duplication)
+- Design Decisions already captured in the DESIGN.md's "Design Decisions & Rationale" section (avoid duplication)
 
 ### Entry format
 
-Each decision follows this structure:
-
 ```markdown
 ## Decision {N}: {Short title}
-**Status:** Accepted
-**Date:** {YYYY-MM-DD}
-**Skill:** spec-to-mobile-design
+**Status:** Accepted | **Date:** {YYYY-MM-DD} | **Skill:** spec-to-mobile-design
 
 ### Context
-{1–2 sentences: what was being decided and why}
-
-### Problem
-{The question that needed answering}
-
-### Options Considered
-| Option | Pros | Cons |
-|--------|------|------|
-| **{Chosen}** | {pros} | {cons} |
-| {Alternative} | {pros} | {cons} |
+{What was being decided and why}
 
 ### Decision
-**{One-sentence statement of the decision}**
+**{One-sentence statement}**
 
 ### Rationale
 {Numbered list of reasons}
 
-### Consequences
-- **Positive:** {impact}
-- **Negative:** {impact}
-- **Neutral:** {impact}
-
-### Exceptions
-{Any exceptions, or "None"}
+### Options Considered *(omit for simple decisions)*
+| Option | Pros | Cons |
+|--------|------|------|
+| **{Chosen}** | {pros} | {cons} |
 ```
 
-> For simple decisions (e.g., confirming a platform choice), keep the entry lightweight — skip Options Considered and Consequences if they add no value. Use the full format for decisions that shape the design's direction.
-
-### When to write
-
-Append decisions to `DECISION.md` as they happen during the interaction — do not batch them at the end. This ensures the log is complete even if the session is interrupted.
+Append decisions as they happen — do not batch at the end. This ensures the log is complete even if the session is interrupted.
 
 ---
 
@@ -542,8 +456,8 @@ Append decisions to `DECISION.md` as they happen during the interaction — do n
 4. **Accessible by default** — all colors must meet WCAG 2.1 AA contrast ratios. All interactive elements must document VoiceOver and TalkBack support. Touch targets must meet platform minimums (44x44pt iOS, 48x48dp Android).
 5. **MoSCoW-aware depth** — MUST stories get full design treatment (all states, variants, wireframes per platform). SHOULD stories get moderate treatment. COULD stories get minimal stubs. WON'T stories are never designed.
 6. **No filler** — do not add design elements that are generic best practices not grounded in the spec. Every component and layout must serve a spec-derived purpose.
-7. **English always** — write the MOBILE-DESIGN.md in English regardless of the language used in the conversation.
-8. **Interactive and thorough** — scan the spec for gaps before writing. Ask all clarifying questions upfront in a single message, grouped by topic. Then propose each major section as a draft and confirm with the user before moving on. Do not generate the full MOBILE-DESIGN in one shot without section-by-section confirmation.
+7. **English always** — write the DESIGN.md in English regardless of the language used in the conversation.
+8. **Interactive and thorough** — scan the spec for gaps before writing. Ask all clarifying questions upfront in a single message, grouped by topic. Then propose each major section as a draft and confirm with the user before moving on. Do not generate the full DESIGN in one shot without section-by-section confirmation.
 9. **Benchmark-informed, not benchmark-bound** — if BENCHMARK.md visual references exist, use them as inspiration but never copy competitor app designs. Propose original designs informed by research.
 10. **Concrete, not aspirational** — ASCII diagrams must show specific component placement. Color values must include hex codes. Typography must include specific sizes and weights in platform-native units. Avoid vague entries like "clean design" or "modern feel".
 
@@ -552,30 +466,12 @@ Append decisions to `DECISION.md` as they happen during the interaction — do n
 ## Examples
 
 ### Example 1: React Native app with existing theme
-User says: "Design the mobile app for the notifications feature"
-Actions:
-1. Locate `docs/features/notifications/SPEC.md`, read 3 MUST User Stories
-2. Scan codebase — find React Native project with existing theme in `src/theme/tokens.ts`
-3. Inform: "I found an existing design system in `src/theme/tokens.ts`. I'll extend it."
-4. Define platform strategy: iOS + Android via React Native, platform-adaptive components
-5. Design 5 native components (NotificationListItem, NotificationBadge, FilterChip, EmptyState, PermissionPrompt)
-6. Draw 3 screen layouts (Notification List, Notification Detail, Settings), with platform differences noted
-7. Define navigation: tab bar with Notifications tab, stack navigation to detail
-8. Define gestures: swipe-to-dismiss, pull-to-refresh
-9. Write to `docs/features/notifications/MOBILE-DESIGN.md`
-Result: A MOBILE-DESIGN.md extending the existing React Native theme with 5 components, 3 screens, gesture specs, and VoiceOver + TalkBack accessibility
+User: *"Design the mobile app for the notifications feature"*
+→ Find SPEC, detect React Native + existing theme in `src/theme/tokens.ts` → inform user, extend it → design 5 native components (NotificationListItem, NotificationBadge, FilterChip, EmptyState, PermissionPrompt) → draw 3 screen layouts with platform differences → tab bar + stack navigation → swipe-to-dismiss + pull-to-refresh gestures → write `docs/features/notifications/DESIGN.md`
 
 ### Example 2: Greenfield SwiftUI app, iOS only
-User says: "Create mobile design from our onboarding spec"
-Actions:
-1. Locate the SPEC, scan codebase — find Swift project, no existing design system
-2. Detect iOS-only (SwiftUI mentioned in spec)
-3. Ask: "No existing design system found. I'll follow iOS HIG with SF Pro font and system colors. OK?"
-4. Design components using native SwiftUI vocabulary (NavigationStack, Sheet, Toggle, etc.)
-5. Draw screen layouts with safe area insets for notch and home indicator
-6. Define onboarding flow with permission prompts (notifications, camera)
-7. Write to `docs/features/onboarding/MOBILE-DESIGN.md`
-Result: A MOBILE-DESIGN.md with iOS-native design, HIG-compliant components, and VoiceOver accessibility specs
+User: *"Create mobile design from our onboarding spec"*
+→ Find SPEC, detect Swift project, no existing design system → ask: *"I'll follow iOS HIG with SF Pro and system colors. OK?"* → design with SwiftUI vocabulary (NavigationStack, Sheet, Toggle) → safe area insets for notch + home indicator → onboarding flow with permission prompts (notifications, camera) → write `docs/features/onboarding/DESIGN.md`
 
 ---
 
@@ -583,11 +479,11 @@ Result: A MOBILE-DESIGN.md with iOS-native design, HIG-compliant components, and
 
 ### Problem: SPEC describes a web feature, not a mobile app
 **Cause:** The skill was triggered for a feature targeting web browsers.
-**Solution:** The skill will detect this in Step 1.5 and inform the user: "This SPEC describes a web feature. MOBILE-DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?" If ambiguous, it asks for clarification.
+**Solution:** The skill will detect this in Step 1.5 and inform the user: "This SPEC describes a web feature. DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?" If ambiguous, it asks for clarification.
 
 ### Problem: SPEC targets both web and mobile
 **Cause:** The feature has both web and native mobile components.
-**Solution:** Suggest running both skills: "This feature has both web and mobile components. I'll create the MOBILE-DESIGN.md for the native app. You can run spec-to-design separately for the web version."
+**Solution:** Both skills write to `DESIGN.md`. Run one skill at a time and let the user decide which design to keep, or inform them: "This feature has both web and mobile components. Running both spec-to-design and spec-to-mobile-design will overwrite the same `DESIGN.md`. Decide which platform to design first, then the other."
 
 ### Problem: Existing design system uses a different convention than proposed
 **Cause:** Step 1.6 detected a design system but the proposed design tokens conflict with existing patterns.
@@ -598,9 +494,7 @@ Result: A MOBILE-DESIGN.md with iOS-native design, HIG-compliant components, and
 **Solution:** Document both variants in the component and screen layout sections. Use separate ASCII wireframes when layouts differ materially. Clearly label which platform each diagram represents.
 
 ### Problem: SPEC has no MoSCoW labels
-**Cause:** The SPEC was generated before the prioritization convention was introduced.
-**Solution:** Treat all User Stories as MUST and proceed with full design treatment for every story. Note this in the MOBILE-DESIGN.md overview.
+**Solution:** Treat all User Stories as MUST and proceed with full design treatment. Note this in the DESIGN.md overview.
 
 ### Problem: ASCII wireframes are too complex to be readable
-**Cause:** The screen layout has many nested components or needs to show both platforms.
-**Solution:** Break complex layouts into multiple diagrams — one for the overall screen structure, and separate detail diagrams for complex component groups. If showing both platforms, use side-by-side diagrams or separate sections clearly labeled.
+**Solution:** Break complex layouts into multiple diagrams — one for overall structure, separate detail diagrams for complex groups. If showing both platforms, use side-by-side diagrams or separate clearly labeled sections.

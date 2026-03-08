@@ -1,0 +1,37 @@
+{
+  "skill": "plan-to-tasks",
+  "version": "1.0",
+  "description": "Evals for plan-to-tasks — verifies triggering accuracy and functional behavior",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "Generate tasks from the plan",
+      "description": "Direct trigger using canonical phrasing"
+    },
+    {
+      "id": "trigger-file",
+      "type": "trigger",
+      "prompt": "Turn the PLAN.md into a TASKS.md for the authentication feature",
+      "description": "Trigger using both input and output file names"
+    },
+    {
+      "id": "trigger-checklist",
+      "type": "trigger",
+      "prompt": "Extract an actionable task checklist from the implementation plan",
+      "description": "Trigger via 'task checklist' + 'implementation plan' language"
+    },
+    {
+      "id": "no-trigger-plan",
+      "type": "no-trigger",
+      "prompt": "Generate a plan from the spec",
+      "description": "Should trigger spec-to-plan, not plan-to-tasks — upstream step"
+    },
+    {
+      "id": "no-trigger-execute",
+      "type": "no-trigger",
+      "prompt": "Execute the tasks in TASKS.md",
+      "description": "Should NOT trigger plan-to-tasks — execution request, not task generation"
+    }
+  ]
+}

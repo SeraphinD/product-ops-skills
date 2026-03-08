@@ -2,6 +2,7 @@
 name: brief-to-benchmark
 description: Generates a BENCHMARK.md from a BRIEF.md — an optional research phase that grounds the upcoming SPEC in real-world data including comparable solutions, technical standards, key metrics, and gap analysis. Trigger on phrases like "benchmark the brief", "competitive analysis", "generate BENCHMARK.md", "benchmark phase", "research competitors for the feature", "market research before spec", "benchmark before writing specs", or when the user has a BRIEF.md and wants to validate against existing solutions or industry standards — even if they don't say "benchmark" explicitly. This is the optional second phase of the pipeline (BRIEF → BENCHMARK → SPEC → PLAN → TASKS). Do NOT use for creating a brief from scratch (use create-brief), converting a brief directly into specs (use brief-to-specs), or any other pipeline step.
 allowed-tools: "Read Write Glob WebSearch WebFetch"
+license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.0.0

@@ -2,6 +2,7 @@
 name: plan-to-tasks
 description: Transforms a PLAN.md into a TASKS.md — a flat, atomic task checklist where every action is traceable to a plan phase and step, has a status (pending/in-progress/completed/blocked), and is optionally assigned to an installed skill. Trigger on phrases like "generate tasks", "create TASKS.md", "tasks from plan", "plan to tasks", "convert plan to tasks", "make a task list from the plan", "extract tasks from plan", "turn the plan into tasks", or when the user has a PLAN.md and wants an actionable, trackable task list — even if they don't say "TASKS.md" explicitly. Do NOT use for generating a plan from specs (use spec-to-plan), generating specs from a brief (use brief-to-specs), or for executing tasks — this skill only produces the task list document.
 allowed-tools: "Read Write Glob"
+license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.0.0
@@ -99,7 +100,7 @@ If a step is too broad to be a single task, ask:
 
 > "Step {N} in Phase {X} — '{step text}' — looks broad. Should I break it into sub-tasks? If so, can you tell me the specific actions it covers?"
 
-Only break a step into sub-tasks when you have enough context to name the sub-tasks precisely. Never invent sub-tasks.
+Only break a step into sub-tasks when you have enough context to name the sub-tasks precisely. Never invent sub-tasks — invented sub-tasks create false traceability that looks complete but may miss real implementation actions, or include work never intended in the plan.
 
 ---
 
@@ -131,12 +132,12 @@ If everything is clear, skip straight to Step 4.
 
 For **every** action item in the plan, create exactly one task entry. Rules:
 
-1. **One task per action** — if the plan step says "Create X and configure Y", split it into two tasks.
-2. **Title must be imperative and specific** — "Create `app/routes.py` — API route definitions", not "Add routes".
-3. **Description must explain the what and why** — reference the plan's intent, not just the file name.
-4. **PLAN Reference must be exact** — include the relative file path, phase number, and step number (e.g., `PLAN.md Phase 2, Step 3`).
+1. **One task per action** — if the plan step says "Create X and configure Y", split it into two tasks. A task with two verbs is a task that can only be half-completed.
+2. **Title must be imperative and specific** — "Create `app/routes.py` — API route definitions", not "Add routes". Vague titles cause context-switching and force the implementor to re-read the plan to know what to do.
+3. **Description must explain the what and why** — reference the plan's intent, not just the file name. This lets someone execute a task days or weeks later without needing to re-read the full plan.
+4. **PLAN Reference must be exact** — include the relative file path, phase number, and step number (e.g., `PLAN.md Phase 2, Step 3`). Exact references are what allows reviewers to catch scope creep and trace every task back to an agreed plan.
 5. **Skill/Agent is optional** — only include it when the task clearly maps to an installed skill from the assignment guide. Omit the field entirely when no skill fits.
-6. **Notes must name dependencies** — if Task B requires Task A to be done first, write "Depends on: [task title]".
+6. **Notes must name dependencies** — if Task B requires Task A to be done first, write "Depends on: [task title]". Unnamed dependencies are the most common cause of blocked tasks mid-execution.
 
 All tasks start with status `⬜ pending` unless the user has indicated otherwise.
 

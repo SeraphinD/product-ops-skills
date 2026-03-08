@@ -1,0 +1,37 @@
+{
+  "skill": "brief-to-specs",
+  "version": "1.0",
+  "description": "Evals for brief-to-specs — verifies triggering accuracy and functional behavior",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "Generate specs from the brief",
+      "description": "Direct trigger using canonical phrasing"
+    },
+    {
+      "id": "trigger-file",
+      "type": "trigger",
+      "prompt": "Create a SPEC.md from the brief for the checkout feature",
+      "description": "Trigger using output file name as the intent signal"
+    },
+    {
+      "id": "trigger-stories",
+      "type": "trigger",
+      "prompt": "Transform the BRIEF.md into user stories with acceptance criteria",
+      "description": "Trigger via downstream artifact language — user stories + ACs"
+    },
+    {
+      "id": "no-trigger-plan",
+      "type": "no-trigger",
+      "prompt": "Generate a plan from the spec",
+      "description": "Should trigger spec-to-plan, not brief-to-specs — planning step"
+    },
+    {
+      "id": "no-trigger-brief",
+      "type": "no-trigger",
+      "prompt": "Write a brief for a new payment feature",
+      "description": "Should trigger create-brief, not brief-to-specs — upstream step"
+    }
+  ]
+}

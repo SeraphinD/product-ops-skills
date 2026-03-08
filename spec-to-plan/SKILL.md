@@ -2,6 +2,7 @@
 name: spec-to-plan
 description: Transforms a SPEC.md into a structured PLAN.md — a phased, MoSCoW-ordered implementation plan with project structure, concrete steps per file, critical files list, verification checklist, and implementation details. Trigger on phrases like "generate plan", "create PLAN.md", "convert spec to plan", "plan from spec", "write implementation plan", "spec to plan", "make a plan from the spec", "turn spec into a plan", or when the user has a SPEC.md and wants actionable implementation steps — even if they don't say "PLAN.md" explicitly. Do NOT use for generating specs from a brief (use brief-to-specs), generating a task list from a plan (use plan-to-tasks), or designing UI (use spec-to-design). This skill produces implementation plans from specifications only.
 allowed-tools: "Read Write Glob"
+license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.0.0
@@ -128,11 +129,11 @@ Stick to what the spec states. Do not add requirements not grounded in the spec.
 ### Step 3 — Design the Project Structure
 
 Build a realistic file tree based on the spec's implied or explicit structure. Rules:
-- Always include `docs/features/{feature-name}/SPEC.md` and `PLAN.md` in the tree
+- Always include `docs/features/{feature-name}/SPEC.md` and `PLAN.md` in the tree — so the plan is self-contained and reviewable in context alongside its source spec
 - Group source files under a logical folder (e.g., `src/`, `app/`, `lib/`)
-- Always include a `tests/` directory
+- Always include a `tests/` directory — even if it's empty, it signals test coverage is planned
 - Include `README.md` at the root
-- Only include files that are actually needed — don't pad the tree with speculative extras
+- Only include files that are actually needed — don't pad the tree with speculative extras; an inflated tree misleads developers about what needs to be built
 - If a DESIGN.md exists, include: a `styles/` or `theme/` directory for design tokens, component files matching the DESIGN.md component list under a `components/` directory, and layout files if the DESIGN.md defines page layouts
 
 ---
@@ -161,24 +162,24 @@ Each step within a phase must be specific: name the file and describe what it co
 
 ### Step 5 — Identify Critical Files
 
-List only the files whose absence would break the feature — the entry point, core logic file, and test file. Not every file in the tree is "critical."
+List only the files whose absence would break the feature — the entry point, core logic file, and test file. Not every file in the tree is "critical." Keeping this list short forces reviewers to focus on what matters most, and signals to implementors which files to get right first.
 
 ---
 
 ### Step 6 — Write the Verification Checklist
 
 Pull directly from the spec's acceptance criteria. Each item must be a concrete, checkable statement:
-- Prefer exact commands: `python -m app hello Alice` → `Hello, Alice!` (exit 0)
-- Include the test run command as its own checklist item
+- Prefer exact commands: `python -m app hello Alice` → `Hello, Alice!` (exit 0) — exact commands prevent ambiguous checks that developers interpret differently and miss in review
+- Include the test run command as its own checklist item — a passing test suite is the minimal bar before shipping
 
 ---
 
 ### Step 7 — Fill in Implementation Details
 
 For each non-obvious technical choice (CLI parsing library, routing pattern, error format), add a subsection explaining:
-- What to use
-- How to configure it
-- Any gotchas the spec implies
+- What to use — so implementors don't make inconsistent choices independently
+- How to configure it — so setup isn't a discovery task during implementation
+- Any gotchas the spec implies — surfacing these here prevents mid-sprint surprises
 
 Include a **Constraints & Guidelines** subsection for any implementation-level guidelines or constraints from the spec (naming conventions, library choices, invocation patterns).
 

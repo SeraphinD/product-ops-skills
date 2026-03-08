@@ -2,6 +2,7 @@
 name: brief-to-specs
 description: Transforms a BRIEF.md into a structured SPEC.md containing User Stories with MoSCoW/WSJF prioritization, Acceptance Criteria in Given/When/Then format, and Implementation Notes. Trigger on phrases like "generate specs", "create SPEC.md", "convert brief to specs", "specs from brief", "write specifications from brief", "brief to spec", "transform brief into spec", "write acceptance criteria", or when the user has a BRIEF.md and asks to derive user stories or a specification document from it. Do NOT use for creating a brief from scratch (use create-brief), benchmarking (use brief-to-benchmark), generating a plan from specs (use spec-to-plan), or designing UI (use spec-to-design). This skill converts an existing brief into specifications only.
 allowed-tools: "Read Write Glob"
+license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.0.0

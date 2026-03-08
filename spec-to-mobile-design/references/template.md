@@ -1,6 +1,6 @@
-# MOBILE-DESIGN.md Output Template
+# DESIGN.md Output Template
 
-The final `MOBILE-DESIGN.md` must follow **exactly** this structure:
+The final `DESIGN.md` must follow **exactly** this structure:
 
 ```markdown
 # Mobile Design: {Feature Name}

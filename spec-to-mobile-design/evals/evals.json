@@ -1,0 +1,37 @@
+{
+  "skill": "spec-to-mobile-design",
+  "version": "1.0",
+  "description": "Evals for spec-to-mobile-design — verifies triggering accuracy and functional behavior",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "Create a mobile design from the spec",
+      "description": "Direct trigger using canonical phrasing"
+    },
+    {
+      "id": "trigger-platform",
+      "type": "trigger",
+      "prompt": "Design the iOS and Android screens for the onboarding feature",
+      "description": "Trigger via explicit platform mentions (iOS + Android)"
+    },
+    {
+      "id": "trigger-framework",
+      "type": "trigger",
+      "prompt": "Generate a DESIGN.md for our React Native notifications spec",
+      "description": "Trigger via mobile framework name (React Native) as signal"
+    },
+    {
+      "id": "no-trigger-web",
+      "type": "no-trigger",
+      "prompt": "Design the feature from the spec",
+      "description": "Should trigger spec-to-design (web), not spec-to-mobile-design — no mobile signal"
+    },
+    {
+      "id": "no-trigger-plan",
+      "type": "no-trigger",
+      "prompt": "Generate an implementation plan from the mobile spec",
+      "description": "Should trigger spec-to-plan, not spec-to-mobile-design — planning, not design"
+    }
+  ]
+}

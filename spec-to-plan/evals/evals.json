@@ -1,0 +1,37 @@
+{
+  "skill": "spec-to-plan",
+  "version": "1.0",
+  "description": "Evals for spec-to-plan — verifies triggering accuracy and functional behavior",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "Generate a plan from the spec",
+      "description": "Direct trigger using canonical phrasing"
+    },
+    {
+      "id": "trigger-file",
+      "type": "trigger",
+      "prompt": "Create a PLAN.md for the authentication feature",
+      "description": "Trigger using output file name"
+    },
+    {
+      "id": "trigger-impl",
+      "type": "trigger",
+      "prompt": "Turn the SPEC.md into an implementation plan with phases",
+      "description": "Trigger via implementation intent language — phases signal"
+    },
+    {
+      "id": "no-trigger-tasks",
+      "type": "no-trigger",
+      "prompt": "Generate a task list from the plan",
+      "description": "Should trigger plan-to-tasks, not spec-to-plan — downstream step"
+    },
+    {
+      "id": "no-trigger-design",
+      "type": "no-trigger",
+      "prompt": "Design the UI from the spec",
+      "description": "Should trigger spec-to-design, not spec-to-plan — design step"
+    }
+  ]
+}

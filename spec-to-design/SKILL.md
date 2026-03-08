@@ -2,6 +2,7 @@
 name: spec-to-design
 description: Transforms a SPEC.md into a structured DESIGN.md for frontend features — covering design system (colors, typography, spacing), components with states and variants, page layouts with ASCII wireframes, user flows, interactions, and WCAG 2.1 AA accessibility requirements. Trigger on phrases like "generate design", "create DESIGN.md", "design from spec", "spec to design", "create UI design", "design system from spec", "component design from spec", "frontend design", "write design document from spec", or "design the feature". Do NOT use for backend-only features, CLI tools, or API-only services without a user interface — this skill is frontend-specific. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
 allowed-tools: "Read Write Glob Grep"
+license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.0.0

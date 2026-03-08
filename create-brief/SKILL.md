@@ -2,6 +2,7 @@
 name: create-brief
 description: Interactively creates a BRIEF.md for a new feature or project through structured Q&A, producing a document with Executive Summary, Problem Statement, Solution, Objectives, Scope, and Success Criteria. Trigger on phrases like "create a brief", "write a brief", "generate BRIEF.md", "new feature brief", "start a brief", "I have an idea for a feature", "let's start a new feature", or "kick off a project". Do NOT use for converting a brief into specs (use brief-to-specs), benchmarking (use brief-to-benchmark), editing an existing brief, or any downstream pipeline step — this skill creates new briefs from scratch only.
 allowed-tools: "Read Write Glob"
+license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.2.0

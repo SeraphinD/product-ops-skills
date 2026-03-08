@@ -1,0 +1,37 @@
+{
+  "skill": "brief-to-benchmark",
+  "version": "1.0",
+  "description": "Evals for brief-to-benchmark — verifies triggering accuracy and functional behavior",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "Benchmark the brief",
+      "description": "Direct trigger using the canonical command phrase"
+    },
+    {
+      "id": "trigger-research",
+      "type": "trigger",
+      "prompt": "I have a BRIEF.md ready. Research competitors and industry standards before I write the spec.",
+      "description": "Trigger via intent — user wants research phase without using 'benchmark' explicitly"
+    },
+    {
+      "id": "trigger-competitive",
+      "type": "trigger",
+      "prompt": "Run a competitive analysis on our authentication feature brief",
+      "description": "Trigger using 'competitive analysis' synonym"
+    },
+    {
+      "id": "no-trigger-spec",
+      "type": "no-trigger",
+      "prompt": "Generate specs from the brief",
+      "description": "Should trigger brief-to-specs, not brief-to-benchmark — spec generation, not research"
+    },
+    {
+      "id": "no-trigger-brief",
+      "type": "no-trigger",
+      "prompt": "Create a brief for a checkout feature",
+      "description": "Should trigger create-brief, not brief-to-benchmark — creating, not researching"
+    }
+  ]
+}

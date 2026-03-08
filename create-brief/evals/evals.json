@@ -1,0 +1,37 @@
+{
+  "skill": "create-brief",
+  "version": "1.0",
+  "description": "Evals for create-brief — verifies triggering accuracy and functional behavior",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "Create a brief for a user authentication feature",
+      "description": "Direct trigger using canonical phrasing"
+    },
+    {
+      "id": "trigger-idea",
+      "type": "trigger",
+      "prompt": "I have an idea for a new onboarding flow for our mobile app, let's start a brief",
+      "description": "Trigger via natural phrasing — user expresses an idea, not an explicit command"
+    },
+    {
+      "id": "trigger-kickoff",
+      "type": "trigger",
+      "prompt": "Let's kick off the notifications feature — can you generate a BRIEF.md?",
+      "description": "Trigger using file output name as the intent signal"
+    },
+    {
+      "id": "no-trigger-downstream",
+      "type": "no-trigger",
+      "prompt": "Generate specs from the brief",
+      "description": "Should trigger brief-to-specs, not create-brief — downstream pipeline step"
+    },
+    {
+      "id": "no-trigger-edit",
+      "type": "no-trigger",
+      "prompt": "Update the problem statement section of my existing BRIEF.md",
+      "description": "Should NOT trigger create-brief — editing an existing brief, not creating a new one"
+    }
+  ]
+}

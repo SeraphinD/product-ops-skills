@@ -1,0 +1,43 @@
+{
+  "skill": "spec-to-design",
+  "version": "1.0",
+  "description": "Evals for spec-to-design — verifies triggering accuracy and functional behavior",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "Design the feature from the spec",
+      "description": "Direct trigger using canonical phrasing"
+    },
+    {
+      "id": "trigger-file",
+      "type": "trigger",
+      "prompt": "Create a DESIGN.md for the dashboard feature",
+      "description": "Trigger using the output file name"
+    },
+    {
+      "id": "trigger-frontend",
+      "type": "trigger",
+      "prompt": "Generate a frontend design document from our checkout spec",
+      "description": "Trigger via 'frontend design' phrasing — web-specific intent"
+    },
+    {
+      "id": "no-trigger-mobile",
+      "type": "no-trigger",
+      "prompt": "Create a mobile design from the spec for our iOS app",
+      "description": "Should trigger spec-to-mobile-design, not spec-to-design — native mobile target"
+    },
+    {
+      "id": "no-trigger-plan",
+      "type": "no-trigger",
+      "prompt": "Generate an implementation plan from the spec",
+      "description": "Should trigger spec-to-plan, not spec-to-design — planning, not design"
+    },
+    {
+      "id": "no-trigger-backend",
+      "type": "no-trigger",
+      "prompt": "Design the REST API endpoints for the authentication service",
+      "description": "Should NOT trigger spec-to-design — backend/API, no user interface"
+    }
+  ]
+}
