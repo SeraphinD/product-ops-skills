@@ -2,10 +2,10 @@
 
 ## Problem: SPEC describes a backend-only feature
 **Cause:** The skill was triggered for a feature with no user interface.
-**Solution:** The skill will detect this in Step 5 and inform the user: "This SPEC describes a backend/CLI feature. DESIGN.md is for features with a UI. Would you like to skip to PLAN?" If ambiguous, it asks for clarification.
+**Solution:** The skill will detect this in Step 6 and inform the user: "This SPEC describes a backend/CLI feature. DESIGN.md is for features with a UI. Would you like to skip to PLAN?" If ambiguous, it asks for clarification.
 
 ## Problem: Existing design system uses a different convention than proposed
-**Cause:** Step 6 detected a design system but the proposed design tokens conflict with existing patterns.
+**Cause:** Step 7 detected a design system but the proposed design tokens conflict with existing patterns.
 **Solution:** Always reuse existing tokens. Mark inherited values as `Existing` and only add new tokens the feature requires. Never override or propose alternatives to established design tokens.
 
 ## Problem: SPEC has no MoSCoW labels

@@ -1,10 +1,10 @@
 # Mobile Platform Reference
 
-Detailed patterns loaded on demand by `spec-to-mobile-design`. Reference this file during Step 1.6, Step 4, and Step 10.
+Detailed patterns loaded on demand by `spec-to-mobile-design`. Reference this file during Steps 7, 11, 15, 17, and 18.
 
 ---
 
-## Design System Detection Patterns (Step 1.6)
+## Design System Detection Patterns (Step 7)
 
 ### Cross-platform (React Native / Expo)
 - `**/theme.ts`, `**/theme.js`, `**/tokens.ts` — exported theme objects with colors, fonts, spacing
@@ -34,7 +34,7 @@ Detailed patterns loaded on demand by `spec-to-mobile-design`. Reference this fi
 
 ---
 
-## Component Vocabulary Mapping (Step 4)
+## Component Vocabulary Mapping (Step 11)
 
 Use native component names, not web terminology:
 
@@ -54,7 +54,7 @@ When a component differs significantly between platforms, document both variants
 
 ---
 
-## Accessibility Checklists (Step 10)
+## Accessibility Checklists (Step 17)
 
 ### iOS (VoiceOver)
 - [ ] All interactive elements have `accessibilityLabel` set
@@ -84,7 +84,7 @@ Add SPEC-specific accessibility items derived from the functional scope and acce
 
 ---
 
-## Haptic Feedback APIs (Step 8)
+## Haptic Feedback APIs (Step 15)
 
 ### iOS
 - `UIImpactFeedbackGenerator(.light / .medium / .heavy)` — physical impact
@@ -98,7 +98,7 @@ Add SPEC-specific accessibility items derived from the functional scope and acce
 
 ---
 
-## Dark Mode Token Mapping (Step 11)
+## Dark Mode Token Mapping (Step 18)
 
 ### iOS — Semantic Colors
 Use system semantic colors that adapt automatically:
@@ -113,7 +113,7 @@ Dynamic Color (Android 12+) automatically generates a palette from the system wa
 
 ---
 
-## Adaptive Layout APIs (Step 11)
+## Adaptive Layout APIs (Step 18)
 
 ### iOS Size Classes
 - **Compact width** (iPhone portrait, iPhone landscape on small devices): stack layouts, single-column

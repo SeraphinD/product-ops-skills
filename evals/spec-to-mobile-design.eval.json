@@ -1,0 +1,61 @@
+[
+  {
+    "skill": "spec-to-mobile-design",
+    "scenario": "happy_path",
+    "query": "Design the mobile app for the notifications feature.",
+    "context": {
+      "existing_files": [
+        "docs/features/notifications/SPEC.md"
+      ],
+      "feature_directory": "docs/features/notifications/",
+      "preconditions": "SPEC.md contains 3 MUST User Stories and 1 SHOULD story for a notification center in a React Native app. The project has an existing theme file at src/theme/tokens.ts with color and typography tokens. No BENCHMARK.md exists."
+    },
+    "expected_behavior": [
+      "Skill detects Figma MCP availability as the first step, then locates and reads the SPEC",
+      "Skill scans the codebase and detects the React Native project with existing theme in src/theme/tokens.ts, informing the user it will extend it",
+      "Skill uses platform-native component vocabulary (e.g., FlatList not ListView, Sheet not Modal, NavigationStack not Router) and documents platform differences between iOS and Android where they diverge",
+      "Skill defines typography in platform-native units (pt for iOS, sp/dp for Android) and includes safe area considerations (status bar, notch/Dynamic Island, home indicator)",
+      "Skill produces a Gestures & Haptics section with swipe-to-dismiss, pull-to-refresh, and haptic feedback mappings for both iOS UIImpactFeedbackGenerator and Android HapticFeedbackConstants"
+    ]
+  },
+  {
+    "skill": "spec-to-mobile-design",
+    "scenario": "edge_case_web_spec_mismatch",
+    "query": "Create mobile design from our responsive web dashboard spec.",
+    "context": {
+      "existing_files": [
+        "docs/features/web-dashboard/SPEC.md"
+      ],
+      "feature_directory": "docs/features/web-dashboard/",
+      "preconditions": "SPEC.md describes a responsive web dashboard built with React and Tailwind CSS. It mentions browser, responsive, CSS grid, and viewport — all web indicators. No mobile indicators are present."
+    },
+    "expected_behavior": [
+      "Skill scans the SPEC for mobile indicators and finds only web indicators (browser, responsive, CSS, viewport)",
+      "Skill informs the user: 'This SPEC appears to describe a web feature. DESIGN.md from this skill is for native mobile apps. Did you mean to use spec-to-design instead?'",
+      "Skill does not generate a mobile DESIGN.md for a web-only feature",
+      "Skill logs the feature type detection to DECISION.md"
+    ]
+  },
+  {
+    "skill": "spec-to-mobile-design",
+    "scenario": "pipeline_integration_greenfield_ios_with_benchmark",
+    "query": "Create mobile design from our onboarding spec. It is a SwiftUI app, iOS only.",
+    "context": {
+      "existing_files": [
+        "docs/features/onboarding/SPEC.md",
+        "docs/features/onboarding/BRIEF.md",
+        "docs/features/onboarding/BENCHMARK.md",
+        "docs/features/onboarding/DECISION.md"
+      ],
+      "feature_directory": "docs/features/onboarding/",
+      "preconditions": "SPEC.md has 2 MUST and 1 COULD user stories for an onboarding flow including permission requests (notifications, camera). BRIEF.md provides problem context. BENCHMARK.md has competitor app references. No existing design system. DECISION.md exists with accepted decisions. The user specifies SwiftUI and iOS only."
+    },
+    "expected_behavior": [
+      "Skill establishes Platform Strategy as iOS only with SwiftUI, following iOS Human Interface Guidelines with SF Pro and system colors",
+      "Skill reads BRIEF.md for problem context and BENCHMARK.md for competitor app references, using them as inspiration without copying",
+      "Skill designs user flows that include system permission prompts (notifications, camera) as flow steps with both 'Allow' and 'Don't Allow' paths",
+      "Skill defines accessibility requirements for VoiceOver with accessibilityLabel on all interactive elements and 44x44pt minimum touch targets",
+      "Skill uses SwiftUI-native vocabulary (NavigationStack, Sheet, Toggle, List) rather than generic web terms, and includes safe area insets for notch and home indicator"
+    ]
+  }
+]

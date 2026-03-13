@@ -1,0 +1,55 @@
+[
+  {
+    "skill": "create-brief",
+    "scenario": "happy_path",
+    "query": "Create a brief for a JWT authentication endpoint. It's for our REST API, developers need it to get tokens, we're using Node.js with Express, tokens expire after 1h, refresh tokens last 7d.",
+    "context": {
+      "existing_files": [],
+      "feature_directory": "docs/features/jwt-auth-endpoint/",
+      "preconditions": "No prior artifacts exist. Rich upfront context is provided by the user including tech stack, token lifetimes, and target audience."
+    },
+    "expected_behavior": [
+      "Skill confirms feature name (e.g., 'JWT Authentication Endpoint') and proceeds section by section, asking fewer questions due to rich initial context",
+      "Skill drafts an Executive Summary covering what the feature is (JWT auth endpoint), who it serves (developers), and why it matters",
+      "Skill produces a Problem Statement with 3+ pain points, a framing sentence, and a closing consequence sentence, then asks if the user has verbatims",
+      "Skill generates a Solution section with a bolded core design principle, 3-7 Key Objectives, 5-10 In Scope items, and 3-8 Out of Scope items",
+      "Skill writes BRIEF.md to docs/features/jwt-auth-endpoint/BRIEF.md with all 8 template sections and no placeholders"
+    ]
+  },
+  {
+    "skill": "create-brief",
+    "scenario": "edge_case_sparse_input",
+    "query": "I need a brief for notifications.",
+    "context": {
+      "existing_files": [],
+      "feature_directory": null,
+      "preconditions": "User provides a single word for the feature with no details about type of notifications, target audience, tech stack, or problem being solved."
+    },
+    "expected_behavior": [
+      "Skill asks an open question to gather missing context: 'Describe the notification feature — what it does, who it is for, and any constraints'",
+      "Skill identifies specific gaps in Problem Statement and Success Criteria sections and asks targeted follow-up questions for each",
+      "Skill never fills a section with vague or generic content — it asks rather than guessing when information is insufficient",
+      "Skill works through all sections sequentially, proposing a draft of each and asking for confirmation before moving on"
+    ]
+  },
+  {
+    "skill": "create-brief",
+    "scenario": "pipeline_integration_problem_frame_exists",
+    "query": "Create a brief for enterprise auth gaps.",
+    "context": {
+      "existing_files": [
+        "docs/features/enterprise-auth-gaps/PROBLEM-FRAME.md",
+        "docs/features/enterprise-auth-gaps/DECISION.md"
+      ],
+      "feature_directory": "docs/features/enterprise-auth-gaps/",
+      "preconditions": "A validated PROBLEM-FRAME.md exists with a chosen framing about identity infrastructure gaps blocking enterprise adoption, root cause of SMB-era auth architecture, and constraints including backward compatibility. A DECISION.md with accepted decisions also exists."
+    },
+    "expected_behavior": [
+      "Skill detects and reads the existing PROBLEM-FRAME.md and DECISION.md before gathering context",
+      "Skill informs the user: 'I found a PROBLEM-FRAME.md for this feature. I will use the validated problem statement and constraints as the foundation for the brief.'",
+      "Skill derives Problem Statement pain points from the problem frame's root cause analysis, seeds Out of Scope from problem boundaries, and seeds Success Criteria from measurable signals",
+      "Skill asks fewer questions because the problem frame answers most of them — focuses on Solution, Objectives, and In Scope which the problem frame does not cover",
+      "Skill treats all accepted decisions from DECISION.md as hard constraints and does not re-open them"
+    ]
+  }
+]

@@ -1,13 +1,13 @@
 ---
 name: spec-to-mobile-design
-description: Transforms a SPEC.md into a structured DESIGN.md for native mobile app features (iOS and Android) — covering platform-specific design tokens (colors, typography in pt/dp/sp, spacing), native components with states and variants, screen layouts with ASCII wireframes, navigation patterns, user flows, gestures and haptics, and accessibility requirements for both VoiceOver (iOS) and TalkBack (Android). Trigger on phrases like "mobile design from spec", "create mobile design", "spec to mobile design", "native app design", "iOS design from spec", "Android design from spec", "design the mobile app", "mobile UI design", "app screen design", "React Native design", "Flutter design", "SwiftUI design", "Jetpack Compose design", or when the user has a SPEC.md and the feature targets native mobile platforms — even if they say just "design" but the spec clearly describes a mobile app. Do NOT use for web or responsive web features (use spec-to-design instead), backend-only features, CLI tools, or API-only services. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
+description: Transforms a SPEC.md into a structured DESIGN.md for native mobile app features (iOS and Android) — covering platform-specific design tokens (colors, typography in pt/dp/sp, spacing), native components with states and variants, screen layouts with ASCII wireframes, navigation patterns, user flows, gestures and haptics, and accessibility requirements for both VoiceOver (iOS) and TalkBack (Android). Optionally integrates with MCP Figma to read existing mobile design tokens from a Figma file and scaffold screen frames directly in Figma after writing DESIGN.md. Trigger on phrases like "mobile design from spec", "create mobile design", "spec to mobile design", "native app design", "iOS design from spec", "Android design from spec", "design the mobile app", "mobile UI design", "app screen design", "React Native design", "Flutter design", "SwiftUI design", "Jetpack Compose design", or when the user has a SPEC.md and the feature targets native mobile platforms — even if they say just "design" but the spec clearly describes a mobile app. Do NOT use for web or responsive web features (use spec-to-design instead), backend-only features, CLI tools, or API-only services. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
 allowed-tools: "Read Write Glob Grep"
 license: MIT
 metadata:
   author: seraphindesumeur
-  version: 1.0.0
+  version: 1.1.0
   category: feature-pipeline
-  tags: [design, mobile, ios, android, native, react-native, flutter, swiftui, jetpack-compose, accessibility]
+  tags: [design, mobile, ios, android, native, react-native, flutter, swiftui, jetpack-compose, accessibility, figma, mcp]
 ---
 
 # SPEC → MOBILE DESIGN Skill
@@ -50,7 +50,25 @@ Work section by section. For each section:
 
 ## Step-by-Step Process
 
-### Step 1 — Locate the SPEC
+### Step 1 — Detect Figma MCP (always run first)
+
+Before doing anything else, check whether Figma MCP tools are available in this session.
+
+**Detection:** Scan available tools for names matching patterns like `figma_*`, `get_figma_data`, `figma-mcp-*`, or any tool whose description references Figma. Tool names vary by MCP implementation — look for the presence of at least one Figma-related tool.
+
+**If Figma MCP tools are detected:**
+1. Check if a Figma file URL or key is already in context (user message, BRIEF.md, or SPEC.md — look for `figma.com/file/` links or a `figmaFileKey` annotation).
+2. If not found, ask: *"I detected Figma MCP. Do you want to connect this design to a Figma file? If yes, share the file URL or key — I'll read your existing mobile styles from it and optionally scaffold screens directly in Figma."*
+3. If the user provides a file URL or key, store it as `FIGMA_FILE_KEY` and set `FIGMA_MODE = active`.
+4. If the user declines or provides nothing, set `FIGMA_MODE = markdown-only` and proceed as a normal run.
+5. Log to `DECISION.md`: `Figma MCP detected — mode: [active with file key {key} / markdown-only]`.
+
+**If no Figma MCP tools are detected:**
+Set `FIGMA_MODE = unavailable`. Proceed normally — the skill produces `DESIGN.md` only. No Figma-related prompts or steps apply for the rest of this run.
+
+---
+
+### Step 2 — Locate the SPEC
 
 Find the specification file. Look in this order:
 1. The path the user provides directly
@@ -69,7 +87,7 @@ If the SPEC has no MoSCoW labels, treat all User Stories as MUST and proceed nor
 
 ---
 
-### Step 2 — Load Prior Decisions
+### Step 3 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the SPEC.
 
@@ -80,7 +98,7 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 3 — Load BRIEF (context)
+### Step 4 — Load BRIEF (context)
 
 Check whether a `BRIEF.md` exists in the same `docs/features/{feature-name}/` directory.
 
@@ -94,7 +112,7 @@ If no BRIEF is found, proceed with SPEC data only.
 
 ---
 
-### Step 4 — Load Benchmark Visual References (if available)
+### Step 5 — Load Benchmark Visual References (if available)
 
 Check whether a `BENCHMARK.md` exists in the same `docs/features/{feature-name}/` directory.
 
@@ -107,7 +125,7 @@ If no BENCHMARK.md exists, proceed without it — this input is optional.
 
 ---
 
-### Step 5 — Detect Mobile Feature
+### Step 6 — Detect Mobile Feature
 
 This skill only applies to features targeting native mobile platforms. Before proceeding, verify the SPEC describes a mobile feature.
 
@@ -124,21 +142,37 @@ Log the feature type detection to `DECISION.md`.
 
 ---
 
-### Step 6 — Detect Existing Design System
+### Step 7 — Detect Existing Design System
+
+**If `FIGMA_MODE = active` — Figma-first path:**
+
+Query the Figma file before scanning the codebase — Figma is the source of truth when connected.
+
+1. **Query local styles**: fetch color styles (fills), text styles, and effect styles from the file. Extract names, hex values, font families, sizes in the platform's native units (pt for iOS, sp/dp for Android).
+2. **Query local variables**: if the file uses variable collections (common in design systems targeting both iOS and Android), extract color, spacing, and typography variable sets including any platform-specific modes (e.g., "iOS" vs "Android" modes in a multi-platform variable set).
+3. **Report findings**: *"I found {N} color styles, {M} text styles{, and {K} variable sets} in your Figma file. I'll treat these as the existing mobile design system."* Mark all Figma-sourced tokens as `✦ Figma` in the Design System section.
+4. **Then scan the codebase** using the patterns in `references/platforms.md` → "Design System Detection Patterns" to find any implementation-side tokens not yet reflected in Figma. Mark these as `⚠ Codebase-only (not synced to Figma)` and flag them to the user.
+5. **Resolve conflicts**: if the same token name carries different values in Figma vs the codebase, ask: *"Token `{name}` differs between Figma ({figma value}) and the codebase ({code value}). Which is the design source of truth?"* Log the resolution to `DECISION.md`.
+
+Skip to **What to do with findings** after this — do not repeat the codebase-only flow for tokens already resolved from Figma.
+
+---
+
+**If `FIGMA_MODE = markdown-only` or `unavailable` — codebase-only path:**
 
 Before asking the user anything about design tokens, proactively scan the codebase for an existing mobile design system. **See `references/platforms.md` → "Design System Detection Patterns" for per-platform file patterns and package names to search for (React Native, Flutter, iOS, Android).**
 
 **What to do with findings:**
 
-- **Existing design system found** → store the extracted values internally. In Step 9, **reuse them as-is** instead of proposing new ones. Inform the user: *"I found an existing design system in `{path}`. I'll extend it rather than create a new one."* Log this to `DECISION.md`.
-- **UI library detected but no custom tokens** → note the library. In Step 9, propose tokens that align with the library's conventions. Inform the user: *"The project uses {library}. I'll align the design system with its conventions."*
-- **Nothing found** → proceed normally. Step 9 will propose a new design system from scratch.
+- **Existing design system found** → store the extracted values internally. In Step 10, **reuse them as-is** instead of proposing new ones. Inform the user: *"I found an existing design system in `{path}`. I'll extend it rather than create a new one."* Log this to `DECISION.md`.
+- **UI library detected but no custom tokens** → note the library. In Step 10, propose tokens that align with the library's conventions. Inform the user: *"The project uses {library}. I'll align the design system with its conventions."*
+- **Nothing found** → proceed normally. Step 10 will propose a new design system from scratch.
 
 ---
 
-### Step 7 — Analyze gaps before writing
+### Step 8 — Analyze gaps before writing
 
-After reading the SPEC and scanning the codebase (Step 6), scan for remaining information needed to write a complete mobile design document:
+After reading the SPEC and scanning the codebase (Step 7), scan for remaining information needed to write a complete mobile design document:
 
 - **Target platforms** — iOS only? Android only? Both? Cross-platform framework?
 - **Framework** — SwiftUI, UIKit, Jetpack Compose, XML Views, React Native, Flutter, Expo?
@@ -152,7 +186,7 @@ After reading the SPEC and scanning the codebase (Step 6), scan for remaining in
 
 If you find ambiguities, **ask all clarifying questions in a single message** — group them by topic, be specific, and propose a default answer when you have a reasonable one. Do not proceed to writing until the user has answered.
 
-If the SPEC is complete enough to write every section without inventing details, skip straight to Step 8.
+If the SPEC is complete enough to write every section without inventing details, skip straight to Step 9.
 
 **Example of a good clarifying message (React Native project found):**
 
@@ -176,7 +210,7 @@ If the SPEC is complete enough to write every section without inventing details,
 
 ---
 
-### Step 8 — Design Overview, Goals, and Platform Strategy
+### Step 9 — Design Overview, Goals, and Platform Strategy
 
 Derive the Design Overview from:
 - SPEC overview and user story benefits
@@ -199,14 +233,14 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 9 — Define the Design System
+### Step 10 — Define the Design System
 
 Generate Color Palette, Typography, and Spacing & Safe Areas — with platform-specific tokens.
 
 **Rules:**
-- **If Step 6 found an existing design system, you MUST reuse it.** Import the detected values directly into the Design System section. Do not propose alternatives for values that already exist — only extend with new tokens the feature requires. Clearly mark which values are inherited (`Existing`) vs new (`New`).
-- If Step 6 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
-- If Step 6 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
+- **If Step 7 found an existing design system, you MUST reuse it.** Import the detected values directly into the Design System section. Do not propose alternatives for values that already exist — only extend with new tokens the feature requires. Clearly mark which values are inherited (`Existing`) vs new (`New`).
+- If Step 7 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
+- If Step 7 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
 - All colors must meet WCAG 2.1 AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 - **Typography must use platform-native units:** pt for iOS, sp for Android text, dp for Android non-text elements. Include the font families that are default for each platform (SF Pro for iOS, Roboto for Android) unless the project uses custom fonts.
 - **Spacing must use platform-native units:** pt for iOS, dp for Android. Define safe area insets (top for status bar / Dynamic Island / notch, bottom for home indicator / navigation bar).
@@ -218,7 +252,7 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 10 — Design Native Components (MoSCoW-aware)
+### Step 11 — Design Native Components (MoSCoW-aware)
 
 For each User Story in the SPEC (excluding WON'T), extract implied components from the functional scope. Tag each component with its source story and MoSCoW label.
 
@@ -240,7 +274,7 @@ Propose components in batches (group by source story). Confirm each batch before
 
 ---
 
-### Step 11 — Design Screen Layouts
+### Step 12 — Design Screen Layouts
 
 For each distinct screen implied by the SPEC:
 
@@ -255,7 +289,7 @@ Propose each layout as a draft. Confirm before moving on.
 
 ---
 
-### Step 12 — Define Navigation Architecture
+### Step 13 — Define Navigation Architecture
 
 Mobile navigation is structural — it shapes the entire app experience. Define:
 
@@ -276,7 +310,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 13 — Define User Flows
+### Step 14 — Define User Flows
 
 For each acceptance criteria scenario in the SPEC that involves user interaction:
 
@@ -292,7 +326,7 @@ Propose the flows. Confirm before moving on.
 
 ---
 
-### Step 14 — Define Gestures & Haptics
+### Step 15 — Define Gestures & Haptics
 
 Mobile apps rely on gestures and haptic feedback in ways web apps don't. Define:
 
@@ -311,7 +345,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 15 — Define Interactions & Animations
+### Step 16 — Define Interactions & Animations
 
 Cover screen transitions, touch feedback, loading states, and error state animations.
 
@@ -326,7 +360,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 16 — Define Accessibility Requirements
+### Step 17 — Define Accessibility Requirements
 
 Mobile accessibility spans both platform-specific assistive technologies and universal standards. **See `references/platforms.md` → "Accessibility Checklists" for the full VoiceOver (iOS), TalkBack (Android), and Universal checklists.**
 
@@ -343,7 +377,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 17 — Dark Mode and Adaptive Layout
+### Step 18 — Dark Mode and Adaptive Layout
 
 **Dark Mode:**
 - Mobile apps typically follow system appearance (light/dark mode set at the OS level)
@@ -360,7 +394,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 18 — Design Decisions & Rationale
+### Step 19 — Design Decisions & Rationale
 
 Summarize the key design choices made during this interaction. These complement the DECISION.md entries but are embedded in the DESIGN.md for readers who don't check the decision log.
 
@@ -374,7 +408,7 @@ Keep this section concise — 3–6 decisions that genuinely shape the design.
 
 ---
 
-### Step 19 — Determine Output Path
+### Step 20 — Determine Output Path
 
 The `DESIGN.md` is **always** written to:
 
@@ -394,14 +428,18 @@ Where `{feature-name}` is the kebab-case version of the feature name.
 
 ---
 
-### Step 20 — Write the File
+### Step 21 — Write the File
 
 Once all sections are confirmed:
-1. Assemble the complete `DESIGN.md` using the template
+1. Assemble the complete `DESIGN.md` using the template.
 2. Show a summary: *"Here's the full DESIGN.md — {N} components, {M} screen layouts, {K} user flows, targeting {platforms}. Ready to write it to `{path}`?"*
-3. Wait for confirmation
-4. Write the file using the Write tool
+3. Wait for confirmation.
+4. Write the file using the Write tool.
 5. Confirm: *"Done — `DESIGN.md` written to `{path}`."*
+
+**If `FIGMA_MODE = active` — Optional Figma Scaffold (Step 21):**
+
+Follow the scaffold procedure in `references/figma-scaffold.md`.
 
 ---
 
@@ -417,34 +455,11 @@ Throughout the interaction, log every non-obvious decision to `docs/features/{fe
 - **Scope decisions** — omitting Dark Mode, deferring a COULD component's detailed design, including/excluding tablet support
 - **Platform decisions** — choosing to follow iOS conventions vs Android conventions, using platform-native vs unified design
 
-### What NOT to log
+### Additional exclusions
 
-- Obvious, mechanical actions (e.g., "wrote the file", "drew an ASCII diagram")
-- Formatting or template-structure decisions already defined by this skill
 - Design Decisions already captured in the DESIGN.md's "Design Decisions & Rationale" section (avoid duplication)
 
-### Entry format
-
-```markdown
-## Decision {N}: {Short title}
-**Status:** Accepted | **Date:** {YYYY-MM-DD} | **Skill:** spec-to-mobile-design
-
-### Context
-{What was being decided and why}
-
-### Decision
-**{One-sentence statement}**
-
-### Rationale
-{Numbered list of reasons}
-
-### Options Considered *(omit for simple decisions)*
-| Option | Pros | Cons |
-|--------|------|------|
-| **{Chosen}** | {pros} | {cons} |
-```
-
-Append decisions as they happen — do not batch at the end. This ensures the log is complete even if the session is interrupted.
+For entry format, shared exclusions, and writing rules, see `references/decision-log-format.md`.
 
 ---
 
@@ -460,6 +475,9 @@ Append decisions as they happen — do not batch at the end. This ensures the lo
 8. **Interactive and thorough** — scan the spec for gaps before writing. Ask all clarifying questions upfront in a single message, grouped by topic. Then propose each major section as a draft and confirm with the user before moving on. Do not generate the full DESIGN in one shot without section-by-section confirmation.
 9. **Benchmark-informed, not benchmark-bound** — if BENCHMARK.md visual references exist, use them as inspiration but never copy competitor app designs. Propose original designs informed by research.
 10. **Concrete, not aspirational** — ASCII diagrams must show specific component placement. Color values must include hex codes. Typography must include specific sizes and weights in platform-native units. Avoid vague entries like "clean design" or "modern feel".
+11. **Figma is additive, never required** — Figma MCP integration enhances the skill but never blocks it. `DESIGN.md` is always the primary output. Figma scaffold and token sync are opt-in. If Figma tools fail or return errors mid-run, log the failure to `DECISION.md`, complete the `DESIGN.md` as normal, and inform the user: *"Figma scaffold failed at step {X}. DESIGN.md is complete — you can scaffold manually."*
+12. **Figma source of truth** — when `FIGMA_MODE = active`, Figma-sourced tokens always take precedence over codebase tokens for the same name. Conflicts must be resolved with the user before writing the Design System section.
+13. **Platform modes in Figma** — when scaffolding a cross-platform design (iOS + Android) and the Figma file uses variable modes, always add new tokens to both modes. Never add to one platform's mode without the other unless the token is intentionally platform-specific (e.g., SF Symbols vs Material icons).
 
 ---
 

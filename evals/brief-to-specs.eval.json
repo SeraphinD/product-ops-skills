@@ -1,0 +1,60 @@
+[
+  {
+    "skill": "brief-to-specs",
+    "scenario": "happy_path",
+    "query": "Generate specs from the greeting tool brief.",
+    "context": {
+      "existing_files": [
+        "docs/features/greeting-tool/BRIEF.md"
+      ],
+      "feature_directory": "docs/features/greeting-tool/",
+      "preconditions": "A complete BRIEF.md exists for a simple Python CLI tool that greets users by name. The brief specifies Python 3.10+, CLI invocation via 'python -m app hello <name>', exit codes 0 and 1, and clear success criteria."
+    },
+    "expected_behavior": [
+      "Skill locates and reads docs/features/greeting-tool/BRIEF.md, then checks for DECISION.md and BENCHMARK.md in the same directory",
+      "Skill extracts at least 1 User Story in 'As a [role], I want [capability] so that [benefit]' format from the brief",
+      "Skill runs MoSCoW + WSJF prioritization for each User Story, presenting a WSJF scorecard with Fibonacci scores and asking for confirmation",
+      "Skill writes at least 2 Given/When/Then acceptance criteria per User Story covering both happy path and error case with concrete values (exact commands, output strings, exit codes)",
+      "Skill writes SPEC.md to docs/features/greeting-tool/SPEC.md following the exact template structure including WON'T Stories section and Implementation Notes"
+    ]
+  },
+  {
+    "skill": "brief-to-specs",
+    "scenario": "edge_case_ambiguous_brief",
+    "query": "Convert the auth brief to specs.",
+    "context": {
+      "existing_files": [
+        "docs/features/auth/BRIEF.md"
+      ],
+      "feature_directory": "docs/features/auth/",
+      "preconditions": "BRIEF.md exists but has vague sections: Problem Statement says 'users struggle with authentication' without specifics, Solution says 'improve auth' without naming a design principle, and Success Criteria includes 'system works properly' without binary pass/fail criteria. No error formats or exit codes are specified."
+    },
+    "expected_behavior": [
+      "Skill scans the brief for ambiguities before writing and identifies gaps in User Story benefits, error format, and acceptance criteria specifics",
+      "Skill asks all clarifying questions in a single message grouped by section, proposing defaults where reasonable",
+      "Skill does not proceed to writing Functional Scope or Acceptance Criteria until the user answers the clarifying questions",
+      "Skill never invents requirements not present or clearly implied in the brief — stops and asks when a concrete value (error message, HTTP code, output format) is needed"
+    ]
+  },
+  {
+    "skill": "brief-to-specs",
+    "scenario": "pipeline_integration_benchmark_informed",
+    "query": "Write specifications from the dashboard brief.",
+    "context": {
+      "existing_files": [
+        "docs/features/analytics-dashboard/BRIEF.md",
+        "docs/features/analytics-dashboard/BENCHMARK.md",
+        "docs/features/analytics-dashboard/DECISION.md"
+      ],
+      "feature_directory": "docs/features/analytics-dashboard/",
+      "preconditions": "BRIEF.md describes an analytics dashboard with 4 distinct capabilities (data visualization, filtering, export, drill-down). BENCHMARK.md contains key metrics with verified baselines (e.g., '<200ms load time') and spec recommendations including 'Include' and 'Exclude' items. DECISION.md has 3 accepted decisions from prior phases."
+    },
+    "expected_behavior": [
+      "Skill reads BENCHMARK.md and uses verified metrics to ground concrete values in acceptance criteria (e.g., '< 200ms' instead of 'fast')",
+      "Skill uses benchmark Spec Recommendations to fill scope gaps and sharpen acceptance criteria boundaries, flagging any conflicts with the brief",
+      "Skill identifies 4 distinct User Stories from the 4 capabilities, runs WSJF for each, and assigns MoSCoW labels (e.g., MUST, MUST, SHOULD, COULD)",
+      "Skill excludes WON'T stories from Functional Scope and Acceptance Criteria but lists them in the WON'T Stories section with reasons",
+      "Skill treats all accepted decisions from DECISION.md as hard constraints and ignores unverified benchmark metrics"
+    ]
+  }
+]

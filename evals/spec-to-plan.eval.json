@@ -1,0 +1,60 @@
+[
+  {
+    "skill": "spec-to-plan",
+    "scenario": "happy_path",
+    "query": "Generate a plan from the greeting tool spec.",
+    "context": {
+      "existing_files": [
+        "docs/features/greeting-tool/SPEC.md"
+      ],
+      "feature_directory": "docs/features/greeting-tool/",
+      "preconditions": "SPEC.md contains 1 MUST User Story for a simple Python CLI greeting tool. It specifies Python 3.10+, 'python -m app hello <name>' invocation, exit codes 0/1, and 3 acceptance criteria. No DESIGN.md, BENCHMARK.md, or DECISION.md exist."
+    },
+    "expected_behavior": [
+      "Skill locates and reads docs/features/greeting-tool/SPEC.md, extracts the MoSCoW label (MUST), and checks for DECISION.md and DESIGN.md",
+      "Skill extracts a Requirements Summary covering the CLI entry point, Python 3.10+ stack, expected output, and error handling (exit codes)",
+      "Skill generates a right-sized project structure file tree including src/, tests/, docs/features/greeting-tool/SPEC.md and PLAN.md, and README.md",
+      "Skill produces 3 phases (MUST implementation, Testing, Documentation) matching the small scope — does not artificially inflate to more phases",
+      "Skill writes a Verification Checklist with exact commands from the spec's acceptance criteria (e.g., 'python -m app hello Alice' produces 'Hello, Alice!' exit 0)"
+    ]
+  },
+  {
+    "skill": "spec-to-plan",
+    "scenario": "edge_case_missing_tech_stack",
+    "query": "Plan from the user authentication spec.",
+    "context": {
+      "existing_files": [
+        "docs/features/user-authentication/SPEC.md"
+      ],
+      "feature_directory": "docs/features/user-authentication/",
+      "preconditions": "SPEC.md contains 3 User Stories with MoSCoW labels (2 MUST, 1 SHOULD) but does not mention a programming language, framework, test framework, or project structure conventions. Error messages and exit codes are also unspecified."
+    },
+    "expected_behavior": [
+      "Skill scans the SPEC for gaps and identifies missing tech stack, test framework, and error handling details",
+      "Skill asks all clarifying questions in a single grouped message with proposed defaults (e.g., 'Stack — I will assume Node.js + Express unless you say otherwise. Testing — I will default to Jest. OK?')",
+      "Skill does not proceed to writing implementation phases until the user confirms or corrects the defaults",
+      "Skill respects MoSCoW ordering: Phase 1 covers both MUST stories, Phase 2 covers the SHOULD story, and no COULD or WON'T phases are generated"
+    ]
+  },
+  {
+    "skill": "spec-to-plan",
+    "scenario": "pipeline_integration_design_exists",
+    "query": "Plan from the dashboard spec.",
+    "context": {
+      "existing_files": [
+        "docs/features/analytics-dashboard/SPEC.md",
+        "docs/features/analytics-dashboard/DESIGN.md",
+        "docs/features/analytics-dashboard/DECISION.md"
+      ],
+      "feature_directory": "docs/features/analytics-dashboard/",
+      "preconditions": "SPEC.md has 3 MUST, 1 SHOULD, and 1 COULD User Stories. DESIGN.md defines a full design system (colors, typography, spacing), 6 components with states and variants, 2 page layouts, and responsive details. DECISION.md has 5 accepted decisions."
+    },
+    "expected_behavior": [
+      "Skill reads DESIGN.md and uses it to inform project structure (component files, style files, design system files), implementation phases, and critical files",
+      "Skill creates a 'Design System Setup' sub-phase as the first step in Phase 1 (MUST) — establishing design tokens and base component scaffolding before feature code",
+      "Skill adds a 'Frontend Design Implementation' subsection to Implementation Details covering styling approach, theme configuration, and component architecture from DESIGN.md",
+      "Skill adds design-specific items to the Verification Checklist: 'Components match DESIGN.md specifications', 'Color palette matches DESIGN.md', 'WCAG 2.1 AA requirements from DESIGN.md met'",
+      "Skill produces 5 MoSCoW-ordered phases: Phase 1 MUST (with Design System Setup), Phase 2 SHOULD, Phase 3 COULD (marked as optional/droppable), Phase 4 Testing, Phase 5 Documentation"
+    ]
+  }
+]

@@ -1,13 +1,13 @@
 ---
 name: spec-to-design
-description: Transforms a SPEC.md into a structured DESIGN.md for frontend features — covering design system (colors, typography, spacing), components with states and variants, page layouts with ASCII wireframes, user flows, interactions, and WCAG 2.1 AA accessibility requirements. Trigger on phrases like "generate design", "create DESIGN.md", "design from spec", "spec to design", "create UI design", "design system from spec", "component design from spec", "frontend design", "write design document from spec", or "design the feature". Do NOT use for backend-only features, CLI tools, or API-only services without a user interface — this skill is frontend-specific. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
+description: Transforms a SPEC.md into a structured DESIGN.md for frontend features — covering design system (colors, typography, spacing), components with states and variants, page layouts with ASCII wireframes, user flows, interactions, and WCAG 2.1 AA accessibility requirements. Optionally integrates with MCP Figma to read existing design tokens from a Figma file and scaffold frames directly in Figma after writing DESIGN.md. Trigger on phrases like "generate design", "create DESIGN.md", "design from spec", "spec to design", "create UI design", "design system from spec", "component design from spec", "frontend design", "write design document from spec", or "design the feature". Do NOT use for backend-only features, CLI tools, or API-only services without a user interface — this skill is frontend-specific. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
 allowed-tools: "Read Write Glob Grep"
 license: MIT
 metadata:
   author: seraphindesumeur
-  version: 1.0.0
+  version: 1.1.0
   category: feature-pipeline
-  tags: [design, ui, frontend, design-system, components, accessibility, wireframes]
+  tags: [design, ui, frontend, design-system, components, accessibility, wireframes, figma, mcp]
 ---
 
 # SPEC → DESIGN Skill
@@ -48,7 +48,25 @@ Work section by section. For each section:
 
 ## Step-by-Step Process
 
-### Step 1 — Locate the SPEC
+### Step 1 — Detect Figma MCP (always run first)
+
+Before doing anything else, check whether Figma MCP tools are available in this session.
+
+**Detection:** Scan available tools for names matching patterns like `figma_*`, `get_figma_data`, `figma-mcp-*`, or any tool whose description references Figma. Tool names vary by MCP implementation — look for the presence of at least one Figma-related tool.
+
+**If Figma MCP tools are detected:**
+1. Check if a Figma file URL or key is already in context (user message, BRIEF.md, or SPEC.md — look for `figma.com/file/` links or a `figmaFileKey` annotation).
+2. If not found, ask: *"I detected Figma MCP. Do you want to connect this design to a Figma file? If yes, share the file URL or key — I'll read your existing styles from it and optionally scaffold the design directly in Figma."*
+3. If the user provides a file URL or key, store it as `FIGMA_FILE_KEY` and set `FIGMA_MODE = active`.
+4. If the user declines or provides nothing, set `FIGMA_MODE = markdown-only` and proceed as a normal run.
+5. Log to `DECISION.md`: `Figma MCP detected — mode: [active with file key {key} / markdown-only]`.
+
+**If no Figma MCP tools are detected:**
+Set `FIGMA_MODE = unavailable`. Proceed normally — the skill produces `DESIGN.md` only. No Figma-related prompts or steps apply for the rest of this run.
+
+---
+
+### Step 2 — Locate the SPEC
 
 Find the specification file. Look in this order:
 1. The path the user provides directly
@@ -67,7 +85,7 @@ If the SPEC has no MoSCoW labels (generated before this convention), treat all U
 
 ---
 
-### Step 2 — Load Prior Decisions
+### Step 3 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the SPEC.
 
@@ -78,7 +96,7 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 3 — Load BRIEF (context)
+### Step 4 — Load BRIEF (context)
 
 Check whether a `BRIEF.md` exists in the same `docs/features/{feature-name}/` directory.
 
@@ -92,7 +110,7 @@ If no BRIEF is found, proceed with SPEC data only.
 
 ---
 
-### Step 4 — Load Benchmark Visual References (if available)
+### Step 5 — Load Benchmark Visual References (if available)
 
 Check whether a `BENCHMARK.md` exists in the same `docs/features/{feature-name}/` directory.
 
@@ -105,7 +123,7 @@ If no BENCHMARK.md exists, proceed without it — this input is optional.
 
 ---
 
-### Step 5 — Detect Frontend Feature
+### Step 6 — Detect Frontend Feature
 
 This skill only applies to features with a user interface. Before proceeding, verify the SPEC describes a frontend feature.
 
@@ -122,7 +140,23 @@ Log the feature type detection to `DECISION.md`.
 
 ---
 
-### Step 6 — Detect Existing Design System
+### Step 7 — Detect Existing Design System
+
+**If `FIGMA_MODE = active` — Figma-first path:**
+
+Query the Figma file before scanning the codebase — Figma is the source of truth when connected.
+
+1. **Query local styles**: fetch color styles (fills), text styles (typography), and effect styles from the file. Extract names, hex values, font families, sizes, and weights.
+2. **Query local variables**: if the file uses variable collections, extract color, spacing, and typography variable sets with their resolved values.
+3. **Report findings**: *"I found {N} color styles, {M} text styles{, and {K} variable sets} in your Figma file. I'll treat these as the existing design system."* Mark all Figma-sourced tokens as `✦ Figma` in the Design System section.
+4. **Then scan the codebase** (using the patterns below) to find any implementation-side tokens not yet reflected in Figma. Mark these as `⚠ Codebase-only (not synced to Figma)` and flag them to the user.
+5. **Resolve conflicts**: if the same token name carries different values in Figma vs the codebase (e.g., `primary` is `#3B82F6` in Figma but `#2563EB` in `tailwind.config.ts`), ask: *"Token `{name}` differs between Figma ({figma value}) and the codebase ({code value}). Which is the design source of truth?"* Log the resolution to `DECISION.md`.
+
+Skip to **What to do with findings** after this — do not repeat the codebase-only flow for tokens already resolved from Figma.
+
+---
+
+**If `FIGMA_MODE = markdown-only` or `unavailable` — codebase-only path:**
 
 Before asking the user anything about design tokens, proactively scan the codebase for an existing design system. Search for:
 
@@ -140,7 +174,7 @@ Before asking the user anything about design tokens, proactively scan the codeba
 - Check `package.json` for UI libraries (`@mui/material`, `@chakra-ui/react`, `shadcn`, `antd`, `@radix-ui/*`, `daisyui`, etc.)
 - Check for CSS frameworks (`tailwindcss`, `bootstrap`, `bulma`)
 
-**What to extract when found:**
+**What to extract when found (codebase-only):**
 - Color palette (names, hex values, semantic roles)
 - Typography scale (font families, sizes, weights)
 - Spacing scale (base unit, scale values)
@@ -149,27 +183,27 @@ Before asking the user anything about design tokens, proactively scan the codeba
 
 **What to do with findings:**
 
-- **Existing design system found** → store the extracted values internally. In Step 9, **reuse them as-is** instead of proposing new ones. Inform the user: *"I found an existing design system in `{path}`. I'll extend it rather than create a new one."* Log this to `DECISION.md`.
-- **UI library detected but no custom tokens** → note the library. In Step 9, propose tokens that align with the library's conventions. Inform the user: *"The project uses {library}. I'll align the design system with its conventions."*
-- **Nothing found** → proceed normally. Step 9 will propose a new design system from scratch.
+- **Existing design system found** → store the extracted values internally. In Step 10, **reuse them as-is** instead of proposing new ones. Inform the user: *"I found an existing design system in `{path}`. I'll extend it rather than create a new one."* Log this to `DECISION.md`.
+- **UI library detected but no custom tokens** → note the library. In Step 10, propose tokens that align with the library's conventions. Inform the user: *"The project uses {library}. I'll align the design system with its conventions."*
+- **Nothing found** → proceed normally. Step 10 will propose a new design system from scratch.
 
 ---
 
-### Step 7 — Analyze gaps before writing
+### Step 8 — Analyze gaps before writing
 
-After reading the SPEC and scanning the codebase (Step 6), scan for remaining information needed to write a complete design document:
+After reading the SPEC and scanning the codebase (Step 7), scan for remaining information needed to write a complete design document:
 
 - **UI components** — Does the spec imply specific components (forms, tables, cards, navigation, modals)?
 - **Pages/screens** — Are routes, views, or screens mentioned or implied?
 - **User flows** — Are the acceptance criteria detailed enough to derive step-by-step user flows?
-- **Tech stack** — Is a CSS framework or component library mentioned? (Skip if already resolved by Step 6 codebase scan.)
+- **Tech stack** — Is a CSS framework or component library mentioned? (Skip if already resolved by Step 7 codebase scan.)
 - **Responsive requirements** — Is mobile/tablet/desktop behavior mentioned?
 - **Accessibility** — Are there specific accessibility requirements beyond the default WCAG 2.1 AA?
 - **Dark mode** — Is dark mode mentioned or expected?
 
 If you find ambiguities, **ask all clarifying questions in a single message** — group them by topic, be specific, and propose a default answer when you have a reasonable one. Do not proceed to writing until the user has answered.
 
-If the SPEC is complete enough to write every section without inventing details, skip straight to Step 8.
+If the SPEC is complete enough to write every section without inventing details, skip straight to Step 9.
 
 **Example of a good clarifying message (when existing design system was found):**
 
@@ -193,7 +227,7 @@ If the SPEC is complete enough to write every section without inventing details,
 
 ---
 
-### Step 8 — Design Overview and Goals
+### Step 9 — Design Overview and Goals
 
 Derive the Design Overview from:
 - SPEC overview and user story benefits
@@ -209,14 +243,14 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 9 — Define the Design System
+### Step 10 — Define the Design System
 
 Generate Color Palette, Typography, and Spacing & Layout.
 
 **Rules:**
-- **If Step 6 found an existing design system, you MUST reuse it.** Import the detected values (colors, typography, spacing, breakpoints) directly into the Design System section. Do not propose alternatives for values that already exist — only extend with new tokens the feature requires. Clearly mark which values are inherited (`✦ Existing`) vs new (`★ New`).
-- If Step 6 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
-- If Step 6 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
+- **If Step 7 found an existing design system, you MUST reuse it.** Import the detected values (colors, typography, spacing, breakpoints) directly into the Design System section. Do not propose alternatives for values that already exist — only extend with new tokens the feature requires. Clearly mark which values are inherited (`✦ Existing`) vs new (`★ New`).
+- If Step 7 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
+- If Step 7 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
 - All colors must meet WCAG 2.1 AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 - Typography must include at least H1, H2, Body, Button, and Caption
 - Spacing must define a base unit, a spacing scale, and breakpoints
@@ -226,7 +260,7 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 10 — Design Components (MoSCoW-aware)
+### Step 11 — Design Components (MoSCoW-aware)
 
 For each User Story in the SPEC (excluding WON'T), extract implied components from the functional scope. Tag each component with its source story and MoSCoW label.
 
@@ -244,7 +278,7 @@ Propose components in batches (group by source story). Confirm each batch before
 
 ---
 
-### Step 11 — Design Page Layouts
+### Step 12 — Design Page Layouts
 
 For each distinct page or screen implied by the SPEC:
 
@@ -259,7 +293,7 @@ Propose each layout as a draft. Confirm before moving on.
 
 ---
 
-### Step 12 — Define User Flows
+### Step 13 — Define User Flows
 
 For each acceptance criteria scenario in the SPEC that involves user interaction:
 
@@ -274,7 +308,7 @@ Propose the flows. Confirm before moving on.
 
 ---
 
-### Step 13 — Define Interactions & Animations
+### Step 14 — Define Interactions & Animations
 
 Cover page transitions, hover effects, loading states, and error state animations.
 
@@ -288,7 +322,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 14 — Define Accessibility Requirements
+### Step 15 — Define Accessibility Requirements
 
 Start with the standard WCAG 2.1 AA checklist from the template. Then add SPEC-specific requirements:
 
@@ -303,7 +337,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 15 — Dark Mode and Responsive Details
+### Step 16 — Dark Mode and Responsive Details
 
 **Dark Mode:**
 - Only include if the SPEC, BRIEF, or user explicitly mentions dark mode
@@ -313,14 +347,14 @@ Propose a draft. Confirm.
 **Responsive Details:**
 - Always include mobile and desktop sections
 - Include tablet if the SPEC mentions it or the feature has complex layouts
-- Derive layout changes from page layouts defined in Step 11
+- Derive layout changes from page layouts defined in Step 12
 - Specify touch target sizes for mobile (minimum 44x44px)
 
 Propose a draft. Confirm.
 
 ---
 
-### Step 16 — Design Decisions & Rationale
+### Step 17 — Design Decisions & Rationale
 
 Summarize the key design choices made during this interaction. These complement the DECISION.md entries but are embedded in the DESIGN.md for readers who don't check the decision log.
 
@@ -334,7 +368,7 @@ Keep this section concise — 3–6 decisions that genuinely shape the design.
 
 ---
 
-### Step 17 — Determine Output Path
+### Step 18 — Determine Output Path
 
 The `DESIGN.md` is **always** written to:
 
@@ -354,14 +388,18 @@ Where `{feature-name}` is the kebab-case version of the feature name.
 
 ---
 
-### Step 18 — Write the File
+### Step 19 — Write the File
 
 Once all sections are confirmed:
-1. Assemble the complete `DESIGN.md` using the template above
+1. Assemble the complete `DESIGN.md` using the template above.
 2. Show a summary: *"Here's the full DESIGN.md — {N} components, {M} page layouts, {K} user flows. Ready to write it to `{path}`?"*
-3. Wait for confirmation
-4. Write the file using the Write tool
+3. Wait for confirmation.
+4. Write the file using the Write tool.
 5. Confirm: *"Done — `DESIGN.md` written to `{path}`."*
+
+**If `FIGMA_MODE = active` — Optional Figma Scaffold (Step 19):**
+
+Follow the scaffold procedure in `references/figma-scaffold.md`.
 
 ---
 
@@ -376,54 +414,11 @@ Throughout the interaction, log every non-obvious decision to `docs/features/{fe
 - **Implicit decisions** — choices you made without asking because the spec was clear enough (e.g., inferring a component from an acceptance criterion, choosing a spacing scale)
 - **Scope decisions** — omitting Dark Mode, deferring a COULD component's detailed design, including/excluding a section
 
-### What NOT to log
+### Additional exclusions
 
-- Obvious, mechanical actions (e.g., "wrote the file", "drew an ASCII diagram")
-- Formatting or template-structure decisions already defined by this skill
 - Design Decisions already captured in the DESIGN.md's "Design Decisions & Rationale" section (avoid duplication)
 
-### Entry format
-
-Each decision follows this structure:
-
-```markdown
-## Decision {N}: {Short title}
-**Status:** ✅ Accepted
-**Date:** {YYYY-MM-DD}
-**Skill:** spec-to-design
-
-### Context
-{1–2 sentences: what was being decided and why}
-
-### Problem
-{The question that needed answering}
-
-### Options Considered
-| Option | Pros | Cons |
-|--------|------|------|
-| **{Chosen}** | {pros} | {cons} |
-| {Alternative} | {pros} | {cons} |
-
-### Decision
-**{One-sentence statement of the decision}**
-
-### Rationale
-{Numbered list of reasons}
-
-### Consequences
-- **Positive:** {impact}
-- **Negative:** {impact}
-- **Neutral:** {impact}
-
-### Exceptions
-{Any exceptions, or "None"}
-```
-
-> For simple decisions (e.g., confirming a color choice), keep the entry lightweight — skip Options Considered and Consequences if they add no value. Use the full format for decisions that shape the design's direction.
-
-### When to write
-
-Append decisions to `DECISION.md` as they happen during the interaction — do not batch them at the end. This ensures the log is complete even if the session is interrupted.
+For entry format, shared exclusions, and writing rules, see `references/decision-log-format.md`.
 
 ---
 
@@ -438,6 +433,8 @@ Append decisions to `DECISION.md` as they happen during the interaction — do n
 7. **Interactive and thorough** — scan the spec for gaps before writing. Ask all clarifying questions upfront in a single message, grouped by topic. Then propose each major section (Design System, Components, Page Layouts, User Flows, Interactions, Accessibility) as a draft and confirm with the user before moving on. Do not generate the full DESIGN in one shot without section-by-section confirmation.
 8. **Benchmark-informed, not benchmark-bound** — if BENCHMARK.md visual references exist, use them as inspiration but never copy competitor layouts. Propose original designs informed by research.
 9. **Concrete, not aspirational** — ASCII diagrams must show specific component placement. Color values must include hex codes. Typography must include specific sizes and weights. Avoid vague entries like "clean design" or "modern feel".
+10. **Figma is additive, never required** — Figma MCP integration enhances the skill but never blocks it. `DESIGN.md` is always the primary output. Figma scaffold and token sync are opt-in. If Figma tools fail or return errors mid-run, log the failure to `DECISION.md`, complete the `DESIGN.md` as normal, and inform the user: *"Figma scaffold failed at step {X}. DESIGN.md is complete — you can scaffold manually."*
+11. **Figma source of truth** — when `FIGMA_MODE = active`, Figma-sourced tokens always take precedence over codebase tokens for the same name. Conflicts must be resolved with the user before writing the Design System section.
 
 ---
 

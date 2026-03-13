@@ -2,14 +2,14 @@
 
 ## Problem: SPEC describes a web feature, not a mobile app
 **Cause:** The skill was triggered for a feature targeting web browsers.
-**Solution:** The skill will detect this in Step 5 and inform the user: "This SPEC describes a web feature. DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?" If ambiguous, it asks for clarification.
+**Solution:** The skill will detect this in Step 6 and inform the user: "This SPEC describes a web feature. DESIGN.md is for native mobile apps. Did you mean to use spec-to-design instead?" If ambiguous, it asks for clarification.
 
 ## Problem: SPEC targets both web and mobile
 **Cause:** The feature has both web and native mobile components.
 **Solution:** Both skills write to `DESIGN.md`. Run one skill at a time and let the user decide which design to keep, or inform them: "This feature has both web and mobile components. Running both spec-to-design and spec-to-mobile-design will overwrite the same `DESIGN.md`. Decide which platform to design first, then the other."
 
 ## Problem: Existing design system uses a different convention than proposed
-**Cause:** Step 6 detected a design system but the proposed design tokens conflict with existing patterns.
+**Cause:** Step 7 detected a design system but the proposed design tokens conflict with existing patterns.
 **Solution:** Always reuse existing tokens. Mark inherited values as `Existing` and only add new tokens the feature requires. Never override or propose alternatives to established design tokens.
 
 ## Problem: iOS and Android designs diverge significantly

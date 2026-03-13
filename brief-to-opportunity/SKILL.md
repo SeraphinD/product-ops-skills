@@ -271,49 +271,10 @@ Throughout the interaction, log every non-obvious decision to `docs/features/{fe
 - **Confidence adjustments** — when benchmark data changes the confidence level
 - **Weight changes** — if the user adjusts impact weights from the default
 
-### What NOT to log
-
-- Mechanical actions (e.g., "wrote the file")
+### Additional exclusions
 - Default weight usage (only log if weights are changed)
 
-### Entry format
-
-```markdown
-## Decision {N}: {Short title}
-**Status:** ✅ Accepted
-**Date:** {YYYY-MM-DD}
-**Skill:** brief-to-opportunity
-
-### Context
-{1–2 sentences: what was being decided and why}
-
-### Problem
-{The question that needed answering}
-
-### Options Considered
-| Option | Pros | Cons |
-|--------|------|------|
-| **{Chosen}** | {pros} | {cons} |
-| {Alternative} | {pros} | {cons} |
-
-### Decision
-**{One-sentence statement of the decision}**
-
-### Rationale
-{Numbered list of reasons}
-
-### Consequences
-- **Positive:** {impact}
-- **Negative:** {impact}
-- **Neutral:** {impact}
-
-### Exceptions
-{Any exceptions, or "None"}
-```
-
-> For simple score confirmations, keep the entry lightweight — skip Options Considered and Consequences. Use the full format for decisions that change weights or override multiple scores.
-
-Append decisions to `DECISION.md` as they happen — do not batch at the end.
+For entry format, shared exclusions, and writing rules, see `references/decision-log-format.md`.
 
 ---
 

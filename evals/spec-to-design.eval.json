@@ -1,0 +1,61 @@
+[
+  {
+    "skill": "spec-to-design",
+    "scenario": "happy_path",
+    "query": "Design the analytics dashboard from the spec.",
+    "context": {
+      "existing_files": [
+        "docs/features/analytics-dashboard/SPEC.md"
+      ],
+      "feature_directory": "docs/features/analytics-dashboard/",
+      "preconditions": "SPEC.md contains 3 MUST User Stories for an analytics dashboard. The project has an existing tailwind.config.ts with a color palette, typography scale, and spacing system. No BENCHMARK.md or DESIGN.md exists yet."
+    },
+    "expected_behavior": [
+      "Skill detects Figma MCP availability (or absence) as the very first step before reading the SPEC",
+      "Skill scans the codebase and finds the existing design system in tailwind.config.ts, informing the user: 'I found an existing design system. I will extend it rather than create a new one.'",
+      "Skill reuses existing design tokens (colors, typography, spacing) and only adds new tokens needed for the dashboard feature, marking inherited values as Existing and new values as New",
+      "Skill designs components with full MoSCoW-aware treatment: MUST stories get all states, variants, ASCII wireframes, and accessibility; no WON'T stories are designed",
+      "Skill writes DESIGN.md with ASCII box-drawing page layouts, user flows derived from acceptance criteria, WCAG 2.1 AA accessibility requirements, and responsive design details"
+    ]
+  },
+  {
+    "skill": "spec-to-design",
+    "scenario": "edge_case_backend_spec",
+    "query": "Create DESIGN.md from our API gateway spec.",
+    "context": {
+      "existing_files": [
+        "docs/features/api-gateway/SPEC.md"
+      ],
+      "feature_directory": "docs/features/api-gateway/",
+      "preconditions": "SPEC.md describes a backend API gateway with rate limiting, authentication middleware, and request routing. No frontend indicators are present — no UI, no pages, no components, no CSS."
+    },
+    "expected_behavior": [
+      "Skill scans the SPEC for frontend indicators and classifies it as clearly backend",
+      "Skill informs the user: 'This SPEC appears to describe a backend feature. DESIGN.md is intended for features with a user interface. Would you like to skip the design phase and go directly to PLAN?'",
+      "Skill does not generate a DESIGN.md for a backend-only feature",
+      "Skill logs the feature type detection decision to DECISION.md"
+    ]
+  },
+  {
+    "skill": "spec-to-design",
+    "scenario": "pipeline_integration_greenfield_with_benchmark",
+    "query": "Create the UI design from our onboarding spec.",
+    "context": {
+      "existing_files": [
+        "docs/features/onboarding/SPEC.md",
+        "docs/features/onboarding/BRIEF.md",
+        "docs/features/onboarding/BENCHMARK.md",
+        "docs/features/onboarding/DECISION.md"
+      ],
+      "feature_directory": "docs/features/onboarding/",
+      "preconditions": "SPEC.md has 2 MUST stories, 1 SHOULD story, and 1 COULD story for a user onboarding flow. BRIEF.md provides problem context. BENCHMARK.md includes visual references with competitor layout patterns and Mermaid user flow diagrams. No existing design system in the codebase. DECISION.md has accepted decisions."
+    },
+    "expected_behavior": [
+      "Skill reads BRIEF.md for problem context and BENCHMARK.md for visual references and design-related technical standards",
+      "Skill detects no existing design system and asks the user for preferences (e.g., Material-inspired, Shadcn-style, fully custom) before proposing a new one from scratch",
+      "Skill applies MoSCoW-aware design depth: MUST stories get full component design with all states, SHOULD gets moderate treatment, COULD gets minimal stubs with 'Detailed design deferred' notes",
+      "Skill uses benchmark visual references as inspiration but proposes original designs — never copies competitor layouts",
+      "Skill produces a Design System section with concrete hex codes, px sizes, font names, and WCAG 2.1 AA compliant contrast ratios"
+    ]
+  }
+]

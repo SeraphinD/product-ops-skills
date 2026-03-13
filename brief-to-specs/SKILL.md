@@ -121,14 +121,7 @@ Rules for extracting User Stories:
 
 This step is **mandatory for every SPEC**, regardless of whether a BENCHMARK.md is available.
 
-After all User Stories are confirmed in Step 5, prioritize each one individually before writing any Functional Scope or Acceptance Criteria. Use **MoSCoW**:
-
-| Label | Meaning |
-|-------|---------|
-| **MUST** | Non-negotiable — the feature fails without this story |
-| **SHOULD** | High value, expected by users, but a workaround exists if absent |
-| **COULD** | Desirable but not critical — include if scope allows |
-| **WON'T** | Explicitly out of scope for this version — noted for future reference |
+After all User Stories are confirmed in Step 5, prioritize each one individually before writing any Functional Scope or Acceptance Criteria. Use standard **MoSCoW** labels (MUST / SHOULD / COULD / WON'T).
 
 For **each User Story**, present a WSJF scorecard with your recommended MoSCoW label and reasoning. Wait for the user to confirm or override before moving to the next story.
 
@@ -192,12 +185,7 @@ For each User Story, write **at least 2 scenarios**. Coverage requirements:
 | Edge/error case (missing input, invalid state, failure) | Yes |
 | Boundary case (empty string, max length, etc.) | If implied by the brief |
 
-Each scenario uses strict **Given/When/Then** format:
-- **GIVEN** — the precondition or system state before the action
-- **WHEN** — the exact action taken (command run, button clicked, API called, etc.)
-- **THEN** — the observable, testable outcome (output text, exit code, side effect, etc.)
-
-Write scenarios so that a developer can turn each one directly into a test case without interpretation. Be concrete: include exact commands, exact output strings, exact exit codes when the brief specifies them.
+Each scenario uses strict **Given/When/Then** format. Write scenarios so that a developer can turn each one directly into a test case without interpretation. Be concrete: include exact commands, exact output strings, exact exit codes when the brief specifies them.
 
 If a scenario requires a specific value (an error message, an HTTP code, an output format) that the brief does not specify, **stop and ask** rather than inventing it.
 
@@ -270,53 +258,7 @@ Throughout the interaction, log every non-obvious decision to `docs/features/{fe
 - **Implicit decisions** — choices you made without asking because the brief was clear enough (e.g., deriving the "so that" benefit, choosing to group features under one US, selecting a scenario boundary value)
 - **Functional decisions** — product-level choices about what the feature must do (e.g., specific acceptance criteria wording, edge cases included or excluded)
 
-### What NOT to log
-
-- Obvious, mechanical actions (e.g., "wrote the file", "used Given/When/Then format")
-- Formatting or template-structure decisions already defined by the skill
-
-### Entry format
-
-Each decision follows this structure:
-
-```markdown
-## Decision {N}: {Short title}
-**Status:** ✅ Accepted
-**Date:** {YYYY-MM-DD}
-**Skill:** brief-to-specs
-
-### Context
-{1–2 sentences: what was being decided and why}
-
-### Problem
-{The question that needed answering}
-
-### Options Considered
-| Option | Pros | Cons |
-|--------|------|------|
-| **{Chosen}** | {pros} | {cons} |
-| {Alternative} | {pros} | {cons} |
-
-### Decision
-**{One-sentence statement of the decision}**
-
-### Rationale
-{Numbered list of reasons}
-
-### Consequences
-- **Positive:** {impact}
-- **Negative:** {impact}
-- **Neutral:** {impact}
-
-### Exceptions
-{Any exceptions, or "None"}
-```
-
-> For simple decisions (e.g., confirming a scenario name), keep the entry lightweight — skip Options Considered and Consequences if they add no value. Use the full format for decisions that shape the spec's direction.
-
-### When to write
-
-Append decisions to `DECISION.md` as they happen during the interaction — do not batch them at the end. This ensures the log is complete even if the session is interrupted.
+For entry format, shared exclusions, and writing rules, see `references/decision-log-format.md`.
 
 ---
 

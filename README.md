@@ -31,8 +31,8 @@ This pipeline enforces the discipline that prevents those failures:
 | **brief-to-benchmark** | `BENCHMARK.md` — competitors, standards, metrics, gap analysis | Grounds decisions in real-world data instead of assumptions | ✅ Yes |
 | **brief-to-opportunity** | `OPPORTUNITY.md` — RICE score card for a single brief | Quantifies priority with structured scoring before investing in specs | ✅ Yes |
 | **brief-to-specs** | `SPEC.md` — user stories, MoSCoW/WSJF scores, Given/When/Then ACs | Turns intent into testable requirements with clear priority | No |
-| **spec-to-design** | `DESIGN.md` — design system, components, wireframes, flows *(web)* | Catches UX issues on paper before they become code | ✅ Yes |
-| **spec-to-mobile-design** | `DESIGN.md` — same, but for native iOS/Android | Same, with platform-specific patterns for iOS and Android | ✅ Yes |
+| **spec-to-design** | `DESIGN.md` — design system, components, wireframes, flows *(web)*. Optionally reads tokens from Figma and scaffolds frames via MCP Figma | Catches UX issues on paper before they become code; Figma integration syncs design tokens when connected | ✅ Yes |
+| **spec-to-mobile-design** | `DESIGN.md` — same, but for native iOS/Android. Optionally reads tokens from Figma and scaffolds screen frames via MCP Figma | Same, with platform-specific patterns for iOS and Android; Figma scaffolds include safe area guides | ✅ Yes |
 | **spec-to-plan** | `PLAN.md` — phased implementation steps, file tree, critical files, verification checklist | Gives engineering a buildable sequence, not just a wish list | No |
 | **plan-to-tasks** | `TASKS.md` — flat, atomic task list with statuses and optional skill assignments | Makes the plan trackable — every task maps to a plan step | No |
 
@@ -171,7 +171,7 @@ Then I receive a push notification within 3 seconds
 **Native mobile feature (this example):**
 > **You:** Mobile design from the spec
 
-Claude triggers `spec-to-mobile-design`, detects the React Native project and any existing theme, then proposes: design tokens (colors in hex, typography in sp, spacing in dp), native components (e.g., `NotificationBanner`, `PermissionPrompt`), screen layouts as ASCII wireframes, and VoiceOver + TalkBack accessibility specs.
+Claude triggers `spec-to-mobile-design`, checks for MCP Figma (asks for a file key if detected), detects the React Native project and any existing theme, then proposes: design tokens (colors in hex, typography in sp, spacing in dp), native components (e.g., `NotificationBanner`, `PermissionPrompt`), screen layouts as ASCII wireframes, and VoiceOver + TalkBack accessibility specs. If Figma MCP is active, it optionally scaffolds the screens directly in Figma after writing `DESIGN.md`.
 
 **Output:** `docs/features/push-notifications/DESIGN.md`
 
@@ -265,7 +265,7 @@ You can enter the pipeline at any stage — if you already have a SPEC, start fr
 - **Interactive, not automated** — every skill proposes drafts section by section and waits for your confirmation. Nothing is written without approval.
 - **Decision continuity** — every non-obvious decision is logged to `DECISION.md` and treated as a hard constraint by all downstream skills. Change your mind? Update the decision log.
 - **MoSCoW-aware depth** — MUST stories get full treatment at every stage. SHOULD gets moderate depth. COULD gets stubs. WON'T is never planned, designed, or tasked.
-- **Codebase-aware design** — design skills scan your project for an existing design system (Tailwind, MUI, React Native themes, Flutter `ThemeData`, `Assets.xcassets`) and extend it rather than replacing it.
+- **Codebase-aware design** — design skills scan your project for an existing design system (Tailwind, MUI, React Native themes, Flutter `ThemeData`, `Assets.xcassets`) and extend it rather than replacing it. When MCP Figma is connected, Figma local styles and variables are used as the source of truth instead.
 - **No filler** — every generated section is grounded in the spec or prior artifacts. Generic best-practice advice not derived from your documents is never added.
 
 ---

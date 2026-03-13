@@ -1,0 +1,57 @@
+[
+  {
+    "skill": "brief-to-benchmark",
+    "scenario": "happy_path",
+    "query": "Benchmark the brief for our notification system.",
+    "context": {
+      "existing_files": [
+        "docs/features/notification-system/BRIEF.md"
+      ],
+      "feature_directory": "docs/features/notification-system/",
+      "preconditions": "A complete BRIEF.md exists describing a real-time notification system with web push, in-app, and email channels. The brief includes an Assumptions & Risks section."
+    },
+    "expected_behavior": [
+      "Skill locates and reads docs/features/notification-system/BRIEF.md in full before starting research",
+      "Skill uses WebSearch to research 3-5 comparable solutions (e.g., OneSignal, Firebase Cloud Messaging, Pusher, Knock) and presents each with what it does, relevant approach, key differentiators, and gaps",
+      "Skill identifies 3-8 technical standards relevant to the domain (e.g., Web Push API, WCAG notification guidelines) and 3-6 key metrics with baselines",
+      "Skill writes a Gap Analysis that checks the brief's assumptions against research findings and flags contradictions",
+      "Skill writes BENCHMARK.md to the same directory as the BRIEF with a 'Generated from:' reference line and confirms each section interactively"
+    ]
+  },
+  {
+    "skill": "brief-to-benchmark",
+    "scenario": "edge_case_no_brief_found",
+    "query": "Do a competitive analysis for the search feature.",
+    "context": {
+      "existing_files": [],
+      "feature_directory": null,
+      "preconditions": "No BRIEF.md exists anywhere in the project. No docs/features/ directory matches 'search'. The user does not specify a file path."
+    },
+    "expected_behavior": [
+      "Skill searches for BRIEF.md in docs/features/*/BRIEF.md and the current working directory without finding one",
+      "Skill asks the user: 'Which BRIEF.md should I use? I did not find one in the current directory.'",
+      "Skill does not proceed with benchmark generation until a valid BRIEF.md is located or the user provides content",
+      "Skill does not fabricate a brief or assume feature details without a source document"
+    ]
+  },
+  {
+    "skill": "brief-to-benchmark",
+    "scenario": "pipeline_integration_frontend_with_decisions",
+    "query": "Research competitors for our dashboard redesign.",
+    "context": {
+      "existing_files": [
+        "docs/features/dashboard-redesign/BRIEF.md",
+        "docs/features/dashboard-redesign/DECISION.md"
+      ],
+      "feature_directory": "docs/features/dashboard-redesign/",
+      "preconditions": "BRIEF.md describes a frontend analytics dashboard feature with UI components, charts, and data tables. DECISION.md contains accepted decisions from the create-brief phase. The feature is clearly frontend."
+    },
+    "expected_behavior": [
+      "Skill detects this is a frontend feature (based on UI, dashboard, component keywords in the brief) and includes the Visual References section",
+      "Skill reads DECISION.md and treats all accepted decisions as hard constraints throughout the benchmark",
+      "Skill produces Unicode box-drawing layout diagrams for competitor dashboards, captioned as reference material (not proposed designs)",
+      "Skill produces Mermaid user flow diagrams for competitor workflows, captioned as observed flows",
+      "Skill marks any unverified claims with the warning marker and flags conflicts between accepted decisions and research findings"
+    ]
+  }
+]
