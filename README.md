@@ -4,6 +4,8 @@ A set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills th
 
 Each skill takes one document as input and produces the next. You confirm each section before anything is written, so nothing gets generated behind your back.
 
+**Don't know where to start?** Use `/pm` — the pipeline router. It scans your existing artifacts, tells you where you are, and recommends the next skill to invoke.
+
 ### Why this matters for Product Ops
 
 Most teams lose clarity somewhere between ideation and delivery. A feature starts as a Slack message, turns into a vague Jira ticket, and arrives in development with half the context missing — no one remembers *why* a decision was made, what was deliberately left out, or what "done" actually looks like. The result is rework, scope creep, and misaligned expectations across PM, design, and engineering.
@@ -21,11 +23,16 @@ This pipeline enforces the discipline that prevents those failures:
 ## How It Works
 
 ```
+                                        /pm
+                                         ↓
 [PROBLEM FRAME] → BRIEF → [BENCHMARK] → [OPPORTUNITY] → SPEC → [DESIGN] → PLAN → TASKS
 ```
 
+Use `/pm` at any point to see where you are and what to do next.
+
 | Stage | What it produces | Why | Optional? |
 |---|---|---|---|
+| **pm** | *No document* — scans artifacts and recommends the next skill | Single entry point; removes the need to remember skill names | ✅ Yes |
 | **create-problem-frame** | `PROBLEM-FRAME.md` — situation context, root cause analysis, constraints, alternative framings | Prevents building the right solution to the wrong problem | ✅ Yes |
 | **create-brief** | `BRIEF.md` — problem, solution, objectives, scope, success criteria | Aligns everyone on what to build and why before any work starts | No — starting point |
 | **brief-to-benchmark** | `BENCHMARK.md` — competitors, standards, metrics, gap analysis | Grounds decisions in real-world data instead of assumptions | ✅ Yes |
@@ -49,7 +56,7 @@ Clone the repo and symlink each skill into your user-level Claude Code skills di
 ```bash
 REPO="/path/to/product-ops-skills"
 
-for skill in create-problem-frame create-brief brief-to-benchmark brief-to-opportunity brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks; do
+for skill in pm create-problem-frame create-brief brief-to-benchmark brief-to-opportunity brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks; do
   ln -sf "$REPO/$skill" "$HOME/.claude/skills/$skill"
 done
 ```
@@ -67,6 +74,24 @@ ls -la ~/.claude/skills/
 ## Complete Workflow Example
 
 Here is a full run-through for a fictional feature: **"Push Notifications for a React Native app"**.
+
+At any point during this workflow, you can say `/pm` to see your progress and get the next recommended step.
+
+---
+
+### Step 0 — Navigate with `/pm` (optional)
+
+> **You:** /pm
+
+Claude triggers `pm`, scans `docs/features/` for existing artifacts, and tells you where you are in the pipeline. If nothing exists yet, it recommends starting with `create-problem-frame` or `create-brief`.
+
+> No feature in progress. To start a new feature:
+>
+> **Recommended: `create-problem-frame`** — frame the problem before jumping to solutions.
+> Say: *"Frame the problem around {your topic}"*
+>
+> **Or skip to: `create-brief`** — if the problem is already well-understood.
+> Say: *"Create a brief for {your feature}"*
 
 ---
 
