@@ -26,96 +26,11 @@ Its purpose is to prevent the SPEC from being written in a vacuum — by researc
 
 ## Output Template
 
+**Before writing any output, read `references/template.md` for the exact BENCHMARK.md structure.**
+
+The BENCHMARK contains: Comparable Solutions (3–5 entries), Technical Standards, Key Metrics & Baselines, Gap Analysis, Spec Recommendations, and an optional Visual References section for frontend features.
+
 **After writing, run `bash scripts/validate-benchmark.sh {path-to-benchmark}` to verify structural completeness.**
-
-The final `BENCHMARK.md` must follow **exactly** this structure:
-
-```markdown
-# Benchmark: {Feature Name}
-
-> Generated from: {relative path to BRIEF.md}
-> Date: {YYYY-MM-DD}
-
----
-
-## Comparable Solutions
-
-### {Competitor / Solution Name}
-- **What it does:** {1–2 sentences}
-- **Relevant approach:** {how it handles the problem your brief addresses}
-- **Key differentiators:** {what makes it notable}
-- **Gaps / weaknesses:** {where it falls short or doesn't apply}
-
-{repeat for 3–5 comparable solutions}
-
----
-
-## Technical Standards
-
-- **{Standard or convention name}:** {what it specifies and why it's relevant}
-- **{Library / framework convention}:** {common patterns in this domain}
-
-{3–8 standards relevant to the feature}
-
----
-
-## Key Metrics & Baselines
-
-| Metric | Industry Baseline | Source / Notes |
-|--------|------------------|----------------|
-| {metric name} | {value or range} | {source, or "⚠️ Unverified — validate before use"} |
-
-{3–6 metrics that will inform acceptance criteria in the SPEC}
-
----
-
-## Gap Analysis
-
-### What Existing Solutions Don't Cover
-- {gap 1 — specific unmet need your brief addresses}
-- {gap 2}
-
-### What Your Brief Overlaps With
-- {overlap 1 — where existing solutions already solve part of this}
-- {overlap 2}
-
-### Risks & Considerations
-- {risk 1}
-- {risk 2}
-
----
-
-## Spec Recommendations
-
-Based on the above research, the following should inform the SPEC:
-
-- **Include:** {specific feature or behavior grounded in benchmarks}
-- **Exclude (for now):** {scope boundary suggested by benchmark findings}
-- **Validate before specifying:** {areas where more information is needed before writing ACs}
-
----
-
-## Visual References *(frontend features only)*
-
-### Competitor Layout Patterns
-
-> These diagrams document existing solutions — they are references, not proposed designs.
-
-#### {Competitor Name} — {Screen/Component Name}
-
-```
-{Unicode box-drawing diagram}
-```
-
-### User Flow Patterns
-
-> Observed flow in {Competitor Name} — for reference only.
-
-```mermaid
-flowchart LR
-  ...
-```
-```
 
 ---
 

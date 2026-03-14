@@ -62,33 +62,11 @@ Default weights: `w₁ = w₂ = w₃ = w₄ = 1` (equal weighting).
 
 ## Output Template
 
+**Before writing any output, read `references/template.md` for the exact OPPORTUNITY.md structure.**
+
+The OPPORTUNITY contains: a metadata header (Generated from, Method, Impact weights, Date), and a RICE Score table with Factor, Value, and Rationale for Reach, Strategic Impact, Business Impact, User Impact, Internal Impact, weighted Impact, Confidence, and Effort.
+
 **After writing, run `bash scripts/validate-opportunity.sh {path-to-opportunity}` to verify structural completeness.**
-
-The final `OPPORTUNITY.md` must follow **exactly** this structure:
-
-```markdown
-# Opportunity: {Feature Name}
-
-> Generated from: {relative path to BRIEF.md}
-> Method: RICE (Reach x Impact x Confidence / Effort)
-> Impact weights: Strategic={w₁}, Business={w₂}, User={w₃}, Internal={w₄}
-> Date: {YYYY-MM-DD}
-
----
-
-## RICE Score: {score}
-
-| Factor | Value | Rationale |
-|--------|-------|-----------|
-| Reach | {value}% of users | {why this percentage} |
-| Strategic Impact | {1-13} | {rationale} |
-| Business Impact | {1-13} | {rationale} |
-| User Impact | {1-13} | {rationale} |
-| Internal Impact | {1-13} | {rationale} |
-| **Impact (weighted avg)** | **{value}** | weights: {w₁}/{w₂}/{w₃}/{w₄} |
-| Confidence | {50/80/100}% | {rationale} |
-| Effort | {1-13} person-weeks | {rationale} |
-```
 
 ---
 
