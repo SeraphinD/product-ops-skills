@@ -20,6 +20,8 @@ This skill interactively generates a `BRIEF.md` file by gathering information th
 
 The BRIEF contains: Executive Summary, Problem Statement (with optional verbatims), Solution, Key Objectives, Scope (In Scope and Out of Scope), Assumptions & Risks (with optional subsections), and Success Criteria.
 
+**After writing, run `bash scripts/validate-brief.sh {path-to-brief}` to verify structural completeness.**
+
 ## Interaction Protocol
 
 Work section by section. For each section:
