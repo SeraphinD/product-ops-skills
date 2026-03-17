@@ -77,6 +77,43 @@
     },
     {
       "id": 3,
+      "prompt": "I have interview notes from 6 users and some support ticket data about our reporting feature. The files are in research/reporting/. Help me frame the problem.",
+      "expected_output": "The skill should ask for/read the research files, extract themes and verbatims, draft a Research Evidence section with Sources, Key Findings (with verbatims), Data Gaps, and then proceed through the normal problem framing flow grounded in the research data. The Stress Test evidence basis should reference the data.",
+      "assertions": [
+        {
+          "id": "template-structure",
+          "text": "Output follows the template structure with all required sections including Research Evidence with Sources, Key Findings, and Data Gaps",
+          "type": "structural"
+        },
+        {
+          "id": "research-intake",
+          "text": "The skill reads the provided research files and extracts themes, patterns, and verbatim quotes from them",
+          "type": "quality"
+        },
+        {
+          "id": "findings-with-verbatims",
+          "text": "Key Findings each have at least one supporting verbatim or data point with source attribution",
+          "type": "quality"
+        },
+        {
+          "id": "data-gaps-identified",
+          "text": "Data Gaps section identifies what evidence is missing or insufficient",
+          "type": "quality"
+        },
+        {
+          "id": "evidence-basis-grounded",
+          "text": "The Stress Test evidence basis references the actual research data, not 'hunch' or generic 'user feedback'",
+          "type": "quality"
+        },
+        {
+          "id": "situation-context-grounded",
+          "text": "Situation Context weaves in specific findings from the research rather than being generic",
+          "type": "quality"
+        }
+      ]
+    },
+    {
+      "id": 4,
       "prompt": "We need a problem frame — basically we need to rebuild our auth system to support SSO. Our biggest customers keep asking for it and we lost 2 deals last quarter because of it.",
       "expected_output": "A PROBLEM-FRAME.md that redirects from the solution (SSO) back to the problem (enterprise customers can't meet their security/compliance requirements with our current auth). The skill should catch the solution-framing and reframe around the actual pain. Root cause analysis should explore why current auth doesn't meet enterprise needs.",
       "assertions": [

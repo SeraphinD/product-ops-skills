@@ -1,11 +1,11 @@
 ---
 name: create-problem-frame
-description: Interactively creates a PROBLEM-FRAME.md that forces clarity on what the actual problem is before anyone jumps to solutions. Walks the user through structured Q&A covering situation context, problem articulation, adaptive root cause analysis (5 Whys), constraints, success definition, and alternative framings. This is the first step in the discovery pipeline — it feeds into create-brief. Trigger on phrases like "frame a problem", "create a problem frame", "problem framing", "generate PROBLEM-FRAME.md", "what problem are we solving", "define the problem", "let's clarify the problem", "start with the problem", "root cause analysis", or "5 whys". Do NOT use for creating a brief (use create-brief), converting a brief into specs (use brief-to-specs), benchmarking (use brief-to-benchmark), or any downstream pipeline step — this skill defines and validates the problem only.
-allowed-tools: "Read Write Glob"
+description: Interactively creates a PROBLEM-FRAME.md that forces clarity on what the actual problem is before anyone jumps to solutions. Walks the user through structured Q&A covering optional research/data intake, situation context, problem articulation, adaptive root cause analysis (5 Whys), constraints, success definition, and alternative framings. This is the first step in the discovery pipeline — it feeds into create-brief. Trigger on phrases like "frame a problem", "create a problem frame", "problem framing", "generate PROBLEM-FRAME.md", "what problem are we solving", "define the problem", "let's clarify the problem", "start with the problem", "root cause analysis", "5 whys", "I have research data to frame a problem", "synthesize user research", "frame a problem from interview data", or "ground a problem in data". Do NOT use for creating a brief (use create-brief), converting a brief into specs (use brief-to-specs), benchmarking (use brief-to-benchmark), or any downstream pipeline step — this skill defines and validates the problem only.
+allowed-tools: "Read Write Glob Grep"
 license: MIT
 metadata:
   author: seraphindesumeur
-  version: 1.0.0
+  version: 1.1.0
   category: feature-pipeline
   tags: [problem-framing, discovery, root-cause, five-whys, pipeline]
 ---
@@ -52,7 +52,49 @@ From their answer, extract what you can. Identify gaps before proceeding.
 
 ---
 
-### Step 2 — Working Title
+### Step 2 — Research Intake (Optional)
+
+After initial context, ask whether the user has research data or metrics to ground the problem:
+
+> *"Do you have any research data to ground this — interview notes, survey results, support tickets, analytics exports, or usage metrics? If so, point me to the files or paste the key data."*
+
+**If the user says no:** Note that the frame will be hunch-based (this feeds into the Stress Test's "Evidence basis" field later). Move on to Step 3.
+
+**If the user provides data:** Process it based on the input type:
+
+**File-based input** (the user points to files in the repo):
+1. Use Glob to find the files (e.g., `research/*.md`, `data/*.csv`)
+2. Read each file
+3. Extract themes, patterns, and verbatim quotes
+4. Summarize what the data says — group findings by theme
+
+**Paste-based input** (the user pastes data in chat):
+1. Acknowledge the data
+2. Extract themes, patterns, and key data points
+3. Summarize findings
+
+**For qualitative data** (interviews, surveys, support tickets):
+- Cluster findings into 3–8 themes
+- Each theme needs at least one supporting verbatim (use participant IDs like P1, P2 — never real names)
+- Note contradictions between sources — don't cherry-pick
+
+**For quantitative data** (metrics, funnels, analytics):
+- Extract key metrics with values and trends
+- Identify anomalies or notable patterns
+- Note what the data suggests but does not prove
+
+**For both types:**
+- Identify data gaps — what's missing or unreliable
+- Rate confidence: High (large sample, recent, rigorous), Medium (decent sample, some gaps), Low (small sample, old, anecdotal)
+
+Draft a Research Evidence summary. Propose it to the user:
+> *"Here's what I extracted from the data. Does this capture the key findings, or did I miss something important?"*
+
+Confirm before moving on. This summary will become the Research Evidence section in the final document.
+
+---
+
+### Step 3 — Working Title
 
 Confirm a short working title for the problem frame. This becomes the heading and the `{feature-name}` slug.
 
@@ -63,13 +105,15 @@ The title should describe the problem space, not a solution (e.g., "Onboarding D
 
 ---
 
-### Step 3 — Situation Context
+### Step 4 — Situation Context
 
 Draft 2–4 sentences covering:
 - **What is happening right now** — the current state
 - **Who is affected** — the people experiencing the problem (users, team, customers, stakeholders)
 - **What is the context** — relevant background (market, technical environment, org situation)
 - **What triggered this** — why this is being examined now (metric drop, customer complaint, strategic shift, observed pattern)
+
+**If Research Evidence was gathered in Step 2**, weave findings into the situation context. Reference specific data points or themes — don't just summarize generically. The situation context should feel grounded in evidence, not vibes.
 
 If the user's initial description is thin on any dimension, ask targeted questions:
 > *"What triggered this — was there a specific event, metric change, or feedback that made this visible?"*
@@ -78,7 +122,7 @@ Propose a draft. Ask for confirmation.
 
 ---
 
-### Step 4 — Problem Statement
+### Step 5 — Problem Statement
 
 Craft a single sentence that captures the core problem. This is the hardest and most important step — a blurry problem statement poisons everything downstream.
 
@@ -91,14 +135,14 @@ Craft a single sentence that captures the core problem. This is the hardest and 
 
 Stress-test the draft:
 1. **Is this the root problem or a symptom?** — If it sounds like a symptom (e.g., "users don't click the button"), dig deeper: why don't they click it?
-2. **Who says it's a problem?** — Is there data, user feedback, or is this a hunch?
+2. **Who says it's a problem?** — Is there data, user feedback, or is this a hunch? **If Research Evidence was gathered**, reference the specific findings that support (or challenge) the statement. Set the evidence basis accordingly: "Data" if grounded in research, "Hunch" if not.
 3. **What happens if we do nothing?** — If the answer is "not much", the problem may not be worth solving.
 
 Propose the statement. Ask: *"Does this capture the core problem? Is any part of it a symptom rather than the real issue?"*
 
 ---
 
-### Step 5 — Root Cause Analysis (Adaptive 5 Whys)
+### Step 6 — Root Cause Analysis (Adaptive 5 Whys)
 
 Starting from the problem statement, drill into root causes by asking "why" iteratively.
 
@@ -124,7 +168,7 @@ Propose the chain. Ask for confirmation.
 
 ---
 
-### Step 6 — Constraints & Boundaries
+### Step 7 — Constraints & Boundaries
 
 Identify what can't change and what's out of scope for this problem. Two categories:
 
@@ -149,7 +193,7 @@ Propose the lists. Confirm.
 
 ---
 
-### Step 7 — Success Definition
+### Step 8 — Success Definition
 
 Define what "problem solved" looks like. This is not about features or solutions — it's about the observable change in the world.
 
@@ -165,7 +209,7 @@ Propose a draft. Confirm.
 
 ---
 
-### Step 8 — Alternative Framings
+### Step 9 — Alternative Framings
 
 This is the stress-test. The skill proposes 2–3 different ways to frame the same problem. The goal is to check whether the chosen framing is actually the best angle of attack — or whether a reframe unlocks a better approach.
 
@@ -191,7 +235,7 @@ The user can:
 
 ---
 
-### Step 9 — Chosen Frame
+### Step 10 — Chosen Frame
 
 Record which framing was selected and why. This becomes the anchor for everything downstream.
 
@@ -205,7 +249,7 @@ Log the choice to `DECISION.md`.
 
 ---
 
-### Step 10 — Assemble and Write
+### Step 11 — Assemble and Write
 
 Once all sections are confirmed:
 1. Read `references/template.md` for the exact output format
@@ -239,11 +283,12 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 1. **Interactive first** — never generate the full problem frame from a single message without walking through each section.
 2. **Propose, don't impose** — always show a draft of each section and ask for feedback before locking it in.
 3. **No placeholders in the final file** — every field must contain real content.
-4. **Strict structure** — only the sections defined in the template. No extra sections.
+4. **Strict structure** — only the sections defined in the template. No extra sections. Research Evidence is optional — omit the entire section if no research was provided.
 5. **Problems, not solutions** — if the user starts describing solutions, redirect: *"That sounds like a solution. What's the problem it solves?"*
 6. **Adaptive depth** — the 5 Whys stops when root cause is reached. Don't force artificial depth.
 7. **Language** — write the PROBLEM-FRAME.md in English, regardless of the language the user uses to interact.
 8. **One section at a time** — do not dump all questions at once. Work through sections sequentially.
+9. **Research honesty** — never fabricate findings or data points. If research is provided, synthesize it faithfully — including contradictions and gaps. Use participant IDs (P1, P2) for verbatims, never real names.
 
 ---
 
@@ -267,7 +312,19 @@ Actions:
 4. Propose alternative framings that shift from "onboarding UX" to "documentation discoverability"
 Result: A problem frame that redirects effort from UI redesign to documentation — saving weeks of wasted work
 
-### Example 3: User keeps jumping to solutions
+### Example 3: Problem grounded in research data
+User says: "I have 8 user interview transcripts and some support ticket data — help me frame the problem around our reporting feature"
+Actions:
+1. Ask the user to point to the files or paste the data
+2. User provides file paths — read the interview notes and support ticket exports
+3. Extract themes: "manual export workarounds" (6/8 participants), "can't schedule reports" (5/8), "formatting issues" (3/8)
+4. Extract verbatims and data points, note contradictions (2 participants actually prefer manual exports for control)
+5. Draft Research Evidence section with sources, findings, quantitative signals (support ticket volume trend), and data gaps (no usage analytics on current reporting feature)
+6. Confirm research summary → proceed to Situation Context grounded in the evidence
+7. Problem Statement stress test: Evidence basis is "Data" — 8 interviews + support tickets
+Result: A PROBLEM-FRAME.md where every claim traces back to research, the stress test is grounded in data, and data gaps are explicitly acknowledged
+
+### Example 4: User keeps jumping to solutions
 User says: "We need to frame the problem — basically we need to add a caching layer"
 Actions:
 1. Redirect: "A caching layer sounds like a solution. What's the problem it solves? What's slow or broken today?"

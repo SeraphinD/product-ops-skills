@@ -68,6 +68,28 @@ check_section "^### Selected Problem Statement" "Selected Problem Statement"
 check_section "^### Why This Frame" "Why This Frame"
 
 echo ""
+echo "--- Research Evidence (Optional) ---"
+if grep -q "^## Research Evidence" "$FILE"; then
+  echo "  OK: Research Evidence section present"
+  check_section "^### Sources" "Sources (under Research Evidence)"
+  check_section "^### Key Findings" "Key Findings (under Research Evidence)"
+  check_section "^### Data Gaps" "Data Gaps (under Research Evidence)"
+  count_items "^### Key Findings" 3 8 "Key Findings"
+  count_items "^### Data Gaps" 1 5 "Data Gaps"
+  # Check that findings have verbatims (lines starting with >)
+  VERBATIM_COUNT=$(awk '/^### Key Findings/{found=1; next} /^#/{if(found) exit} found && /^  > /' "$FILE" | wc -l | tr -d ' ')
+  FINDING_COUNT=$(awk '/^### Key Findings/{found=1; next} /^#/{if(found) exit} found && /^- /' "$FILE" | wc -l | tr -d ' ')
+  if [[ "$FINDING_COUNT" -gt 0 && "$VERBATIM_COUNT" -lt "$FINDING_COUNT" ]]; then
+    echo "WARN: Only $VERBATIM_COUNT verbatim(s) for $FINDING_COUNT finding(s) — each finding should have supporting evidence"
+    WARNINGS=$((WARNINGS + 1))
+  else
+    echo "  OK: Findings have supporting verbatims — $VERBATIM_COUNT/$FINDING_COUNT"
+  fi
+else
+  echo "  SKIP: Research Evidence section not present (optional)"
+fi
+
+echo ""
 echo "--- Item Counts ---"
 count_items "^### Hard Constraints" 1 10 "Hard Constraints"
 count_items "^### Problem Boundaries" 1 10 "Problem Boundaries"

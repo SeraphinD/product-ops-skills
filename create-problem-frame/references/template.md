@@ -3,6 +3,34 @@
 ## Situation Context
 [2–4 sentences: what is happening now, who is affected, relevant background, and what triggered this investigation]
 
+## Research Evidence
+<!-- OPTIONAL — include only when the user provides research data, interviews, analytics, or user feedback to ground the problem frame. Delete this entire section if no research was provided. -->
+
+### Sources
+<!-- What was analyzed: type, volume, period -->
+- {Source type 1: volume, period}
+- {Source type 2: volume, period}
+
+### Key Findings
+<!-- 3–8 findings, each with at least one supporting verbatim or data point -->
+- {Finding 1}
+  > "{Verbatim or data point}" — {Source}
+- {Finding 2}
+  > "{Verbatim or data point}" — {Source}
+- {Finding 3}
+  > "{Verbatim or data point}" — {Source}
+
+### Quantitative Signals
+<!-- OPTIONAL — include only if metrics or analytics data was provided. Delete if not applicable. -->
+| Metric | Value | Trend | Implication |
+|--------|-------|-------|-------------|
+| {metric} | {value} | {↑ ↓ →} | {what it suggests} |
+
+### Data Gaps
+<!-- What's missing, unreliable, or needs further investigation -->
+- {Gap 1}
+- {Gap 2}
+
 ## Problem Statement
 [Single sentence: "[Who] struggles with [what] because [why], which results in [consequence]."]
 
