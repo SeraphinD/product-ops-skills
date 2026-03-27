@@ -21,7 +21,7 @@ This skill is the single entry point to the Product Ops pipeline. It analyzes co
 Present this pipeline when the user needs orientation:
 
 ```
-[PROBLEM FRAME] → BRIEF → [BENCHMARK] → [OPPORTUNITY] → SPEC → [DESIGN] → PLAN → TASKS
+[PROBLEM FRAME] → BRIEF → [BENCHMARK] → [OPPORTUNITY] → SPEC → [DESIGN] → PLAN → TASKS → [EXECUTION] → [RETRO]
 ```
 
 | Stage | Skill | Produces | Required? |
@@ -35,6 +35,8 @@ Present this pipeline when the user needs orientation:
 | 6b | `spec-to-mobile-design` | `DESIGN.md` (mobile) | Optional |
 | 7 | `spec-to-plan` | `PLAN.md` | Yes |
 | 8 | `plan-to-tasks` | `TASKS.md` | Yes |
+| 9 | `execute-tasks` | updates `TASKS.md` | Optional |
+| 10 | `feature-retrospective` | `RETRO.md` | Optional |
 
 ---
 
@@ -67,6 +69,7 @@ Once the feature is identified, scan `docs/features/{feature-name}/` for these f
 | `DESIGN.md` | Design done |
 | `PLAN.md` | Plan generated |
 | `TASKS.md` | Tasks generated |
+| `RETRO.md` | Retrospective done |
 | `DECISION.md` | Decisions logged |
 
 Report what exists in a concise status summary:
@@ -96,6 +99,8 @@ Based on what the user said and what artifacts exist, recommend the next action.
 | "design the feature" / "UI design" / "wireframes" | `spec-to-design` or `spec-to-mobile-design` |
 | "generate a plan" / "implementation plan" | `spec-to-plan` |
 | "generate tasks" / "task list" / "what do I build" | `plan-to-tasks` |
+| "execute tasks" / "start building" / "pick up next task" | `execute-tasks` |
+| "retrospective" / "retro" / "how did we do" / "review" | `feature-retrospective` |
 
 **If the user reports a problem with an existing artifact (backward navigation):**
 
@@ -119,7 +124,9 @@ Determine the next logical step based on existing artifacts:
 3. `BRIEF.md` exists, no `SPEC.md` → recommend `brief-to-specs` (mention `brief-to-benchmark` and `brief-to-opportunity` as optional steps)
 4. `SPEC.md` exists, no `PLAN.md` → recommend `spec-to-plan` (mention `spec-to-design` as optional step)
 5. `PLAN.md` exists, no `TASKS.md` → recommend `plan-to-tasks`
-6. `TASKS.md` exists → pipeline is complete; mention they can review or update any artifact
+6. `TASKS.md` exists, tasks still pending → recommend `execute-tasks` (optional — user can execute manually)
+7. `TASKS.md` exists, all tasks completed, no `RETRO.md` → recommend `feature-retrospective` (optional)
+8. `RETRO.md` exists → pipeline is complete; mention they can review or update any artifact, or start a new feature
 
 ### Step 4 — Present the Recommendation
 
@@ -205,7 +212,7 @@ Actions:
 
 ### Example 3: Pipeline is complete
 
-User says: "/pm" (feature directory has all artifacts)
+User says: "/pm" (feature directory has all artifacts including RETRO.md)
 
 Actions:
 1. Scan `docs/features/dashboard/` — all files present
@@ -221,11 +228,37 @@ Actions:
 > | DESIGN.md | ✅ |
 > | PLAN.md | ✅ |
 > | TASKS.md | ✅ |
+> | RETRO.md | ✅ |
 >
 > All pipeline stages are done. You can:
 > - Review or update any artifact by opening it directly
 > - Re-run a stage if requirements changed — say *"The spec needs updating"* and I'll route you to the right skill and flag which downstream artifacts need regeneration
 > - Start a new feature: say *"Create a brief for {new feature}"*
+
+### Example 5: Tasks exist but not yet executed
+
+User says: "/pm" (feature directory has BRIEF, SPEC, PLAN, TASKS — no RETRO)
+
+Actions:
+1. Scan `docs/features/notification-system/` — found BRIEF, SPEC, PLAN, TASKS
+2. TASKS.md exists with pending tasks, no RETRO.md
+3. Present:
+
+> **Feature: `notification-system`**
+>
+> | Document | Status |
+> |----------|--------|
+> | BRIEF.md | ✅ |
+> | SPEC.md | ✅ |
+> | PLAN.md | ✅ |
+> | TASKS.md | ✅ |
+> | RETRO.md | — |
+>
+> **Next step: `execute-tasks`** — work through your task list with tracked execution.
+> Say: *"Execute tasks"*
+>
+> **Optional:** You can execute tasks manually and skip to the retrospective when done.
+> - `feature-retrospective` — review outcomes against success criteria. Say: *"Run a retro"*
 
 ### Example 4: User has a specific intent
 

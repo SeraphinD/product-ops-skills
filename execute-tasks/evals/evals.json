@@ -1,0 +1,48 @@
+{
+  "skill_name": "execute-tasks",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just generated my TASKS.md for the greeting-tool feature. All 5 tasks are pending — simple CLI project with a greet function, argparse wiring, color flag, and unit tests. Execute the tasks.",
+      "expected_output": "Skill locates TASKS.md, presents a status dashboard (5 pending), identifies Task 1 as the first actionable task (no dependencies), classifies it as Simple, proposes creating the project scaffold, asks for confirmation before executing, updates TASKS.md status after each task, and asks whether to continue or pause after each completion.",
+      "files": [],
+      "expectations": [
+        "Presents a status dashboard with counts before picking the first task",
+        "Identifies the first pending task with no unmet dependencies as the next actionable task",
+        "Classifies file-creation tasks as Simple",
+        "Asks for user confirmation before executing any task",
+        "Updates TASKS.md in-place after completing a task (status change and date)",
+        "Updates the header summary counts after each status change",
+        "Asks 'continue or pause' after each task completion"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Pick up where we left off on the notification-system feature. TASKS.md shows 3 completed, 1 in-progress (NotificationList component assigned to frontend-design), and 2 pending. Continue executing.",
+      "expected_output": "Skill detects the in-progress task, presents it as a resume candidate, asks the user whether to continue or restart it, classifies it as Complex with skill assignment, delegates to frontend-design rather than implementing the component directly, and after that task resolves moves to the next pending task respecting dependency order.",
+      "files": [],
+      "expectations": [
+        "Detects and surfaces the existing in-progress task before scanning pending tasks",
+        "Asks the user whether to continue or restart the in-progress task",
+        "Classifies a task with a Skill/Agent assignment as Complex with skill delegation",
+        "Delegates to the assigned skill instead of replicating its logic",
+        "Respects dependency ordering when moving to the next pending task",
+        "Does not attempt to execute a pending task whose dependencies are incomplete"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Execute tasks for the payment-gateway feature. There are 2 blocked tasks — the webhook handler is blocked because the SPEC doesn't define the payload format, and the payment confirmation UI is blocked because it depends on the webhook handler. 3 tasks are completed, 3 are pending. Handle the blocked tasks and continue with whatever is actionable.",
+      "expected_output": "Skill presents dashboard showing the 2 blocked tasks with their reasons, identifies that Task 4 is blocked by an upstream SPEC gap (not a dependency), flags it as a pipeline iteration issue referencing the SPEC, skips both blocked tasks, identifies actionable pending tasks (Task 6 refund support, Task 7 payment history) whose dependencies ARE met, and proposes executing those instead.",
+      "files": [],
+      "expectations": [
+        "Presents blocked tasks with their block reasons in the dashboard",
+        "Identifies the root cause of the block as an upstream SPEC gap, not just a task dependency",
+        "References pipeline iteration protocol for the upstream SPEC issue",
+        "Skips blocked tasks and their dependents without marking additional tasks as blocked",
+        "Identifies pending tasks whose dependencies are met despite the blocked tasks",
+        "Does not attempt to unblock tasks by guessing missing spec information"
+      ]
+    }
+  ]
+}

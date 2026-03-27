@@ -1,0 +1,49 @@
+{
+  "skill_name": "feature-retrospective",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run a retro on the greeting-tool feature. All 5 tasks are completed, BRIEF has 3 success criteria, SPEC has 5 AC scenarios, and DECISION.md has 1 entry with no rollbacks. No BENCHMARK or OPPORTUNITY exists.",
+      "expected_output": "Skill loads all available artifacts, determines Full Retrospective mode (all tasks completed), evaluates each BRIEF success criterion with a PASS/FAIL/PARTIAL/UNTESTABLE verdict backed by evidence, checks AC scenario coverage against tasks, computes metrics (100% completion, 0 blocked, 0 rollbacks), writes What Went Well / What Didn't Go Well / Lessons Learned sections grounded in artifact data, and produces a complete RETRO.md after user confirmation.",
+      "files": [],
+      "expectations": [
+        "Reports which artifacts were loaded and which were missing",
+        "Correctly identifies Full Retrospective mode from task statuses",
+        "Evaluates each BRIEF success criterion individually with a verdict and evidence",
+        "Produces a score summary (N/M criteria met with percentage)",
+        "Checks every SPEC AC scenario for corresponding task coverage",
+        "Computes task completion rate, blocked count, and rollback count from artifacts",
+        "Skips metrics whose source artifact is missing rather than fabricating data",
+        "Presents the full RETRO.md for user review before writing the file"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How are we doing on the notification-system? We have BRIEF, SPEC, PLAN, TASKS, and DECISION. TASKS shows 8 completed, 2 in-progress, 5 pending out of 15. DECISION has 2 rollback entries. Give me a checkpoint retro.",
+      "expected_output": "Skill detects pending/in-progress tasks and enters Checkpoint mode. Uses PARTIAL or PROJECTED verdicts instead of final PASS/FAIL for criteria tied to incomplete tasks. Includes a Remaining Work section. Surfaces the 2 rollbacks in What Didn't Go Well. Metrics reflect partial completion. No final verdicts on criteria that depend on unfinished work.",
+      "files": [],
+      "expectations": [
+        "Correctly identifies Checkpoint mode when pending or in-progress tasks exist",
+        "Uses PARTIAL or PROJECTED verdicts for criteria linked to incomplete tasks instead of PASS/FAIL",
+        "Includes a Remaining Work section listing pending and in-progress tasks",
+        "Surfaces rollback decisions from DECISION.md in the What Didn't Go Well section",
+        "Computes metrics from actual artifact data without estimating missing values",
+        "Does not issue final PASS/FAIL verdicts on criteria whose tasks are still pending"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Do a retro on the payment-gateway feature. We only have BRIEF.md and TASKS.md — no SPEC, no DESIGN, no PLAN, no DECISION. TASKS has 10 completed, 3 blocked. The BRIEF has 4 success criteria.",
+      "expected_output": "Skill loads the two available artifacts and notes what is missing. Skips Acceptance Criteria Coverage (no SPEC). Skips rollback metrics (no DECISION). Evaluates success criteria against TASKS.md only (limited traceability). Flags in the header that this is a limited-artifact retro. Lessons Learned mentions the missing artifacts as a process gap.",
+      "files": [],
+      "expectations": [
+        "Reports exactly which artifacts were found and which were missing",
+        "Skips Acceptance Criteria Coverage section entirely when SPEC is absent",
+        "Skips rollback and decision metrics when DECISION.md is absent",
+        "Evaluates success criteria using only the available artifacts without fabricating links to missing ones",
+        "Notes the limited-artifact situation in the RETRO.md header or a disclaimer",
+        "Includes the missing artifacts as a process improvement item in Lessons Learned"
+      ]
+    }
+  ]
+}

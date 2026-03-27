@@ -1,6 +1,6 @@
 # Product Ops Skills
 
-A set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills that guide you through building a software feature — from raw idea to an actionable task list — with structured documents at every step.
+A set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills that guide you through building a software feature — from raw idea to delivery and retrospective — with structured documents at every step.
 
 Each skill takes one document as input and produces the next. You confirm each section before anything is written, so nothing gets generated behind your back.
 
@@ -25,7 +25,7 @@ This pipeline enforces the discipline that prevents those failures:
 ```
                                         /pm
                                          ↓
-[PROBLEM FRAME] → BRIEF → [BENCHMARK] → [OPPORTUNITY] → SPEC → [DESIGN] → PLAN → TASKS
+[PROBLEM FRAME] → BRIEF → [BENCHMARK] → [OPPORTUNITY] → SPEC → [DESIGN] → PLAN → TASKS → [EXECUTION] → [RETRO]
 ```
 
 Use `/pm` at any point to see where you are and what to do next.
@@ -42,6 +42,8 @@ Use `/pm` at any point to see where you are and what to do next.
 | **spec-to-mobile-design** | `DESIGN.md` — same, but for native iOS/Android. Optionally reads tokens from Figma and scaffolds screen frames via MCP Figma | Same, with platform-specific patterns for iOS and Android; Figma scaffolds include safe area guides | ✅ Yes |
 | **spec-to-plan** | `PLAN.md` — phased implementation steps, file tree, critical files, verification checklist | Gives engineering a buildable sequence, not just a wish list | No |
 | **plan-to-tasks** | `TASKS.md` — flat, atomic task list with statuses and optional skill assignments | Makes the plan trackable — every task maps to a plan step | No |
+| **execute-tasks** | Updates `TASKS.md` in-place — status changes, completion dates, block reasons | Bridges the gap between having a task list and having completed work; tracks execution with structured status updates | ✅ Yes |
+| **feature-retrospective** | `RETRO.md` — success criteria evaluation, metrics, process review, lessons learned | Closes the feedback loop — did we build what we set out to build? What should change next time? | ✅ Yes |
 
 > **Design note:** `spec-to-design` (web) and `spec-to-mobile-design` (native mobile) both write to `DESIGN.md`. Run one or the other for a given feature, not both.
 
@@ -56,7 +58,7 @@ Clone the repo and symlink each skill into your user-level Claude Code skills di
 ```bash
 REPO="/path/to/product-ops-skills"
 
-for skill in pm create-problem-frame create-brief brief-to-benchmark brief-to-opportunity brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks; do
+for skill in pm create-problem-frame create-brief brief-to-benchmark brief-to-opportunity brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks execute-tasks feature-retrospective; do
   ln -sf "$REPO/$skill" "$HOME/.claude/skills/$skill"
 done
 ```
@@ -264,6 +266,49 @@ Claude triggers `plan-to-tasks`, maps every plan step to an atomic task, and opt
 
 ---
 
+### Step 9 — Execute Tasks (optional)
+
+> **You:** Execute tasks
+
+Claude triggers `execute-tasks`, reads `TASKS.md`, presents a status dashboard, and picks up the next actionable task. Simple tasks (file creation, config, boilerplate) are executed directly. Complex tasks assigned to a skill are delegated — Claude tells you which skill to invoke. After each task, `TASKS.md` is updated in-place with the new status and completion date.
+
+**Output:** Updates `TASKS.md` in-place (no new file)
+
+```
+✅ completed 2025-03-15 — Create NotificationService.ts
+✅ completed 2025-03-15 — Create PermissionPrompt component
+🔄 in_progress          — Create notification preferences screen
+⬜ pending              — Write integration tests
+```
+
+Skip this step if you prefer to execute tasks manually.
+
+---
+
+### Step 10 — Retrospective (optional)
+
+> **You:** Run a retro on push notifications
+
+Claude triggers `feature-retrospective`, reads all pipeline artifacts, and evaluates outcomes against the original BRIEF success criteria. It computes metrics (completion rate, blocked tasks, rollback decisions), reviews the process (what went well, what didn't), and produces lessons learned.
+
+**Output:** `docs/features/push-notifications/RETRO.md`
+
+```
+## Success Criteria Evaluation
+| Criterion | Verdict | Evidence |
+|-----------|---------|----------|
+| Users receive notifications within 3s | PASS | Task 1.2 completed, SPEC AC verified |
+| Opt-in rate > 60% | UNTESTABLE | Requires production data |
+
+## Metrics
+Task completion: 92% (11/12) | Blocked: 1 | Rollbacks: 0
+
+## Lessons Learned
+- SPEC should define notification payload format upfront — blocked 1 task
+```
+
+---
+
 ### What You End Up With
 
 After the full pipeline, your feature folder looks like this:
@@ -277,7 +322,8 @@ docs/features/push-notifications/
 ├── SPEC.md         ← user stories + acceptance criteria
 ├── DESIGN.md       ← UI/UX design (optional)
 ├── PLAN.md         ← phased implementation steps
-├── TASKS.md        ← atomic task list
+├── TASKS.md        ← atomic task list (updated in-place during execution)
+├── RETRO.md        ← retrospective with success evaluation (optional)
 └── DECISION.md     ← full log of every decision made
 ```
 
