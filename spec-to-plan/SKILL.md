@@ -84,7 +84,26 @@ If no `DESIGN.md` is found, proceed without it — this phase is optional.
 
 ---
 
-### Step 4 — Analyze gaps before writing
+### Step 4 — Load Compliance Review Artifacts (if available)
+
+Check whether any of the following exist in `docs/features/{feature-name}/`:
+- `GDPR-REVIEW.md`
+- `ACCESSIBILITY-REVIEW.md`
+- `AI-ACT-REVIEW.md`
+
+For each one found, read it in full. Then use them to inform the plan:
+
+- **Implementation Phases** — add compliance-specific implementation steps to the relevant phase. For example: consent flow implementation (from GDPR review), accessibility testing setup (from accessibility review), AI transparency UI (from AI Act review). These steps slot into the existing MoSCoW-ordered phases alongside the feature implementation steps — they are not a separate phase.
+- **Verification Checklist (Step 9)** — add compliance verification items derived from each review's findings. For example: "GDPR consent flow works as specified", "WCAG AA contrast ratios met", "AI interaction disclosure visible to users".
+- **Implementation Details (Step 10)** — add a "Compliance Implementation" subsection covering the specific compliance requirements, the tools/libraries needed (e.g., cookie consent library, axe-core for a11y testing, model card template), and any constraints from the reviews.
+
+If a review's compliance acceptance criteria include concrete Given/When/Then scenarios, carry them into the Verification Checklist as checkable items.
+
+If no compliance review artifacts are found, proceed without them — this input is optional.
+
+---
+
+### Step 5 — Analyze gaps before writing
 
 After reading the SPEC, before generating anything, scan each section for information that would be needed to produce a complete, unambiguous plan:
 
@@ -95,6 +114,7 @@ After reading the SPEC, before generating anything, scan each section for inform
 - **Error handling** — Are error messages or exit codes specified in the spec?
 - **Test strategy** — Is there a testing framework mentioned, or should one be assumed?
 - **Design document** — Is there a DESIGN.md? If so, does it specify a styling approach (CSS-in-JS, Tailwind, plain CSS)? If not specified in either the spec or design, ask the user.
+- **Compliance reviews** — Were compliance review artifacts loaded in Step 4? If so, do they introduce implementation requirements (consent flows, accessibility testing, AI transparency) that need dedicated plan steps?
 
 If any of these are ambiguous, **ask all clarifying questions in a single message** — group them by section (e.g., "Stack", "Project structure"), propose a sensible default for each, and wait for the user to confirm or correct.
 
@@ -114,7 +134,7 @@ If the spec is complete enough to fill every section without guessing, skip stra
 
 ---
 
-### Step 5 — Extract the Requirements Summary
+### Step 6 — Extract the Requirements Summary
 
 From the spec, pull out the key facts that define the feature:
 - The primary command, endpoint, or entry point
@@ -126,7 +146,7 @@ Stick to what the spec states. Do not add requirements not grounded in the spec.
 
 ---
 
-### Step 6 — Design the Project Structure
+### Step 7 — Design the Project Structure
 
 Build a realistic file tree based on the spec's implied or explicit structure. Rules:
 - Always include `docs/features/{feature-name}/SPEC.md` and `PLAN.md` in the tree — so the plan is self-contained and reviewable in context alongside its source spec
@@ -138,7 +158,7 @@ Build a realistic file tree based on the spec's implied or explicit structure. R
 
 ---
 
-### Step 7 — Define Implementation Phases
+### Step 8 — Define Implementation Phases
 
 Organize phases by MoSCoW priority order, then add Testing and Documentation at the end:
 
@@ -160,13 +180,13 @@ Each step within a phase must be specific: name the file and describe what it co
 
 ---
 
-### Step 8 — Identify Critical Files
+### Step 9 — Identify Critical Files
 
 List only the files whose absence would break the feature — the entry point, core logic file, and test file. Not every file in the tree is "critical." Keeping this list short forces reviewers to focus on what matters most, and signals to implementors which files to get right first.
 
 ---
 
-### Step 9 — Write the Verification Checklist
+### Step 10 — Write the Verification Checklist
 
 Pull directly from the spec's acceptance criteria. Each item must be a concrete, checkable statement:
 - Prefer exact commands: `python -m app hello Alice` → `Hello, Alice!` (exit 0) — exact commands prevent ambiguous checks that developers interpret differently and miss in review
@@ -174,7 +194,7 @@ Pull directly from the spec's acceptance criteria. Each item must be a concrete,
 
 ---
 
-### Step 10 — Fill in Implementation Details
+### Step 11 — Fill in Implementation Details
 
 For each non-obvious technical choice (CLI parsing library, routing pattern, error format), add a subsection explaining:
 - What to use — so implementors don't make inconsistent choices independently
@@ -192,7 +212,7 @@ Only include what the spec and design specify or what is needed to implement the
 
 ---
 
-### Step 11 — Determine Output Path
+### Step 12 — Determine Output Path
 
 The `PLAN.md` is **always** written to:
 
@@ -212,7 +232,7 @@ Where `{feature-name}` is the kebab-case version of the feature name (e.g., "JWT
 
 ---
 
-### Step 12 — Write the File
+### Step 13 — Write the File
 
 1. Assemble the complete `PLAN.md` using the template above
 2. Show the full content to the user for review

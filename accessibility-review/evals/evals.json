@@ -1,0 +1,118 @@
+{
+  "skill": "accessibility-review",
+  "version": "1.0",
+  "description": "Evals for accessibility-review — verifies triggering accuracy and functional behavior across review modes and platforms",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "Accessibility review",
+      "description": "Direct trigger using the canonical command phrase"
+    },
+    {
+      "id": "trigger-a11y",
+      "type": "trigger",
+      "prompt": "Run an a11y check on the dashboard spec",
+      "description": "Trigger using a11y shorthand"
+    },
+    {
+      "id": "trigger-wcag",
+      "type": "trigger",
+      "prompt": "WCAG review on the checkout flow design",
+      "description": "Trigger using WCAG standard name"
+    },
+    {
+      "id": "trigger-voiceover",
+      "type": "trigger",
+      "prompt": "Check VoiceOver support for the notification settings feature",
+      "description": "Trigger via mobile-specific accessibility concern"
+    },
+    {
+      "id": "trigger-rgaa",
+      "type": "trigger",
+      "prompt": "We need RGAA compliance — review the spec",
+      "description": "Trigger via French accessibility standard"
+    },
+    {
+      "id": "no-trigger-gdpr",
+      "type": "no-trigger",
+      "prompt": "Check GDPR compliance of the user profile feature",
+      "description": "Should trigger gdpr-review, not accessibility-review"
+    },
+    {
+      "id": "no-trigger-ai-act",
+      "type": "no-trigger",
+      "prompt": "AI Act compliance review",
+      "description": "Should trigger ai-act-review, not accessibility-review"
+    },
+    {
+      "id": "no-trigger-design",
+      "type": "no-trigger",
+      "prompt": "Design the feature from the spec",
+      "description": "Should trigger spec-to-design, not accessibility-review"
+    },
+    {
+      "id": "func-triage-brief",
+      "type": "functional",
+      "prompt": "Accessibility review on the checkout flow brief at docs/features/checkout-flow/BRIEF.md",
+      "description": "Given a BRIEF mentioning React web forms, does the agent detect web platform and run triage?",
+      "expected_behavior": [
+        "Detects BRIEF artifact type and enters Triage mode",
+        "Detects web platform from React mention",
+        "Identifies UI presence",
+        "Flags form accessibility, keyboard nav, error handling",
+        "Produces Recommendations for SPEC",
+        "Passes validate-accessibility-review.sh"
+      ]
+    },
+    {
+      "id": "func-deep-mobile-design",
+      "type": "functional",
+      "prompt": "Check accessibility of the notification settings design at docs/features/notification-settings/DESIGN.md. It's a React Native app.",
+      "description": "Given a DESIGN for a React Native feature, does the agent detect cross-platform and audit both iOS/Android?",
+      "expected_behavior": [
+        "Detects DESIGN artifact type and enters Deep mode",
+        "Detects cross-platform (React Native)",
+        "Includes iOS VoiceOver findings",
+        "Includes Android TalkBack findings",
+        "Includes React Native-specific accessibilityLabel/Role checks",
+        "Produces compliance ACs"
+      ]
+    },
+    {
+      "id": "func-deep-spec-rgaa",
+      "type": "functional",
+      "prompt": "WCAG review on the dashboard spec — we need RGAA compliance too",
+      "description": "Given a web SPEC with RGAA requirement, does the agent include both WCAG and RGAA mappings?",
+      "expected_behavior": [
+        "Detects web platform",
+        "Applies WCAG 2.1 AA criteria",
+        "Maps findings to RGAA criteria",
+        "Both WCAG and RGAA references appear in findings table"
+      ]
+    },
+    {
+      "id": "func-verify-plan",
+      "type": "functional",
+      "prompt": "Check accessibility compliance of the notification system plan",
+      "description": "Given a PLAN and prior ACCESSIBILITY-REVIEW.md, does the agent run verify mode with testing coverage?",
+      "expected_behavior": [
+        "Detects PLAN artifact type and enters Verify mode",
+        "Loads prior review",
+        "Checks testing coverage (automated, manual, screen reader)",
+        "Cross-references requirements against plan steps",
+        "Produces Gap Report"
+      ]
+    },
+    {
+      "id": "func-english-output",
+      "type": "functional",
+      "prompt": "Vérifie l'accessibilité du design de la page d'accueil",
+      "description": "If the conversation is in French, is the review still written in English?",
+      "expected_behavior": [
+        "Writes ACCESSIBILITY-REVIEW.md entirely in English",
+        "Section headers, findings, recommendations — all in English"
+      ]
+    }
+  ]
+}

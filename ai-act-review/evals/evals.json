@@ -1,0 +1,110 @@
+{
+  "skill": "ai-act-review",
+  "version": "1.0",
+  "description": "Evals for ai-act-review — verifies triggering accuracy and functional behavior across review modes and risk levels",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "AI Act review",
+      "description": "Direct trigger using the canonical command phrase"
+    },
+    {
+      "id": "trigger-ai-compliance",
+      "type": "trigger",
+      "prompt": "Check AI compliance for our recommendation engine",
+      "description": "Trigger using 'AI compliance' phrase"
+    },
+    {
+      "id": "trigger-ai-risk",
+      "type": "trigger",
+      "prompt": "What's the AI risk level for our credit scoring feature?",
+      "description": "Trigger via risk assessment question about an AI feature"
+    },
+    {
+      "id": "trigger-eu-ai-regulation",
+      "type": "trigger",
+      "prompt": "Review the chatbot spec against EU AI regulations",
+      "description": "Trigger using 'EU AI regulations' synonym"
+    },
+    {
+      "id": "no-trigger-gdpr",
+      "type": "no-trigger",
+      "prompt": "Check GDPR compliance of the user profile",
+      "description": "Should trigger gdpr-review, not ai-act-review"
+    },
+    {
+      "id": "no-trigger-accessibility",
+      "type": "no-trigger",
+      "prompt": "Accessibility review on the dashboard",
+      "description": "Should trigger accessibility-review, not ai-act-review"
+    },
+    {
+      "id": "no-trigger-benchmark",
+      "type": "no-trigger",
+      "prompt": "Benchmark the brief for our ML pipeline",
+      "description": "Should trigger brief-to-benchmark, not ai-act-review — user wants competitive research"
+    },
+    {
+      "id": "func-triage-brief",
+      "type": "functional",
+      "prompt": "AI Act review on the product recommendation brief at docs/features/product-recommendations/BRIEF.md",
+      "description": "Given a BRIEF mentioning a recommendation engine, does the agent detect AI and provide preliminary risk classification?",
+      "expected_behavior": [
+        "Detects BRIEF artifact type and enters Triage mode",
+        "Identifies recommendation engine as AI component",
+        "Classifies as limited risk (Art. 50 transparency)",
+        "Produces Recommendations for SPEC",
+        "Passes validate-ai-act-review.sh"
+      ]
+    },
+    {
+      "id": "func-deep-high-risk",
+      "type": "functional",
+      "prompt": "Run AI Act compliance review on the credit scoring spec at docs/features/credit-scoring/SPEC.md",
+      "description": "Given a SPEC with automated credit scoring, does the agent classify as high-risk and perform full compliance assessment?",
+      "expected_behavior": [
+        "Detects SPEC artifact type and enters Deep mode",
+        "Classifies as high-risk (Annex III, category 5: essential services)",
+        "Assesses transparency requirements (Art. 13)",
+        "Assesses human oversight (Art. 14)",
+        "Assesses data governance (Art. 10)",
+        "Determines conformity assessment type",
+        "Produces compliance ACs in Given/When/Then format",
+        "Cites AI Act articles"
+      ]
+    },
+    {
+      "id": "func-verify-design",
+      "type": "functional",
+      "prompt": "Check AI Act compliance of the chatbot design at docs/features/customer-chatbot/DESIGN.md",
+      "description": "Given a chatbot DESIGN, does the agent check for transparency UI elements?",
+      "expected_behavior": [
+        "Detects DESIGN artifact type and enters Verify mode",
+        "Checks for AI interaction disclosure indicator",
+        "Checks for human escalation controls",
+        "Produces gap report for missing transparency elements"
+      ]
+    },
+    {
+      "id": "func-section-confirmation",
+      "type": "functional",
+      "prompt": "AI Act review on the fraud detection spec",
+      "description": "Does the agent confirm each section with the user before moving on?",
+      "expected_behavior": [
+        "Proposes AI System Inventory and waits for confirmation",
+        "Proposes Risk Classification and waits for confirmation",
+        "Does NOT output the full review without intermediate confirmations"
+      ]
+    },
+    {
+      "id": "func-english-output",
+      "type": "functional",
+      "prompt": "Revue AI Act sur le spec du moteur de recommandation",
+      "description": "If the conversation is in French, is the review still written in English?",
+      "expected_behavior": [
+        "Writes AI-ACT-REVIEW.md entirely in English"
+      ]
+    }
+  ]
+}

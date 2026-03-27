@@ -161,6 +161,16 @@ Propose the list. Confirm.
 
 Surface the bets the brief is making. All three subsections are optional — include only those that genuinely apply. There is no minimum or maximum item count.
 
+**Compliance triage** — before diving into assumptions, ask three targeted questions to flag regulatory context early. These answers become constraints visible to downstream skills and the PM router:
+
+> **Data & Privacy:** Does this feature collect, process, or store personal data (names, emails, behavior, location, etc.)?
+>
+> **AI/ML:** Does this feature use AI models, automated decision-making, or generative AI?
+>
+> **User Interface:** Does this feature have a user-facing interface (web, mobile, or desktop)?
+
+Record affirmative answers as assumptions or risks as appropriate (e.g., "Assumption: the consent flow will meet GDPR requirements" or "Risk: AI-generated recommendations may require EU AI Act transparency obligations"). These signals help the PM router suggest the relevant compliance specialist skills (`gdpr-review`, `ai-act-review`, `accessibility-review`) at the right time.
+
 **Assumptions** — things the brief treats as true but that haven't been validated. These often hide in the Problem Statement ("users want X") and Solution ("the API supports Y"). Scan the brief for implicit beliefs and make them explicit.
 
 **If a `PROBLEM-FRAME.md` exists:** Pull assumptions from the problem frame's Stress Test (evidence basis) and Root Cause Analysis. Any "Why" answer that rests on an unverified belief is a candidate assumption.

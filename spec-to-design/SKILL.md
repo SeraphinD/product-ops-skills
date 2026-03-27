@@ -110,7 +110,23 @@ If no BRIEF is found, proceed with SPEC data only.
 
 ---
 
-### Step 5 — Load Benchmark Visual References (if available)
+### Step 5 — Load Accessibility Review (if available)
+
+Check whether an `ACCESSIBILITY-REVIEW.md` exists in the same `docs/features/{feature-name}/` directory.
+
+If it exists, read it in full. Then use it to inform the design:
+
+- **Design System** — incorporate contrast requirements and focus style specifications from the review's findings
+- **Components** — use the review's component-level findings (ARIA patterns, keyboard interactions, VoiceOver/TalkBack labels) to define each component's accessibility behavior upfront rather than deriving from scratch in Step 15
+- **Accessibility Requirements (Step 15)** — when writing the accessibility section, start from the review's findings and compliance ACs rather than the generic WCAG checklist. Add the review's specific recommendations as requirements.
+
+If the review flagged specific contrast ratios, touch target sizes, or screen reader patterns, treat them as **hard requirements** in the design — the same way prior decisions from DECISION.md are treated.
+
+If no `ACCESSIBILITY-REVIEW.md` is found, proceed without it — this input is optional.
+
+---
+
+### Step 5b — Load Benchmark Visual References (if available)
 
 Check whether a `BENCHMARK.md` exists in the same `docs/features/{feature-name}/` directory.
 

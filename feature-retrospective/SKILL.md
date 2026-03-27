@@ -67,6 +67,9 @@ Read all available artifacts from `docs/features/{feature-name}/`:
 | `DESIGN.md` | Optional | Component scope for design coverage check |
 | `PLAN.md` | Optional | Phase structure for process review |
 | `DECISION.md` | Optional | Decision history, rollback count |
+| `GDPR-REVIEW.md` | Optional | GDPR compliance requirements and acceptance criteria |
+| `ACCESSIBILITY-REVIEW.md` | Optional | Accessibility compliance requirements and acceptance criteria |
+| `AI-ACT-REVIEW.md` | Optional | AI Act compliance requirements and acceptance criteria |
 
 Report what was found:
 > "Loaded {N} artifacts for `{feature-name}`: {list of found artifacts}"
@@ -191,11 +194,18 @@ Synthesize actionable insights:
 - Which pipeline stage caused the most rework and why?
 - Were the right skills used for the right tasks?
 
+**Compliance Review Evaluation:**
+If any compliance review artifacts (`GDPR-REVIEW.md`, `ACCESSIBILITY-REVIEW.md`, `AI-ACT-REVIEW.md`) were loaded in Step 2, evaluate their findings:
+- Cross-reference each review's compliance acceptance criteria against completed tasks — were they implemented?
+- Flag any compliance requirements that were identified in a review but never made it into the SPEC, PLAN, or TASKS
+- Note which compliance reviews were run and which were skipped despite being relevant (e.g., feature handles personal data but no GDPR review was run)
+
 **Open Risks:**
 - BRIEF Assumptions & Risks that were never resolved or tested
 - Benchmark claims that were carried forward without verification
 - Blocked tasks whose root causes remain unresolved
 - Acceptance criteria marked UNTESTABLE that need production validation
+- Compliance requirements from review artifacts that were identified but never implemented
 
 Each lesson and risk should be specific and actionable, not generic platitudes.
 

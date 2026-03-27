@@ -22,7 +22,11 @@ Present this pipeline when the user needs orientation:
 
 ```
 [PROBLEM FRAME] → BRIEF → [BENCHMARK] → [OPPORTUNITY] → SPEC → [DESIGN] → PLAN → TASKS → [EXECUTION] → [RETRO]
+                     ↑                                      ↑        ↑         ↑                        ↑
+                     └──── Compliance specialists (GDPR, Accessibility, AI Act) can review any stage ───┘
 ```
+
+### Pipeline Stages
 
 | Stage | Skill | Produces | Required? |
 |-------|-------|----------|-----------|
@@ -37,6 +41,16 @@ Present this pipeline when the user needs orientation:
 | 8 | `plan-to-tasks` | `TASKS.md` | Yes |
 | 9 | `execute-tasks` | updates `TASKS.md` | Optional |
 | 10 | `feature-retrospective` | `RETRO.md` | Optional |
+
+### Compliance Specialists (Cross-Cutting)
+
+These skills can review **any** pipeline artifact at **any** stage. They are not sequential stages — invoke them when relevant.
+
+| Specialist | Skill | Produces | When to suggest |
+|------------|-------|----------|-----------------|
+| GDPR / RGPD | `gdpr-review` | `GDPR-REVIEW.md` | Feature collects, processes, or stores personal data |
+| Accessibility | `accessibility-review` | `ACCESSIBILITY-REVIEW.md` | Feature has a user interface (web or mobile) |
+| EU AI Act | `ai-act-review` | `AI-ACT-REVIEW.md` | Feature uses AI/ML, automated decision-making, or generative AI |
 
 ---
 
@@ -71,6 +85,9 @@ Once the feature is identified, scan `docs/features/{feature-name}/` for these f
 | `TASKS.md` | Tasks generated |
 | `RETRO.md` | Retrospective done |
 | `DECISION.md` | Decisions logged |
+| `GDPR-REVIEW.md` | GDPR review done |
+| `ACCESSIBILITY-REVIEW.md` | Accessibility review done |
+| `AI-ACT-REVIEW.md` | AI Act review done |
 
 Report what exists in a concise status summary:
 
@@ -101,6 +118,9 @@ Based on what the user said and what artifacts exist, recommend the next action.
 | "generate tasks" / "task list" / "what do I build" | `plan-to-tasks` |
 | "execute tasks" / "start building" / "pick up next task" | `execute-tasks` |
 | "retrospective" / "retro" / "how did we do" / "review" | `feature-retrospective` |
+| "GDPR review" / "RGPD" / "data protection" / "privacy check" | `gdpr-review` |
+| "accessibility review" / "a11y" / "WCAG" / "RGAA" | `accessibility-review` |
+| "AI Act review" / "AI compliance" / "AI risk assessment" | `ai-act-review` |
 
 **If the user reports a problem with an existing artifact (backward navigation):**
 
@@ -127,6 +147,14 @@ Determine the next logical step based on existing artifacts:
 6. `TASKS.md` exists, tasks still pending → recommend `execute-tasks` (optional — user can execute manually)
 7. `TASKS.md` exists, all tasks completed, no `RETRO.md` → recommend `feature-retrospective` (optional)
 8. `RETRO.md` exists → pipeline is complete; mention they can review or update any artifact, or start a new feature
+
+**Compliance specialist detection** — at any step where a SPEC exists but no compliance review artifacts exist, scan for compliance signals and suggest relevant specialists:
+
+- If the BRIEF's Assumptions & Risks mentions **personal data**, user accounts, or privacy → suggest `gdpr-review`: *"This feature handles personal data. Consider running a GDPR review on the SPEC before generating the PLAN."*
+- If the feature has a **user interface** (detected from BRIEF/SPEC/DESIGN) → suggest `accessibility-review`: *"This feature has a UI. Consider running an accessibility review on the SPEC or DESIGN."*
+- If the BRIEF/SPEC mentions **AI, ML, automated decision-making, or generative AI** → suggest `ai-act-review`: *"This feature uses AI. Consider running an AI Act review on the SPEC before generating the PLAN."*
+
+Present compliance specialists as optional recommendations alongside the main next step — they do not replace or delay the primary pipeline progression. The best time to run them is after the SPEC exists and before generating the PLAN.
 
 ### Step 4 — Present the Recommendation
 
