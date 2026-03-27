@@ -1,13 +1,13 @@
 ---
 name: brief-to-benchmark
-description: Generates a BENCHMARK.md from a BRIEF.md — an optional research phase that grounds the upcoming SPEC in real-world data including comparable solutions, technical standards, key metrics, and gap analysis. Trigger on phrases like "benchmark the brief", "competitive analysis", "generate BENCHMARK.md", "benchmark phase", "research competitors for the feature", "market research before spec", "benchmark before writing specs", or when the user has a BRIEF.md and wants to validate against existing solutions or industry standards — even if they don't say "benchmark" explicitly. This is the optional second phase of the pipeline (BRIEF → BENCHMARK → SPEC → PLAN → TASKS). Do NOT use for creating a brief from scratch (use create-brief), converting a brief directly into specs (use brief-to-specs), or any other pipeline step.
+description: Generates a BENCHMARK.md from a BRIEF.md — an optional research phase that grounds the upcoming SPEC in real-world data including comparable solutions, technical standards, key metrics, and gap analysis. Supports three modes — automatic web research, user-provided data, or a hybrid of both — and allows custom benchmark types (compliance, user research, internal performance, market analysis). Trigger on phrases like "benchmark the brief", "competitive analysis", "generate BENCHMARK.md", "benchmark phase", "research competitors for the feature", "market research before spec", "benchmark before writing specs", "benchmark with my data", "custom benchmark", "use this research for the benchmark", "I have benchmark data", "compliance benchmark", "user research benchmark", "internal benchmark", "benchmark with these competitors", "EU benchmark", "US market benchmark", "fashion benchmark", or when the user has a BRIEF.md and wants to validate against existing solutions or industry standards — even if they don't say "benchmark" explicitly. This is the optional second phase of the pipeline (BRIEF → BENCHMARK → SPEC → PLAN → TASKS). Do NOT use for creating a brief from scratch (use create-brief), converting a brief directly into specs (use brief-to-specs), or any other pipeline step.
 allowed-tools: "Read Write Glob WebSearch WebFetch"
 license: MIT
 metadata:
   author: seraphindesumeur
-  version: 1.0.0
+  version: 2.0.0
   category: feature-pipeline
-  tags: [benchmark, research, competitive-analysis, market-research]
+  tags: [benchmark, research, competitive-analysis, market-research, custom-benchmark, market-scoping]
 ---
 
 # BRIEF → BENCHMARK Skill
@@ -22,15 +22,22 @@ BRIEF.md → [BENCHMARK.md] → SPEC.md → PLAN.md → TASKS.md
 
 Its purpose is to prevent the SPEC from being written in a vacuum — by researching what already exists before defining what to build. Users can skip this phase and go directly from BRIEF to SPEC. This skill exists for when they don't want to.
 
+The skill supports three **benchmark modes**:
+- **Auto** — the agent researches everything via `WebSearch` (default)
+- **Provided** — the user supplies their own benchmark data (files, links, raw notes, competitor names)
+- **Hybrid** — the user supplies partial data, the agent fills gaps with web research
+
+It also supports **custom benchmark types** (compliance, user research, internal performance, market analysis) and **market/domain scoping** to focus research on a specific geography or industry vertical.
+
 ---
 
 ## Output Template
 
 **Before writing any output, read `references/template.md` for the exact BENCHMARK.md structure.**
 
-The BENCHMARK contains: Comparable Solutions (3–5 entries), Technical Standards, Key Metrics & Baselines, Gap Analysis, Spec Recommendations, and an optional Visual References section for frontend features.
+The BENCHMARK contains: Comparable Solutions (3–5 entries), Technical Standards, Key Metrics & Baselines, Gap Analysis, Spec Recommendations, an optional Visual References section for frontend features, and optional custom sections when using a non-standard benchmark type.
 
-**After writing, run `bash scripts/validate-benchmark.sh {path-to-benchmark}` to verify structural completeness.**
+**After writing, run `bash scripts/validate-benchmark.sh {path-to-benchmark}` to verify structural completeness. For custom benchmark types, use `bash scripts/validate-benchmark.sh {path-to-benchmark} --custom` to relax data-section checks.**
 
 ---
 
@@ -71,7 +78,67 @@ If it exists, read it in full. Then:
 
 ---
 
-### Step 3 — Detect Feature Type
+### Step 3 — Scope the Benchmark (Market & Domain)
+
+Before starting any research, ask the user two scoping questions:
+
+**1. Market focus:**
+> "Which market(s) should this benchmark focus on? Examples: EU, US, APAC, global, or a specific country. This affects which competitors, regulations, and standards I'll prioritize."
+
+**2. Domain focus:**
+> "Which domain or industry vertical should I focus on? Examples: fashion, home furniture, sport, fintech, healthcare, food & beverage, SaaS — or leave open if the feature is domain-agnostic."
+
+**Handling responses:**
+- If the user specifies both → use them as primary filters for all research queries and flag findings that are market- or domain-specific
+- If the user specifies only one → ask if the other should be left open or narrowed
+- If the user says "no preference" or "global" → proceed without filters, but still tag competitor entries with their primary market/domain for context
+- If the BRIEF already contains market or domain context → propose it: *"The brief mentions {X}. Should I scope the benchmark to that, or broaden it?"*
+
+**How scope affects downstream steps:**
+- **Comparable Solutions** — search queries include the market/domain (e.g., `fashion e-commerce notification tools EU` instead of just `notification tools`)
+- **Technical Standards** — prioritize region-specific regulations (e.g., GDPR for EU, CCPA for US, PSD2 for EU fintech) and domain-specific standards
+- **Key Metrics** — source baselines from the relevant market/domain (e.g., EU fashion e-commerce conversion rates, not global SaaS averages)
+- **Gap Analysis** — frame gaps relative to the scoped market/domain, not the global landscape
+
+Log the market and domain decisions to `DECISION.md`.
+
+---
+
+### Step 4 — Determine Benchmark Mode
+
+Before starting research, determine how the benchmark data will be sourced and whether a non-standard benchmark type is needed.
+
+**1. Detect data inputs:**
+Check if the user provided data alongside the benchmark request — files, links, raw text, competitor names, spreadsheets, or references. Look for phrases like "use this data", "here's my research", "benchmark with these competitors", "I have metrics from...", or attached file paths.
+
+**2. Detect custom benchmark type:**
+Check if the user requested a non-standard benchmark category. Map known types to section changes:
+
+| User says | Section changes |
+|-----------|----------------|
+| "user research benchmark" | Replace Comparable Solutions with **User Research Findings** (personas, pain points, quotes) |
+| "compliance benchmark" | Add **Regulatory Requirements** section (regulations, compliance gaps, certification needs) |
+| "internal performance benchmark" | Add **Current System Baselines** section (existing metrics from the user's own product) |
+| "market benchmark" | Add **Market Sizing** and **Pricing Analysis** sections |
+| unknown type | Ask: *"What sections should this benchmark include?"* |
+
+Gap Analysis and Spec Recommendations are **always required** regardless of benchmark type — they are the bridge to the SPEC. Custom types add to or replace the data-gathering sections (Comparable Solutions, Technical Standards, Key Metrics).
+
+**3. Confirm mode:**
+Based on what's detected, ask to confirm:
+> "I see you've provided {description of inputs}. Should I: (a) use only your data, (b) use your data and supplement with web research, or (c) ignore your data and research from scratch?"
+
+- **Auto mode** (no user-provided data) → proceed with the standard WebSearch-driven flow
+- **Provided mode** (user supplied all data) → skip WebSearch, structure the user's data into the BENCHMARK template, fill gaps by asking the user
+- **Hybrid mode** (user supplied partial data) → use provided data as-is, research only the missing sections via WebSearch
+
+If no data was provided and no custom type was requested, default to **Auto mode** without asking.
+
+Log the mode and benchmark type decisions to `DECISION.md`.
+
+---
+
+### Step 5 — Detect Feature Type
 
 Read the BRIEF and determine whether this is a **frontend feature** — one that involves UI, screens, pages, components, interactions, or visual design. Look for keywords like: UI, interface, page, component, screen, button, form, layout, design, dashboard, modal, flow, animation, visual.
 
@@ -83,45 +150,82 @@ Log this decision to `DECISION.md`.
 
 ---
 
-### Step 4 — Research Comparable Solutions
+### Step 6 — Comparable Solutions
 
+*If using a custom benchmark type that replaces this section (e.g., "user research benchmark" → User Research Findings), skip this step and produce the replacement section instead, following the same interactive protocol: propose a draft entry, confirm, repeat.*
+
+**Auto mode:**
 Search for 3–5 real-world solutions that address the same problem as the brief:
 
-1. Use `WebSearch` with queries like `{feature domain} tools comparison`, `{problem} existing solutions`, `{tech stack} {feature} libraries`, `best {feature type} tools {year}`.
+1. Use `WebSearch` with queries that include the market/domain scope from Step 3 — e.g., `{domain} {market} {feature domain} tools comparison`, `{problem} existing solutions {market}`, `best {feature type} tools {domain} {year}`.
 2. For each solution found, extract: what it does, how it approaches the problem, its differentiators, and its gaps relative to the brief.
 3. Where a claim couldn't be verified from the search results, mark it: `⚠️ Unverified — validate before use`.
+
+**Provided mode:**
+Structure the user's provided competitors into the template format. For each entry:
+1. Extract: what it does, relevant approach, differentiators, gaps — from the data the user supplied
+2. If the user's data is incomplete for an entry, ask for the missing fields rather than researching silently
+3. Do not use `WebSearch` — rely entirely on user-provided data
+
+**Hybrid mode:**
+Use provided competitor data first, then supplement:
+1. Structure user-provided competitors as in Provided mode
+2. If fewer than 3 solutions were provided, use `WebSearch` (with market/domain filters) to find additional ones
+3. For user-provided entries with incomplete data, ask the user first; only research if they prefer
 
 Propose each comparable solution as a draft entry. Confirm with the user before adding the next one. It's better to have 3 well-researched entries than 5 half-researched ones.
 
 ---
 
-### Step 5 — Research Technical Standards
+### Step 7 — Technical Standards
 
+*If using a custom benchmark type that adds a section here (e.g., "compliance benchmark" → Regulatory Requirements), produce that section in addition to or instead of technical standards, as agreed in Step 4.*
+
+**Auto mode:**
 Search for established standards, conventions, and common patterns in the feature's domain:
 - Protocols, specs, or RFCs (e.g., OAuth 2.0, WCAG 2.1, OpenAPI)
 - Library or framework idioms (e.g., how React Query handles loading states, how Rails handles REST routing)
+- Region-specific regulations relevant to the market scope from Step 3 (e.g., GDPR for EU, CCPA for US, PSD2 for EU fintech)
+- Domain-specific standards relevant to the domain scope from Step 3
 - Error handling norms, output format expectations, naming conventions
 
-Use `WebSearch` where helpful. Flag anything unverified. Propose a draft list and confirm.
+Use `WebSearch` with market/domain filters where helpful. Flag anything unverified.
+
+**Provided mode:**
+Structure the user's provided standards, regulations, or conventions into the template format. Ask for clarifications if entries are incomplete. Do not use `WebSearch`.
+
+**Hybrid mode:**
+Use provided standards first. If the list has fewer than 3 entries or obvious gaps (e.g., no region-specific regulations for a scoped market), supplement with `WebSearch` using market/domain filters.
+
+Propose a draft list and confirm.
 
 ---
 
-### Step 6 — Gather Key Metrics & Baselines
+### Step 8 — Key Metrics & Baselines
 
+*If using a custom benchmark type that adds a section here (e.g., "internal performance benchmark" → Current System Baselines, or "market benchmark" → Market Sizing + Pricing Analysis), produce those sections in addition to or instead of key metrics, as agreed in Step 4.*
+
+**Auto mode:**
 Identify 3–6 measurable metrics that will eventually inform acceptance criteria in the SPEC:
 - Performance targets (load time, response time, throughput, bundle size)
 - Quality thresholds (error rate, uptime, test coverage)
 - UX benchmarks (time-on-task, success rate, accessibility score)
 
-Research real baselines where possible. For every metric that couldn't be sourced from a credible reference, add `⚠️ Unverified — validate before use` in the Source column.
+Source baselines from the relevant market/domain when possible (e.g., EU fashion e-commerce conversion rates, not global SaaS averages). For every metric that couldn't be sourced from a credible reference, add `⚠️ Unverified — validate before use` in the Source column.
+
+**Provided mode:**
+Structure the user's provided metrics and baselines into the template table format. If baselines are missing for a metric, ask the user rather than researching. Do not use `WebSearch`.
+
+**Hybrid mode:**
+Use provided metrics first. If fewer than 3 metrics were provided, or if provided metrics lack baselines, supplement with `WebSearch` using market/domain filters to find credible sources.
 
 Propose the table as a draft. Confirm before continuing.
 
 ---
 
-### Step 7 — Write the Gap Analysis
+### Step 9 — Write the Gap Analysis
 
-Synthesize findings from Steps 4–6 into three parts:
+Synthesize findings from Steps 6–8 into three parts:
 
 1. **What existing solutions don't cover** — the specific unmet need the brief addresses
 2. **What the brief overlaps with** — where existing tools already solve part of the problem (important for scoping)
@@ -135,7 +239,7 @@ Propose a draft. Confirm with the user.
 
 ---
 
-### Step 8 — Write Spec Recommendations
+### Step 10 — Write Spec Recommendations
 
 Surface 3–8 concrete recommendations for the SPEC writer, grounded in benchmark findings:
 - **Include** — features or behaviors supported by research
@@ -148,7 +252,7 @@ Propose a draft. Confirm with the user.
 
 ---
 
-### Step 9 — Visual References (frontend features only)
+### Step 11 — Visual References (frontend features only)
 
 Skip this step entirely if the feature is not a frontend feature.
 
@@ -162,7 +266,7 @@ Propose each diagram as a draft. Confirm before moving on.
 
 ---
 
-### Step 10 — Determine Output Path
+### Step 12 — Determine Output Path
 
 `BENCHMARK.md` is written to the **same directory as the source BRIEF** by default.
 
@@ -174,7 +278,7 @@ Propose each diagram as a draft. Confirm before moving on.
 
 ---
 
-### Step 11 — Final Review & Write
+### Step 13 — Final Review & Write
 
 Once all sections are confirmed:
 1. Assemble the complete `BENCHMARK.md` using the template above.
@@ -202,7 +306,7 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ## Rules
 
-1. **Grounded in research** — every comparable solution, standard, and metric must come from actual findings or be explicitly marked `⚠️ Unverified`. Never fabricate data.
+1. **Grounded in evidence** — every comparable solution, standard, and metric must come from actual research findings or user-provided data, or be explicitly marked `⚠️ Unverified`. Never fabricate data. In Provided mode, treat user-supplied data as the source of truth.
 2. **Traceable** — the `Generated from:` line must always reference the source BRIEF's relative path.
 3. **Non-prescriptive** — the benchmark documents what *exists*, not what to build. Spec Recommendations is the only section that makes design suggestions, and they must be framed as research-informed suggestions, not requirements.
 4. **Frontend visuals are references** — every Unicode or Mermaid diagram must be captioned as documenting an existing competitor. Never present them as proposed designs.
@@ -215,25 +319,55 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ## Examples
 
-### Example 1: SaaS feature benchmark
+### Example 1: SaaS feature benchmark (auto mode)
 User says: "Benchmark the brief for our notification system"
 Actions:
 1. Locate `docs/features/notification-system/BRIEF.md`, read it in full
-2. Research 4 comparable solutions (e.g., OneSignal, Firebase Cloud Messaging, Pusher, Knock)
-3. Identify 5 technical standards (WebSocket protocol, Push API, WCAG notification guidelines)
-4. Gather 4 metrics with baselines (delivery rate, latency, opt-in rate, engagement rate)
-5. Write gap analysis and spec recommendations
-6. Write to `docs/features/notification-system/BENCHMARK.md`
+2. Ask market/domain scope → user says "Global, SaaS"
+3. Default to Auto mode (no data provided)
+4. Research 4 comparable solutions (e.g., OneSignal, Firebase Cloud Messaging, Pusher, Knock)
+5. Identify 5 technical standards (WebSocket protocol, Push API, WCAG notification guidelines)
+6. Gather 4 metrics with baselines (delivery rate, latency, opt-in rate, engagement rate)
+7. Write gap analysis and spec recommendations
+8. Write to `docs/features/notification-system/BENCHMARK.md`
 Result: A BENCHMARK.md with 4 competitors, 5 standards, 4 metrics, and 6 spec recommendations — each section confirmed interactively
 
 ### Example 2: Frontend feature with visual references
 User says: "Research competitors for our dashboard redesign"
 Actions:
 1. Locate the BRIEF, detect it's a frontend feature
-2. Research comparable dashboards, include Unicode box-drawing layout diagrams for each
-3. Add Mermaid user flow diagrams for key competitor workflows
-4. Write the Visual References section with competitor UI patterns
-Result: A BENCHMARK.md that includes both data research and visual competitor references
+2. Ask market/domain scope → user says "US, e-commerce"
+3. Default to Auto mode, research scoped to US e-commerce dashboards
+4. Research comparable dashboards, include Unicode box-drawing layout diagrams for each
+5. Add Mermaid user flow diagrams for key competitor workflows
+6. Write the Visual References section with competitor UI patterns
+Result: A BENCHMARK.md that includes both data research and visual competitor references, scoped to US e-commerce
+
+### Example 3: User-provided benchmark data (provided mode)
+User says: "Benchmark the brief — here are the competitors I've already researched: Shopify, Magento, WooCommerce. I also have conversion rate data in my notes."
+Actions:
+1. Locate the BRIEF, read it in full
+2. Ask market/domain scope → user says "EU, fashion e-commerce"
+3. Detect provided data (3 competitors + metrics), confirm Provided mode
+4. Structure the 3 competitors into the Comparable Solutions template, ask for missing fields (gaps, differentiators)
+5. Structure user's conversion rate data into Key Metrics table, ask for any missing baselines
+6. Research Technical Standards via user input only — ask what standards apply
+7. Write gap analysis and spec recommendations grounded in user-provided data
+8. Write to the feature directory
+Result: A BENCHMARK.md built entirely from user-supplied data, with no web research — scoped to EU fashion
+
+### Example 4: Market/domain-scoped hybrid benchmark
+User says: "Benchmark the brief for our product catalog — focus on the EU home furniture market. I know about IKEA and Maisons du Monde, but research the rest."
+Actions:
+1. Locate the BRIEF, read it in full
+2. Market: EU, Domain: home furniture (user-specified)
+3. Detect partial data (2 competitors), confirm Hybrid mode
+4. Structure IKEA and Maisons du Monde from user data, then WebSearch for 1–2 more EU home furniture competitors
+5. Research EU-specific technical standards (e.g., EU Ecodesign Directive, GDPR, PSD2) and domain conventions
+6. Source metrics from EU home furniture e-commerce baselines
+7. Write gap analysis and spec recommendations
+8. Write to the feature directory
+Result: A BENCHMARK.md combining user knowledge with web research, tightly scoped to EU home furniture
 
 ---
 

@@ -27,3 +27,15 @@
 ## Problem: Competitor information is outdated
 **Cause:** Web search returns content from years ago; the competitor may have changed significantly.
 **Solution:** Note the date of the source in the comparable solution entry. If the data is more than 2 years old, mark it: *"⚠️ Data from {year} — may not reflect current state."* Try to find more recent sources before falling back to older ones.
+
+## Problem: User-provided data is incomplete
+**Cause:** The user supplied competitor names, metrics, or standards but without enough detail to fill the template format (e.g., missing gaps/weaknesses for a competitor, missing baselines for a metric).
+**Solution:** In Provided mode, always ask the user for the missing fields rather than silently researching or inventing data. Prompt specifically: *"For {competitor}, I'm missing {field}. Can you provide it, or should I leave it as ⚠️ Unverified?"* In Hybrid mode, offer to research the missing fields via WebSearch if the user prefers.
+
+## Problem: Custom benchmark type doesn't map to known types
+**Cause:** The user requested a benchmark type that isn't in the predefined mapping (e.g., "accessibility benchmark", "sustainability benchmark").
+**Solution:** Ask the user to define what sections the benchmark should include: *"I don't have a predefined template for '{type}' benchmarks. What sections should I include? For reference, the standard benchmark has: Comparable Solutions, Technical Standards, Key Metrics. Gap Analysis and Spec Recommendations are always included."* Log the agreed sections to `DECISION.md` and proceed.
+
+## Problem: Market/domain filter returns no relevant results
+**Cause:** The scoped market or domain is too narrow for web search to return useful results (e.g., "EU home furniture smart mirrors" yields nothing).
+**Solution:** Broaden incrementally — first try the domain without the market filter, then try the market without the domain filter, then try adjacent domains. Always flag the broadening: *"No results found for {market} {domain}. I broadened to {broader scope} — these results may not be specific to your target market."* Log the scope adjustment to `DECISION.md`.

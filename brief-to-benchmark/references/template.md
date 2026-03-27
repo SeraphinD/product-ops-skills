@@ -1,11 +1,14 @@
 # BENCHMARK.md Output Template
 
-The final `BENCHMARK.md` must follow **exactly** this structure:
+The final `BENCHMARK.md` must follow **exactly** this structure (for the standard benchmark type). Custom benchmark types may replace or supplement the data-gathering sections — see "Custom Sections" and "Constraints" below.
 
 ```markdown
 # Benchmark: {Feature Name}
 
 > Generated from: {relative path to BRIEF.md}
+> Market: {EU / US / APAC / Global / ...}
+> Domain: {fashion / sport / fintech / domain-agnostic / ...}
+> Benchmark type: {standard / compliance / user-research / internal-perf / market / custom}
 > Date: {YYYY-MM-DD}
 
 ---
@@ -87,15 +90,48 @@ Based on the above research, the following should inform the SPEC:
 flowchart LR
   ...
 ```
+
+---
+
+## {Custom Section Name} *(when using a non-standard benchmark type)*
+
+{Content structured according to the benchmark type agreed upon during scoping.
+Examples of custom sections:}
+
+### User Research Findings *(user-research type)*
+- **Persona:** {persona name}
+- **Pain points:** {key pain points from research}
+- **Quotes:** {relevant user quotes}
+
+### Regulatory Requirements *(compliance type)*
+- **{Regulation name}:** {what it requires and how it applies}
+- **Compliance gaps:** {where the brief may fall short}
+
+### Current System Baselines *(internal-perf type)*
+| Metric | Current Value | Target | Notes |
+|--------|--------------|--------|-------|
+| {metric} | {current} | {target} | {notes} |
+
+### Market Sizing *(market type)*
+- **TAM:** {total addressable market}
+- **SAM:** {serviceable addressable market}
+- **SOM:** {serviceable obtainable market}
+
+### Pricing Analysis *(market type)*
+| Competitor | Pricing Model | Price Range | Notes |
+|-----------|--------------|-------------|-------|
+| {name} | {model} | {range} | {notes} |
 ```
 
 ## Constraints
 
-- **3–5 comparable solutions** — well-researched entries; 3 thorough is better than 5 shallow
-- **3–8 technical standards** — protocols, specs, RFCs, library conventions relevant to the domain
-- **3–6 metrics** — measurable baselines that will inform SPEC acceptance criteria
-- **Gap Analysis** — must include all 3 subsections (unmet needs, overlaps, risks)
-- **Spec Recommendations** — must include at least one each of Include, Exclude, and Validate
+- **Header metadata** — `Generated from`, `Market`, `Domain`, `Benchmark type`, and `Date` are always required in the header
+- **3–5 comparable solutions** — well-researched entries; 3 thorough is better than 5 shallow *(standard type; may be replaced by custom sections in other types)*
+- **3–8 technical standards** — protocols, specs, RFCs, library conventions relevant to the domain *(standard type; may be replaced or supplemented in other types)*
+- **3–6 metrics** — measurable baselines that will inform SPEC acceptance criteria *(standard type; may be replaced or supplemented in other types)*
+- **Gap Analysis** — must include all 3 subsections (unmet needs, overlaps, risks) — **always required regardless of benchmark type**
+- **Spec Recommendations** — must include at least one each of Include, Exclude, and Validate — **always required regardless of benchmark type**
 - **Visual References** — frontend features only; Unicode box-drawing + Mermaid flows; always captioned as reference
+- **Custom sections** — when the user specifies a non-standard benchmark type, custom sections replace or supplement the data-gathering sections (Comparable Solutions, Technical Standards, Key Metrics); Gap Analysis and Spec Recommendations are never replaced
 - **Unverified data** — flag with `⚠️ Unverified — validate before use`; include anyway
 - **Generated from** — must reference the source BRIEF's relative path

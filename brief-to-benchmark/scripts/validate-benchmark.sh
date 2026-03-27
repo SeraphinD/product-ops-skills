@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 # validate-benchmark.sh — Validates that a BENCHMARK.md has all required sections and structure
-# Usage: bash scripts/validate-benchmark.sh <path-to-benchmark>
+# Usage: bash scripts/validate-benchmark.sh <path-to-benchmark> [--custom]
 
 set -euo pipefail
 
-FILE="${1:?Usage: validate-benchmark.sh <path-to-BENCHMARK.md>}"
+FILE="${1:?Usage: validate-benchmark.sh <path-to-BENCHMARK.md> [--custom]}"
+CUSTOM_MODE=false
+if [[ "${2:-}" == "--custom" ]]; then
+  CUSTOM_MODE=true
+fi
 
 if [[ ! -f "$FILE" ]]; then
   echo "ERROR: File not found: $FILE"
@@ -25,18 +29,49 @@ check_section() {
   fi
 }
 
+check_warn() {
+  local pattern="$1"
+  local label="$2"
+  if ! grep -qiE "$pattern" "$FILE"; then
+    echo "WARN: Missing — $label"
+    WARNINGS=$((WARNINGS + 1))
+  else
+    echo "  OK: $label"
+  fi
+}
+
 echo "=== Validating BENCHMARK.md: $FILE ==="
+if [[ "$CUSTOM_MODE" == true ]]; then
+  echo "(Custom benchmark type — relaxed data-section checks)"
+fi
 echo ""
 
-# --- Structure ---
+# --- Always-required structure ---
 echo "--- Required Sections ---"
 check_section "^# Benchmark:" "Title (# Benchmark: ...)"
 check_section "Generated from:" "Generated from reference"
-check_section "^## Comparable Solutions" "Comparable Solutions"
-check_section "^## Technical Standards" "Technical Standards"
-check_section "^## Key Metrics" "Key Metrics & Baselines"
 check_section "^## Gap Analysis" "Gap Analysis"
 check_section "^## Spec Recommendations" "Spec Recommendations"
+
+# --- Scope metadata (warnings, not errors) ---
+echo ""
+echo "--- Scope Metadata ---"
+check_warn "^> Market:" "Market scope"
+check_warn "^> Domain:" "Domain scope"
+check_warn "^> Benchmark type:" "Benchmark type"
+
+# --- Standard data sections (skip if --custom) ---
+if [[ "$CUSTOM_MODE" == false ]]; then
+  echo ""
+  echo "--- Standard Data Sections ---"
+  check_section "^## Comparable Solutions" "Comparable Solutions"
+  check_section "^## Technical Standards" "Technical Standards"
+  check_section "^## Key Metrics" "Key Metrics & Baselines"
+else
+  echo ""
+  echo "--- Standard Data Sections (skipped — custom type) ---"
+  echo "INFO: Comparable Solutions, Technical Standards, Key Metrics checks skipped for custom benchmark type"
+fi
 
 echo ""
 echo "--- Gap Analysis Sub-sections ---"
@@ -67,29 +102,37 @@ else
   WARNINGS=$((WARNINGS + 1))
 fi
 
-# --- Comparable Solutions count ---
+# --- Comparable Solutions count (only for standard type) ---
 echo ""
 echo "--- Content Quality ---"
-COMP_COUNT=$(grep -cE "^### " "$FILE" 2>/dev/null || echo "0")
-# Subtract known non-competitor ### headers
-SUB_HEADERS=$(grep -cE "^### (What Existing|What Your Brief|Risks &|Competitor Layout|User Flow)" "$FILE" 2>/dev/null || echo "0")
-COMP_COUNT=$((COMP_COUNT - SUB_HEADERS))
-if [[ "$COMP_COUNT" -lt 3 ]]; then
-  echo "WARN: Only $COMP_COUNT comparable solution(s) found (minimum: 3)"
-  WARNINGS=$((WARNINGS + 1))
-elif [[ "$COMP_COUNT" -gt 5 ]]; then
-  echo "WARN: $COMP_COUNT comparable solutions found (maximum: 5)"
-  WARNINGS=$((WARNINGS + 1))
+if [[ "$CUSTOM_MODE" == false ]]; then
+  COMP_COUNT=$(grep -cE "^### " "$FILE" 2>/dev/null || echo "0")
+  # Subtract known non-competitor ### headers
+  SUB_HEADERS=$(grep -cE "^### (What Existing|What Your Brief|Risks &|Competitor Layout|User Flow|User Research|Regulatory|Current System|Market Sizing|Pricing)" "$FILE" 2>/dev/null || echo "0")
+  COMP_COUNT=$((COMP_COUNT - SUB_HEADERS))
+  if [[ "$COMP_COUNT" -lt 3 ]]; then
+    echo "WARN: Only $COMP_COUNT comparable solution(s) found (minimum: 3)"
+    WARNINGS=$((WARNINGS + 1))
+  elif [[ "$COMP_COUNT" -gt 5 ]]; then
+    echo "WARN: $COMP_COUNT comparable solutions found (maximum: 5)"
+    WARNINGS=$((WARNINGS + 1))
+  else
+    echo "  OK: $COMP_COUNT comparable solution(s)"
+  fi
 else
-  echo "  OK: $COMP_COUNT comparable solution(s)"
+  echo "INFO: Comparable solutions count check skipped for custom benchmark type"
 fi
 
 # --- Metrics table ---
 TABLE_ROWS=$(grep -cE "^\|.*\|.*\|.*\|" "$FILE" 2>/dev/null || echo "0")
 # Subtract header and separator rows (at least 2 per table)
 if [[ "$TABLE_ROWS" -lt 5 ]]; then
-  echo "WARN: Metrics table may have fewer than 3 data rows (found $TABLE_ROWS total table rows)"
-  WARNINGS=$((WARNINGS + 1))
+  if [[ "$CUSTOM_MODE" == false ]]; then
+    echo "WARN: Metrics table may have fewer than 3 data rows (found $TABLE_ROWS total table rows)"
+    WARNINGS=$((WARNINGS + 1))
+  else
+    echo "INFO: $TABLE_ROWS table row(s) found (custom type — metrics table may be replaced)"
+  fi
 else
   echo "  OK: Metrics table has $TABLE_ROWS rows"
 fi

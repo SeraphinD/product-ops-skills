@@ -1,7 +1,7 @@
 {
   "skill": "brief-to-benchmark",
-  "version": "1.0",
-  "description": "Evals for brief-to-benchmark — verifies triggering accuracy and functional behavior",
+  "version": "2.0",
+  "description": "Evals for brief-to-benchmark — verifies triggering accuracy and functional behavior (includes provided/hybrid modes, custom types, market/domain scoping)",
   "evals": [
     {
       "id": "trigger-canonical",
@@ -32,6 +32,30 @@
       "type": "no-trigger",
       "prompt": "Create a brief for a checkout feature",
       "description": "Should trigger create-brief, not brief-to-benchmark — creating, not researching"
+    },
+    {
+      "id": "trigger-provided-data",
+      "type": "trigger",
+      "prompt": "Benchmark the brief using this competitor research I've gathered",
+      "description": "Trigger via user-provided data — user supplies their own benchmark inputs"
+    },
+    {
+      "id": "trigger-custom-type",
+      "type": "trigger",
+      "prompt": "Run a compliance benchmark against the brief",
+      "description": "Trigger via custom benchmark type — compliance instead of standard"
+    },
+    {
+      "id": "trigger-market-scoped",
+      "type": "trigger",
+      "prompt": "Benchmark the brief for the EU fashion market",
+      "description": "Trigger with market and domain scoping — EU + fashion"
+    },
+    {
+      "id": "trigger-hybrid",
+      "type": "trigger",
+      "prompt": "I have some competitor data, fill in the rest with research",
+      "description": "Trigger via hybrid mode — user supplies partial data, agent fills gaps"
     }
   ]
 }
