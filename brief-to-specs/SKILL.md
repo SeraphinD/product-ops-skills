@@ -307,25 +307,15 @@ For common issues and solutions, consult `references/troubleshooting.md`.
 
 ---
 
-## Pipeline Iteration & Rollback
+## Pipeline Iteration
 
-Sometimes downstream work reveals that an upstream document needs revision. This section defines how to handle backwards movement in the pipeline.
+Sometimes spec work reveals that an upstream document needs revision. This section defines when to go back and how.
 
 ### When to Go Back
 
-- **SPEC review reveals the BRIEF was wrong** — An objective is missing, a scope item is misframed, or a success criterion is unmeasurable. → Ask the user: *"This SPEC gap traces back to the BRIEF. Should I update the BRIEF first, then regenerate the affected SPEC sections?"*
-- **Prioritization reveals scope problems** — WSJF scoring shows a MUST story is actually COULD, or a WON'T story should be in scope. → Update the SPEC's MoSCoW labels. If the change affects BRIEF scope boundaries, flag it.
-- **Benchmark contradicts the BRIEF** — Research shows a core assumption is wrong. → Flag to the user: *"The benchmark found that X (from the BRIEF) is incorrect. Should I update the BRIEF before continuing?"*
+- **SPEC review reveals the BRIEF was wrong** — an objective is missing, a scope item is misframed, or a success criterion is unmeasurable. Ask the user: *"This SPEC gap traces back to the BRIEF. Should I update the BRIEF first, then regenerate the affected SPEC sections?"*
+- **Prioritization reveals scope problems** — WSJF scoring shows a MUST story is actually COULD, or a WON'T story should be in scope. Update the SPEC's MoSCoW labels. If the change affects BRIEF scope boundaries, flag it.
+- **Benchmark contradicts the BRIEF** — the BENCHMARK.md (if loaded in Step 3) shows a core assumption is wrong. Flag to the user: *"The benchmark found that {X} from the BRIEF is incorrect. Should I update the BRIEF before continuing?"*
+- **Cross-stage validation fails** — `bash scripts/validate-coverage.sh {brief} {spec}` reveals that BRIEF objectives, in-scope items, or success criteria are not covered in the SPEC. Either add missing coverage to the SPEC, or flag that the BRIEF needs revision if the gap is in the BRIEF itself.
 
-### How to Go Back
-
-1. **Never silently modify an upstream document** — always ask the user first
-2. **Log the rollback decision** to DECISION.md with full context (what changed, why, what was the original)
-3. **Regenerate only affected sections** — don't rewrite the entire upstream document
-4. **Re-run cross-stage validation** after any upstream change: `bash scripts/validate-coverage.sh {brief} {spec}`
-
-### What NOT to Do
-
-- Don't modify the BRIEF to match the SPEC — the BRIEF is the source of truth for intent
-- Don't skip the rollback conversation — silent upstream changes cause downstream drift
-- Don't batch rollback decisions — log each one individually as it happens
+For the universal rollback protocol (how to go back, what not to do, decision log format), see `references/pipeline-iteration.md`.

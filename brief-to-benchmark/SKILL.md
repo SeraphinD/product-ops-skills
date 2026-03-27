@@ -382,6 +382,20 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ---
 
+## Pipeline Iteration
+
+Sometimes benchmark research reveals that an upstream document needs revision. This section defines when to go back and how.
+
+### When to Go Back
+
+- **Research contradicts the BRIEF's problem statement or assumptions** — comparable solutions or technical standards show that a core assumption in the BRIEF is wrong. Flag it to the user: *"The benchmark research suggests {X}, but the BRIEF assumes {Y}. Should I update the BRIEF before continuing?"*
+- **A comparable solution was missed that changes the gap analysis** — the user or a later review identifies a competitor that should have been included. Re-open Step 6 (Comparable Solutions) and revise the Gap Analysis.
+- **Technical standards research reveals the BRIEF's solution approach is infeasible** — a regulation, protocol, or industry convention makes the proposed approach untenable. Flag it and suggest updating the BRIEF's Solution section.
+
+For the universal rollback protocol (how to go back, what not to do, decision log format), see `references/pipeline-iteration.md`.
+
+---
+
 ## Examples
 
 ### Example 1: SaaS feature benchmark (auto mode)

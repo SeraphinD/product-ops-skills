@@ -202,6 +202,21 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ---
 
+## Pipeline Iteration
+
+Sometimes task decomposition reveals that an upstream document needs revision. This section defines when to go back and how.
+
+### When to Go Back
+
+- **A plan step is too broad to atomize** — a step can't be broken into atomic tasks without inventing sub-tasks that aren't grounded in the plan. Ask the user: *"Step {N} in Phase {X} is too broad to decompose. Should I update the PLAN with more granular steps first?"*
+- **A plan step references a SPEC requirement that doesn't exist or was marked WON'T** — the plan includes work for a capability the SPEC excluded. Flag it: *"Plan step {N} references {requirement}, which is marked WON'T in the SPEC. Should the PLAN be updated to remove it?"*
+- **Dependency analysis reveals circular or missing dependencies** — tasks can't be ordered because the plan doesn't account for a prerequisite. Flag it: *"Task {A} depends on {B}, but the PLAN doesn't establish that order. Should I update the PLAN's phase structure?"*
+- **DESIGN.md has changed since the PLAN was written** — if the PLAN references DESIGN.md components that have been revised, affected tasks may need updated descriptions. Flag which tasks are impacted and whether the PLAN itself needs updating.
+
+For the universal rollback protocol (how to go back, what not to do, decision log format), see `references/pipeline-iteration.md`.
+
+---
+
 ## Examples
 
 ### Example 1: Small feature with 3 phases

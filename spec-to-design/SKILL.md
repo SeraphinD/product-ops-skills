@@ -438,6 +438,20 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ---
 
+## Pipeline Iteration
+
+Sometimes design work reveals that an upstream document needs revision. This section defines when to go back and how.
+
+### When to Go Back
+
+- **SPEC is missing UI requirements** — a user flow step has no corresponding component in the SPEC's functional scope, or the acceptance criteria don't cover a state the design needs (e.g., empty state, loading state). Ask the user: *"The design needs a {component/state} that isn't covered in the SPEC. Should I update the SPEC first?"*
+- **Acceptance criteria conflict with accessibility requirements** — WCAG 2.1 AA contrast ratios or keyboard navigation requirements contradict specific SPEC instructions (e.g., a spec-mandated color choice fails contrast). Flag it: *"The SPEC specifies {X}, but WCAG AA requires {Y}. Should we update the SPEC's acceptance criteria?"*
+- **Benchmark visual references reveal a SPEC functional scope gap** — competitor analysis from BENCHMARK.md shows a capability that the SPEC should cover but doesn't. Flag it: *"The benchmark shows competitors all support {X}, which the SPEC doesn't mention. Should the SPEC be updated?"*
+
+For the universal rollback protocol (how to go back, what not to do, decision log format), see `references/pipeline-iteration.md`.
+
+---
+
 ## Examples
 
 ### Example 1: Dashboard feature with existing design system

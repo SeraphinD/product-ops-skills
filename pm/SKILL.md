@@ -97,6 +97,19 @@ Based on what the user said and what artifacts exist, recommend the next action.
 | "generate a plan" / "implementation plan" | `spec-to-plan` |
 | "generate tasks" / "task list" / "what do I build" | `plan-to-tasks` |
 
+**If the user reports a problem with an existing artifact (backward navigation):**
+
+| User Intent | Route To |
+|-------------|----------|
+| "the problem was framed wrong" / "re-frame the problem" | `create-problem-frame` (re-open affected sections only) |
+| "the brief missed something" / "update the brief" | `create-brief` (re-open affected sections only) |
+| "the spec is wrong" / "spec needs updating" | `brief-to-specs` (re-open affected sections, then re-run downstream) |
+| "the design is incomplete" / "design needs updating" | `spec-to-design` or `spec-to-mobile-design` (re-open affected sections) |
+| "the plan doesn't match the spec" / "plan is outdated" | `spec-to-plan` (regenerate from current SPEC) |
+| "tasks don't match the plan" / "task list is wrong" | `plan-to-tasks` (regenerate from current PLAN) |
+
+When routing backward, always remind the user: *"Updating {artifact} may invalidate downstream artifacts. After the update, I'll check which downstream documents need regeneration."*
+
 **If the user wants guidance (no specific intent):**
 
 Determine the next logical step based on existing artifacts:
@@ -211,7 +224,7 @@ Actions:
 >
 > All pipeline stages are done. You can:
 > - Review or update any artifact by opening it directly
-> - Re-run a stage if requirements changed (the downstream artifacts should be regenerated)
+> - Re-run a stage if requirements changed — say *"The spec needs updating"* and I'll route you to the right skill and flag which downstream artifacts need regeneration
 > - Start a new feature: say *"Create a brief for {new feature}"*
 
 ### Example 4: User has a specific intent

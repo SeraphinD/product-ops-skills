@@ -292,6 +292,28 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ---
 
+## Pipeline Iteration
+
+This skill is the root of the pipeline — it has no upstream document to roll back to. However, downstream skills (especially `create-brief` and `brief-to-specs`) may discover that the problem was framed incorrectly and request a re-frame.
+
+### When This Skill Is the Rollback Target
+
+- **Brief writing reveals the problem scope was too narrow or too broad** — the user returns to re-open the Constraints & Boundaries or Alternative Framings sections.
+- **Spec work reveals the root cause was a symptom** — the 5 Whys chain needs deeper investigation. Re-open Step 6 (Root Cause Analysis).
+- **New research data emerges after framing** — the user has new interview data or metrics that change the evidence basis. Re-open Step 2 (Research Intake) and Step 5 (Problem Statement stress test).
+
+### How to Handle Re-framing
+
+1. Read the existing `PROBLEM-FRAME.md`
+2. Identify which sections are affected by the new information
+3. Re-open only those sections interactively — do not restart the entire frame
+4. Update `PROBLEM-FRAME.md` with the revised sections
+5. Log the re-framing decision to `DECISION.md`
+
+For the universal rollback protocol, see `references/pipeline-iteration.md`.
+
+---
+
 ## Examples
 
 ### Example 1: Clear problem with obvious pain

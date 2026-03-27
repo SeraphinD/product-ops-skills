@@ -481,6 +481,20 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ---
 
+## Pipeline Iteration
+
+Sometimes mobile design work reveals that an upstream document needs revision. This section defines when to go back and how.
+
+### When to Go Back
+
+- **SPEC lacks platform-specific requirements** — the SPEC doesn't mention offline behavior, system permissions (camera, location, notifications), or gesture interactions that the mobile design requires. Ask the user: *"The mobile design needs {requirement} that the SPEC doesn't cover. Should I update the SPEC first?"*
+- **iOS/Android platform conventions conflict with SPEC acceptance criteria** — a SPEC-mandated interaction pattern violates HIG or Material Design 3 guidelines (e.g., SPEC says "swipe to delete" but iOS convention is swipe-to-reveal with a delete action). Flag it: *"The SPEC specifies {X}, but {platform} convention is {Y}. Should we update the SPEC?"*
+- **Navigation architecture reveals missing screens** — mapping the user flows to a navigation graph exposes screens or transitions not covered by any SPEC user story. Flag it: *"The navigation flow requires a {screen} that no user story covers. Should the SPEC be updated?"*
+
+For the universal rollback protocol (how to go back, what not to do, decision log format), see `references/pipeline-iteration.md`.
+
+---
+
 ## Examples
 
 ### Example 1: React Native app with existing theme

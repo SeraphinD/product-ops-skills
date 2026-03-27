@@ -249,6 +249,21 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ---
 
+## Pipeline Iteration
+
+Sometimes planning work reveals that an upstream document needs revision. This section defines when to go back and how.
+
+### When to Go Back
+
+- **SPEC is too vague for file-level implementation steps** — an acceptance criterion or functional scope item doesn't provide enough detail to name concrete files or describe what they contain. Ask the user: *"The SPEC's {item} is too vague to plan at the file level. Should I update the SPEC with more detail first?"*
+- **DESIGN.md is incomplete** — components mentioned in the SPEC lack design treatment in DESIGN.md (missing states, no wireframe, no accessibility spec). Flag it: *"The PLAN needs design details for {component} that DESIGN.md doesn't cover. Should I update the DESIGN first?"*
+- **Tech stack gaps make project structure impossible to derive** — the SPEC and Implementation Notes don't specify enough about the tech stack (language, framework, runtime) to define a project structure. Ask the user to update the SPEC's Implementation Notes or clarify directly.
+- **MoSCoW ordering reveals missing dependencies** — a SHOULD story depends on a COULD story, or a MUST story requires infrastructure not mentioned in the SPEC. Flag it: *"The implementation order reveals a dependency the SPEC doesn't account for. Should the SPEC be updated?"*
+
+For the universal rollback protocol (how to go back, what not to do, decision log format), see `references/pipeline-iteration.md`.
+
+---
+
 ## Examples
 
 ### Example 1: Simple CLI tool with one phase

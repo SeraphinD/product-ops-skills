@@ -247,6 +247,21 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ---
 
+## Pipeline Iteration
+
+Sometimes downstream work reveals that the BRIEF needs revision. This section defines when to go back and how.
+
+### When to Go Back
+
+- **Benchmark research contradicts a brief assumption** — `brief-to-benchmark` flags that a core assumption in the Problem Statement or Solution is wrong. Ask the user: *"The benchmark found that {X} from the BRIEF is incorrect. Should I update the BRIEF before continuing?"*
+- **Spec writing reveals a missing objective or misframed scope item** — `brief-to-specs` discovers an objective is absent, a scope item is ambiguous, or a success criterion is unmeasurable. Ask the user: *"This SPEC gap traces back to the BRIEF. Should I update the BRIEF first?"*
+- **Opportunity scoring reveals scope misalignment** — `brief-to-opportunity` shows the brief's scope is unrealistically large for its value, or a key objective doesn't map to business impact. Suggest trimming scope or adding objectives.
+- **Problem frame was updated after the brief was written** — the user returned to `create-problem-frame` and revised the chosen frame. Re-read `PROBLEM-FRAME.md` and update affected BRIEF sections (Problem Statement, Scope, Success Criteria).
+
+For the universal rollback protocol (how to go back, what not to do, decision log format), see `references/pipeline-iteration.md`.
+
+---
+
 ## Examples
 
 ### Example 1: Feature with clear context

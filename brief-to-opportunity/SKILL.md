@@ -268,6 +268,20 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 
 ---
 
+## Pipeline Iteration
+
+Sometimes opportunity scoring reveals that an upstream document needs revision. This section defines when to go back and how.
+
+### When to Go Back
+
+- **Scoring reveals Reach or Impact estimates require brief scope changes** — the BRIEF's scope is either too narrow to reach meaningful users or too broad for the team's capacity. Flag it: *"The Reach/Impact scoring suggests the BRIEF's scope may need adjustment. Should I update the BRIEF before finalizing the score?"*
+- **Confidence is critically low because the BRIEF lacks data** — if Confidence lands at 50% primarily because there's no benchmark data, suggest running `brief-to-benchmark` first: *"Confidence is low — most estimates are gut-based. Running a benchmark would provide data to calibrate these scores. Want to do that first?"*
+- **Effort scoring reveals the scope is unrealistically large** — the Effort estimate (8 or 13 person-weeks) signals the BRIEF's scope may need trimming. Flag it: *"The Effort score suggests this is very large. Should we revisit the BRIEF's scope to split or trim it?"*
+
+For the universal rollback protocol (how to go back, what not to do, decision log format), see `references/pipeline-iteration.md`.
+
+---
+
 ## Examples
 
 ### Example 1: Brief with benchmark data
