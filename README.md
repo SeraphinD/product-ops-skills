@@ -331,6 +331,57 @@ You can enter the pipeline at any stage — if you already have a SPEC, start fr
 
 ---
 
+## Iterating on Results
+
+The pipeline is not one-shot. When execution reveals gaps, the retro surfaces issues, or the final result needs refinement, the pipeline supports backward navigation — fixing an upstream artifact and cascading only what's affected downstream.
+
+### Quick Fixes (one artifact is off)
+
+If you know which document is the problem, tell the PM router directly:
+
+| What's wrong | What to say | What happens |
+|---|---|---|
+| Brief scope is too narrow | *"The brief missed something"* | `create-brief` re-opens affected sections only |
+| Spec has wrong acceptance criteria | *"The spec needs updating"* | `brief-to-specs` re-opens affected sections, then flags downstream impact |
+| Design is incomplete | *"The design is incomplete"* | `spec-to-design` re-opens affected sections |
+| Plan doesn't reflect the current spec | *"The plan is outdated"* | `spec-to-plan` regenerates from current SPEC |
+| Task list doesn't match the plan | *"The task list is wrong"* | `plan-to-tasks` regenerates from current PLAN |
+
+Only the sections you change are rewritten — the rest of the document stays intact. After the fix, the router checks which downstream artifacts are invalidated and tells you what to regenerate.
+
+### Don't Know What's Wrong? Run a Retro First
+
+If results aren't where they should be but you're not sure why, run a retrospective — even mid-execution:
+
+> **You:** Run a retro
+
+The retro evaluates success criteria against actual outcomes, computes metrics, and traces failures back to specific artifacts. Its findings tell you exactly where to iterate:
+
+- **FAIL on a success criterion** → trace which SPEC acceptance criteria and tasks map to it, find the gap
+- **AC scenarios with no task coverage** → the spec-to-plan or plan-to-tasks step missed them
+- **Repeated rollbacks from the same stage** → systemic issue in that upstream artifact
+- **Unmeasurable success criteria** → the brief needs more concrete criteria for next time
+
+Then use the quick fix approach above on the root-cause artifact.
+
+### Cascade Regeneration (larger rework)
+
+When a foundational artifact (BRIEF or SPEC) changes substantially, the fix ripples through the pipeline:
+
+1. Fix the upstream artifact (e.g., expand BRIEF scope)
+2. Regenerate SPEC from the updated BRIEF → *"Generate specs from the brief"*
+3. Regenerate PLAN from the updated SPEC → *"Generate a plan from the spec"*
+4. Regenerate TASKS from the updated PLAN → *"Turn the plan into tasks"*
+5. Resume execution → *"Execute tasks"*
+
+Only regenerate artifacts whose content is actually affected by the change. A typo fix in the BRIEF doesn't invalidate the PLAN.
+
+### Decision Trail
+
+Every rollback is logged to `DECISION.md` with: what triggered it, which upstream sections changed, which downstream artifacts were invalidated, and why. This means you can always trace why a document was revised and what the original said.
+
+---
+
 ## Key Design Principles
 
 - **Interactive, not automated** — every skill proposes drafts section by section and waits for your confirmation. Nothing is written without approval.
