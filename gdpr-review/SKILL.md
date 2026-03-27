@@ -24,6 +24,13 @@ This is a **cross-cutting review skill** — it runs alongside the pipeline, not
 
 **Artifact produced:** `docs/features/{feature-name}/GDPR-REVIEW.md`
 
+## Performance Notes
+
+- Take your time with every checklist item. Missing a single GDPR article can mean a compliance gap that surfaces in production.
+- Quality and completeness are more important than speed. Check every data processing activity against every relevant article.
+- Do not skip validation steps or collapse multiple checks into a summary. Each finding must cite the specific article and, when consulted, the official source.
+- When uncertain whether a data element is personal data or whether a processing activity requires a specific legal basis, err on the side of flagging it — false positives are preferable to false negatives in compliance reviews.
+
 ---
 
 ## Output Template

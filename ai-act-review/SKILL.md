@@ -24,6 +24,13 @@ This is a **cross-cutting review skill** — it runs alongside the pipeline, not
 
 **Artifact produced:** `docs/features/{feature-name}/AI-ACT-REVIEW.md`
 
+## Performance Notes
+
+- Take your time with every classification step. An incorrect risk level (e.g., classifying a high-risk system as limited risk) can lead to missing mandatory obligations like conformity assessments and human oversight.
+- Quality and completeness are more important than speed. Check every AI component against every relevant article and Annex III category.
+- Do not skip validation steps or collapse the risk classification into a quick judgment. Walk through prohibited practices, high-risk categories, and limited-risk triggers systematically.
+- When uncertain about the risk classification or whether a transparency obligation applies, err on the side of the higher risk level — downgrading after review is safer than missing an obligation.
+
 ---
 
 ## Output Template

@@ -24,6 +24,13 @@ This is a **cross-cutting review skill** — it runs alongside the pipeline, not
 
 **Artifact produced:** `docs/features/{feature-name}/ACCESSIBILITY-REVIEW.md`
 
+## Performance Notes
+
+- Take your time with every component and criterion. Missing a single WCAG success criterion or platform guideline can leave an entire user group unable to use the feature.
+- Quality and completeness are more important than speed. Audit every interactive element against the relevant checklist for the detected platform.
+- Do not skip validation steps or merge findings into vague summaries. Each finding must cite the specific criterion (WCAG, RGAA, HIG, Material) and, when consulted, the official source.
+- When uncertain whether a component meets a criterion, err on the side of flagging it — a false positive that gets reviewed is better than a barrier that ships to users who rely on assistive technology.
+
 ---
 
 ## Output Template
