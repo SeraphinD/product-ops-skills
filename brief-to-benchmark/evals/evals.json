@@ -56,6 +56,90 @@
       "type": "trigger",
       "prompt": "I have some competitor data, fill in the rest with research",
       "description": "Trigger via hybrid mode — user supplies partial data, agent fills gaps"
+    },
+    {
+      "id": "func-auto-standard",
+      "type": "functional",
+      "prompt": "Benchmark the brief at docs/features/notification-system/BRIEF.md. Market: global. Domain: SaaS.",
+      "description": "Given a sample BRIEF in auto mode, does the agent produce a structurally valid BENCHMARK.md with all required sections (Comparable Solutions, Technical Standards, Key Metrics, Gap Analysis, Spec Recommendations)?",
+      "expected_behavior": [
+        "Locates and reads the BRIEF",
+        "Defaults to Auto mode",
+        "Produces Comparable Solutions (3-5), Technical Standards, Key Metrics table, Gap Analysis with 3 subsections, Spec Recommendations with Include/Exclude/Validate",
+        "Passes validate-benchmark.sh"
+      ]
+    },
+    {
+      "id": "func-provided-mode",
+      "type": "functional",
+      "prompt": "Benchmark the brief — use only this data: competitors are Shopify, Magento, WooCommerce. Shopify has best UX but limited customization. Magento is open-source, complex. WooCommerce is WordPress-based, flexible. Conversion rate baseline: 2.5%. Do not use web search.",
+      "description": "Given a BRIEF and user-supplied competitor data, does the agent enter Provided mode and avoid WebSearch entirely?",
+      "expected_behavior": [
+        "Detects user-provided data and confirms Provided mode",
+        "Structures the 3 competitors without calling WebSearch",
+        "Asks user for missing fields (gaps, differentiators) rather than researching",
+        "Does not invoke WebSearch at any point"
+      ]
+    },
+    {
+      "id": "func-hybrid-mode",
+      "type": "functional",
+      "prompt": "Benchmark the brief for our product catalog. I know about IKEA and Maisons du Monde, but research the rest. Focus on EU home furniture.",
+      "description": "Given partial competitor data, does the agent enter Hybrid mode — using provided data as-is and supplementing with web research?",
+      "expected_behavior": [
+        "Detects partial data (2 competitors) and confirms Hybrid mode",
+        "Structures IKEA and Maisons du Monde from user data without researching them",
+        "Uses WebSearch to find 1-2 additional EU home furniture competitors",
+        "Scopes all research queries to EU home furniture"
+      ]
+    },
+    {
+      "id": "func-unverified-flagging",
+      "type": "functional",
+      "prompt": "Benchmark the brief. Market: global. Domain: underwater drone racing league management.",
+      "description": "When WebSearch returns no credible results for a niche domain, does the agent flag data with the unverified marker instead of fabricating?",
+      "expected_behavior": [
+        "Does not fabricate competitor names or metrics",
+        "Flags unverifiable claims with '⚠️ Unverified — validate before use'",
+        "Honestly notes when comparables are scarce or absent",
+        "Still produces Gap Analysis and Spec Recommendations"
+      ]
+    },
+    {
+      "id": "func-section-confirmation",
+      "type": "functional",
+      "prompt": "Benchmark the brief at docs/features/auth-system/BRIEF.md. Market: US. Domain: SaaS.",
+      "description": "Does the agent confirm each section with the user before moving on, rather than generating the full BENCHMARK in one shot?",
+      "expected_behavior": [
+        "Proposes Comparable Solutions as drafts and waits for confirmation",
+        "Proposes Technical Standards and waits for confirmation",
+        "Proposes Key Metrics table and waits for confirmation",
+        "Proposes Gap Analysis and waits for confirmation",
+        "Does NOT output the full BENCHMARK.md without intermediate confirmations"
+      ]
+    },
+    {
+      "id": "func-custom-type",
+      "type": "functional",
+      "prompt": "Run a compliance benchmark against the brief. Focus on EU regulations for our payment processing feature.",
+      "description": "Does a compliance benchmark request produce the Regulatory Requirements section and adapt the standard template?",
+      "expected_behavior": [
+        "Detects 'compliance' custom benchmark type",
+        "Adds a Regulatory Requirements section (e.g., GDPR, PSD2, PCI DSS)",
+        "Still includes Gap Analysis and Spec Recommendations",
+        "Passes validate-benchmark.sh --custom"
+      ]
+    },
+    {
+      "id": "func-english-output",
+      "type": "functional",
+      "prompt": "Fais un benchmark du brief pour notre système de notifications. Marché : France. Domaine : e-commerce mode.",
+      "description": "If the conversation is in French, is the BENCHMARK.md still written in English?",
+      "expected_behavior": [
+        "Responds to the user (may use French for conversation)",
+        "Writes BENCHMARK.md content entirely in English",
+        "Section headers, competitor descriptions, gap analysis — all in English"
+      ]
     }
   ]
 }

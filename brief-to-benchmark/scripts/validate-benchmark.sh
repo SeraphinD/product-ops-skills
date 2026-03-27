@@ -59,6 +59,7 @@ echo "--- Scope Metadata ---"
 check_warn "^> Market:" "Market scope"
 check_warn "^> Domain:" "Domain scope"
 check_warn "^> Benchmark type:" "Benchmark type"
+check_warn "^> Date:" "Date"
 
 # --- Standard data sections (skip if --custom) ---
 if [[ "$CUSTOM_MODE" == false ]]; then
@@ -106,10 +107,8 @@ fi
 echo ""
 echo "--- Content Quality ---"
 if [[ "$CUSTOM_MODE" == false ]]; then
-  COMP_COUNT=$(grep -cE "^### " "$FILE" 2>/dev/null || echo "0")
-  # Subtract known non-competitor ### headers
-  SUB_HEADERS=$(grep -cE "^### (What Existing|What Your Brief|Risks &|Competitor Layout|User Flow|User Research|Regulatory|Current System|Market Sizing|Pricing)" "$FILE" 2>/dev/null || echo "0")
-  COMP_COUNT=$((COMP_COUNT - SUB_HEADERS))
+  # Count ### headers only between "## Comparable Solutions" and the next "## " header
+  COMP_COUNT=$(awk '/^## Comparable Solutions/{found=1; next} /^## /{found=0} found && /^### /{count++} END{print count+0}' "$FILE")
   if [[ "$COMP_COUNT" -lt 3 ]]; then
     echo "WARN: Only $COMP_COUNT comparable solution(s) found (minimum: 3)"
     WARNINGS=$((WARNINGS + 1))
@@ -150,20 +149,18 @@ echo ""
 echo "--- Optional Sections ---"
 if grep -qE "^## Visual References" "$FILE"; then
   echo "  OK: Visual References section present (frontend feature)"
-  # Check for diagrams
-  DIAGRAM_COUNT=$(grep -c '┌\|┐\|└\|┘\|│\|─' "$FILE" 2>/dev/null || echo "0")
-  if [[ "$DIAGRAM_COUNT" -gt 0 ]]; then
-    echo "  OK: Unicode box-drawing diagrams found"
-  else
-    echo "WARN: Visual References section exists but no Unicode diagrams found"
-    WARNINGS=$((WARNINGS + 1))
-  fi
   MERMAID_COUNT=$(grep -c "flowchart\|graph " "$FILE" 2>/dev/null || echo "0")
+  DIAGRAM_COUNT=$(grep -c '┌\|┐\|└\|┘\|│\|─' "$FILE" 2>/dev/null || echo "0")
   if [[ "$MERMAID_COUNT" -gt 0 ]]; then
     echo "  OK: Mermaid flow diagrams found"
   else
     echo "WARN: Visual References section exists but no Mermaid diagrams found"
     WARNINGS=$((WARNINGS + 1))
+  fi
+  if [[ "$DIAGRAM_COUNT" -gt 0 ]]; then
+    echo "  OK: Unicode box-drawing diagrams found (optional)"
+  else
+    echo "INFO: No Unicode box-drawing diagrams (optional — structured descriptions or Mermaid are preferred)"
   fi
 else
   echo "INFO: No Visual References section (OK for non-frontend features)"
