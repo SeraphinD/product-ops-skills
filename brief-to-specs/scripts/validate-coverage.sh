@@ -111,6 +111,37 @@ done <<< "$SC"
 echo ""
 echo "  Coverage: $SC_COVERED / $SC_COUNT success criteria likely have acceptance criteria"
 
+# Check BRIEF experiment criteria (- [ ] items with EXP- IDs) have Experimentation Strategy in SPEC
+echo ""
+echo "--- Experiment Criteria → Experimentation Strategy ---"
+EXP_CRITERIA=$(awk '/^## Success Criteria/{found=1; next} /^## /{if(found) exit} found && /^- \[ \]/' "$BRIEF" | sed 's/^- \[ \] //')
+EXP_COUNT=0
+EXP_COVERED=0
+
+while IFS= read -r criterion; do
+  [[ -z "$criterion" ]] && continue
+  EXP_COUNT=$((EXP_COUNT + 1))
+  # Extract EXP-ID (e.g., EXP-001) from the criterion text
+  EXP_ID=$(echo "$criterion" | grep -oE 'EXP-[A-Za-z0-9_-]+' | head -1)
+  if [[ -n "$EXP_ID" ]] && grep -q "$EXP_ID" "$SPEC" 2>/dev/null; then
+    echo "  OK: $EXP_ID — \"$criterion\""
+    EXP_COVERED=$((EXP_COVERED + 1))
+  elif [[ -n "$EXP_ID" ]]; then
+    echo "WARN: $EXP_ID not found in SPEC — \"$criterion\""
+    WARNINGS=$((WARNINGS + 1))
+  else
+    echo "WARN: No EXP-ID found in criterion — \"$criterion\""
+    WARNINGS=$((WARNINGS + 1))
+  fi
+done <<< "$EXP_CRITERIA"
+
+if [[ "$EXP_COUNT" -eq 0 ]]; then
+  echo "INFO: No experiment criteria (- [ ]) found in BRIEF Success Criteria (acceptable if no experiments planned)"
+else
+  echo ""
+  echo "  Coverage: $EXP_COVERED / $EXP_COUNT experiment criteria have Experimentation Strategy in SPEC"
+fi
+
 echo ""
 echo "=== Results ==="
 if [[ "$WARNINGS" -eq 0 ]]; then

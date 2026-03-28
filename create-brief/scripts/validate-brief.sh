@@ -94,6 +94,47 @@ else
   echo "  OK: $OBJ_CHECK objectives with ✓ prefix"
 fi
 
+# Check Experiment Criteria format (optional section)
+echo ""
+echo "--- Experiment Criteria (optional) ---"
+if grep -qE "^### Experiment Criteria" "$FILE"; then
+  echo "  OK: Experiment Criteria subsection present"
+
+  # Verify experiment criteria use [ ] not [x]
+  EXP_CHECKED=$(awk '/^### Experiment Criteria/{found=1; next} /^### |^## /{if(found) exit} found && /^- \[x\]/' "$FILE" | wc -l | tr -d ' ')
+  if [[ "$EXP_CHECKED" -gt 0 ]]; then
+    echo "WARN: $EXP_CHECKED experiment criteria use [x] instead of [ ] — experiment criteria should be unchecked hypotheses"
+    WARNINGS=$((WARNINGS + 1))
+  fi
+
+  # Verify experiment criteria start with EXP-
+  EXP_ITEMS=$(awk '/^### Experiment Criteria/{found=1; next} /^### |^## /{if(found) exit} found && /^- \[ \]/' "$FILE" | wc -l | tr -d ' ')
+  EXP_WITH_ID=$(awk '/^### Experiment Criteria/{found=1; next} /^### |^## /{if(found) exit} found && /^- \[ \] EXP-/' "$FILE" | wc -l | tr -d ' ')
+  if [[ "$EXP_ITEMS" -gt 0 && "$EXP_WITH_ID" -lt "$EXP_ITEMS" ]]; then
+    echo "WARN: $((EXP_ITEMS - EXP_WITH_ID)) experiment criteria missing EXP- ID prefix"
+    WARNINGS=$((WARNINGS + 1))
+  elif [[ "$EXP_ITEMS" -gt 0 ]]; then
+    echo "  OK: $EXP_ITEMS experiment criteria with EXP- ID prefix"
+  fi
+
+  # Check for measurable threshold keywords
+  EXP_NO_THRESHOLD=$(awk '/^### Experiment Criteria/{found=1; next} /^### |^## /{if(found) exit} found && /^- \[ \]/' "$FILE" | grep -cvE '(by |%|increase|decrease|reduce|improve|more than|less than|within)' 2>/dev/null || echo "0")
+  if [[ "$EXP_NO_THRESHOLD" -gt 0 ]]; then
+    echo "WARN: $EXP_NO_THRESHOLD experiment criteria may lack a measurable threshold"
+    WARNINGS=$((WARNINGS + 1))
+  fi
+
+  # Check Ship Criteria subsection also exists when Experiment Criteria exists
+  if ! grep -qE "^### Ship Criteria" "$FILE"; then
+    echo "WARN: Experiment Criteria present but no Ship Criteria subsection"
+    WARNINGS=$((WARNINGS + 1))
+  else
+    echo "  OK: Ship Criteria subsection present"
+  fi
+else
+  echo "INFO: No Experiment Criteria subsection (standard format — OK)"
+fi
+
 echo ""
 echo "=== Results ==="
 if [[ "$ERRORS" -eq 0 && "$WARNINGS" -eq 0 ]]; then

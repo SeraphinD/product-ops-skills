@@ -1,6 +1,6 @@
 ---
 name: feature-retrospective
-description: Reviews a completed (or in-progress) feature by comparing outcomes against the original BRIEF success criteria and SPEC acceptance criteria, computing quantitative metrics (task completion rate, blocked count, scope changes), and producing a structured RETRO.md with process review and lessons learned. Trigger on phrases like "retrospective", "retro", "feature review", "how did we do", "review completed work", "sprint review", "evaluate the feature", "success criteria check", or when the user has completed tasks and wants to assess outcomes. Do NOT use for executing tasks (use execute-tasks), generating tasks (use plan-to-tasks), or any upstream pipeline step.
+description: Reviews a completed (or in-progress) feature by comparing outcomes against the original BRIEF success criteria and SPEC acceptance criteria, evaluating A/B experiment results when present, computing quantitative metrics (task completion rate, blocked count, scope changes), and producing a structured RETRO.md with process review and lessons learned. Trigger on phrases like "retrospective", "retro", "feature review", "how did we do", "review completed work", "sprint review", "evaluate the feature", "success criteria check", "experiment results", "A/B test results", or when the user has completed tasks and wants to assess outcomes. Do NOT use for executing tasks (use execute-tasks), generating tasks (use plan-to-tasks), or any upstream pipeline step.
 allowed-tools: "Read Write Glob Grep"
 license: MIT
 metadata:
@@ -108,6 +108,33 @@ For each criterion in BRIEF.md's Success Criteria section:
 
 Present as a table for user review before assembling into RETRO.md.
 
+Experiment criteria from the BRIEF (`- [ ]` items) that map to PENDING or NOT_TESTED experiments should get verdict **UNTESTABLE** with an appropriate note: "Requires A/B test results — experiment not yet evaluated" or "Experiment infrastructure was deferred — observational data only."
+
+---
+
+### Step 4.5 — Experiment Results Evaluation
+
+Skip this step if the SPEC has no `### Experimentation Strategy` blocks.
+
+**If SPEC has experiments AND the PLAN includes experiment infrastructure:**
+1. Group strategies by `EXP-ID` — a multi-story experiment produces one result row, not one per story
+2. For each experiment, ask the user for results data: control group metrics, variant group metrics, statistical significance, guardrail metric values
+3. If data is not available (experiment hasn't run or hasn't reached significance), mark the experiment as PENDING and note it in Open Risks
+4. For experiments with data, evaluate against the SPEC's Decision Framework:
+   - Primary metric improved ≥ threshold? Check.
+   - Statistical significance met? Check.
+   - Guardrail metrics within tolerance? Check.
+5. Propose a verdict: **SHIP** (variant wins) / **KILL** (control wins) / **ITERATE** (inconclusive, needs redesign)
+6. Log the verdict to `DECISION.md` using the Experiment Decision format
+
+**If SPEC has experiments but the PLAN deferred infrastructure (no tooling):**
+1. Note that experiments were defined but not run as controlled tests
+2. Ask the user if they have any observational data (e.g., post-launch analytics, user feedback)
+3. If observational data exists, evaluate informally: *"Based on the data you have, does the hypothesis appear confirmed? Note: this is not a statistically controlled result."* Use verdict **NOT_TESTED** instead of SHIP/KILL/ITERATE.
+4. Flag in Lessons Learned: *"Experiment {EXP-ID} was defined but not run as a controlled test. Consider adding experimentation tooling for future features with behavioral hypotheses."*
+
+Present experiment results as a table for user review before assembling into RETRO.md.
+
 ---
 
 ### Step 5 — Acceptance Criteria Coverage
@@ -148,6 +175,12 @@ Compute from artifacts:
 
 **From OPPORTUNITY.md (if available):**
 - **Effort estimate vs actual:** original Effort score vs actual task count
+
+**From SPEC.md (experiments):**
+- **Experiments defined:** count of unique `EXP-ID`s in Experimentation Strategy blocks
+- **Experiments completed:** count with SHIP or KILL verdict
+- **Experiments with SHIP verdict:** count — features validated by data
+- **Experiments NOT_TESTED:** count — defined but not run as controlled tests
 
 Present all metrics in a table. Skip any metric whose source artifact is missing.
 
@@ -196,6 +229,11 @@ Synthesize actionable insights:
 - Benchmark claims that were carried forward without verification
 - Blocked tasks whose root causes remain unresolved
 - Acceptance criteria marked UNTESTABLE that need production validation
+
+**Experiment-specific lessons:**
+- Was a hypothesis wrong? *"Experiment {EXP-ID} hypothesis was rejected — users preferred the control experience. The assumption that {X} was incorrect."*
+- Did a guardrail metric degrade? *"Experiment {EXP-ID} was killed because {guardrail metric} degraded by {amount}, exceeding the {threshold} tolerance."*
+- Were experiments deferred? *"Experiment criteria were defined but infrastructure was deferred. Post-launch observational data was insufficient to validate the hypothesis. Consider investing in experimentation tooling."*
 
 Each lesson and risk should be specific and actionable, not generic platitudes.
 

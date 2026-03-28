@@ -216,6 +216,7 @@ Search for 3–5 real-world solutions that address the same problem as the brief
 1. Use `WebSearch` with queries that include the market/domain scope from Step 4 — e.g., `{domain} {market} {feature domain} tools comparison`, `{problem} existing solutions {market}`, `best {feature type} tools {domain} {year}`.
 2. For each solution found, extract: what it does, how it approaches the problem, its differentiators, and its gaps relative to the brief.
 3. Where a claim couldn't be verified from the search results, mark it: `⚠️ Unverified — validate before use`.
+4. Where observable, note whether the competitor uses A/B testing, feature flags, or gradual rollouts for this feature area — this context informs the SPEC's experimentation strategy.
 
 **Provided mode:**
 Structure the user's provided competitors into the template format. For each entry:
@@ -307,6 +308,7 @@ Surface 3–8 concrete recommendations for the SPEC writer, grounded in benchmar
 - **Include** — features or behaviors supported by research
 - **Exclude for now** — scope boundaries suggested by benchmarks (e.g., "competitors don't expose this via API, suggesting it's complex — consider deferring")
 - **Validate before specifying** — areas where more information is needed before writing acceptance criteria
+- **Test before full rollout** — features where competitors A/B test, where benchmark data shows high behavioral variance, or where the brief's success criteria contain unvalidated behavioral hypotheses
 
 Frame these as *research-informed suggestions*, not requirements. The `brief-to-specs` skill makes final decisions.
 

@@ -28,6 +28,20 @@ As a [role], I want [capability] so that [benefit].
 **WHEN** [action]
 **THEN** [expected outcome]
 
+### Experimentation Strategy
+<!-- Optional — include only when this story implements an experiment variant -->
+
+#### Experiment: {EXP-ID} — {Name}
+- **Hypothesis:** We believe {change} will {effect} for {audience} because {reason}
+- **BRIEF Criterion:** {reference to the experiment criterion in BRIEF.md}
+- **Role in experiment:** {Control | Variant}
+- **Control (A):** {Current behavior — what users see without this feature}
+- **Variant (B):** {New behavior — what the test group sees}
+- **Primary Metric:** {metric} (baseline: {value})
+- **Guardrail Metrics:**
+  - {metric 1} — current: {value}, max degradation: {threshold}
+- **Decision Framework:** Ship variant if primary metric improves >= {threshold} with p < {significance} and no guardrail degradation beyond thresholds
+
 ---
 
 ## User Story [N+1] — {MUST | SHOULD | COULD}
@@ -53,3 +67,5 @@ As a [role], I want [capability] so that [benefit].
 ```
 
 > If the brief describes a single role and a single capability, one User Story is sufficient. Split into multiple User Stories only when distinct roles or fundamentally different capabilities are present in the brief.
+
+> When multiple User Stories belong to the same experiment (variant-per-story), they share the same `EXP-ID` and the same Control/Variant/Metric definitions. One story is labeled `Role: Control`, the others `Role: Variant`.

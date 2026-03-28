@@ -478,6 +478,7 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 11. **Figma is additive, never required** — Figma MCP integration enhances the skill but never blocks it. `DESIGN.md` is always the primary output. Figma scaffold and token sync are opt-in. If Figma tools fail or return errors mid-run, log the failure to `DECISION.md`, complete the `DESIGN.md` as normal, and inform the user: *"Figma scaffold failed at step {X}. DESIGN.md is complete — you can scaffold manually."*
 12. **Figma source of truth** — when `FIGMA_MODE = active`, Figma-sourced tokens always take precedence over codebase tokens for the same name. Conflicts must be resolved with the user before writing the Design System section.
 13. **Platform modes in Figma** — when scaffolding a cross-platform design (iOS + Android) and the Figma file uses variable modes, always add new tokens to both modes. Never add to one platform's mode without the other unless the token is intentionally platform-specific (e.g., SF Symbols vs Material icons).
+14. **Experiment-aware design** — when a User Story has an `### Experimentation Strategy` block, design both the control experience and the variant experience for both platforms (iOS + Android). Label affected screen layouts and components with `[Control: EXP-ID]` and `[Variant: EXP-ID]`. Both states need full platform-specific treatment: component states, accessibility (VoiceOver + TalkBack), and adaptive layout. If the control is the existing behavior, only the variant needs screen wireframes.
 
 ---
 

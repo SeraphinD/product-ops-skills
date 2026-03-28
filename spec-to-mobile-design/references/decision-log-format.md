@@ -58,3 +58,35 @@ Each decision follows this structure:
 ```
 
 > For simple decisions (e.g., confirming a name or a default value), keep the entry lightweight — skip Options Considered and Consequences if they add no value. Use the full format for decisions that shape the feature's direction.
+
+---
+
+## Experiment Decision Entry
+
+Use this format when logging experiment verdicts from the retrospective, or when logging decisions to defer, add, or modify experiments during the pipeline.
+
+```
+## Decision {N}: Experiment — {EXP-ID} — {Short title}
+**Status:** ✅ Accepted
+**Date:** {YYYY-MM-DD}
+**Skill:** {skill-name}
+**Type:** Experiment
+
+### Experiment
+- **EXP-ID:** {EXP-feature-N}
+- **Hypothesis:** {what was tested}
+- **Primary Metric:** {metric} — Control: {value}, Variant: {value}, Lift: {+/- %}
+- **Statistical Significance:** {p-value or confidence interval}
+- **Guardrails:** {all clear / {metric} degraded by {amount}}
+
+### Verdict
+**{SHIP | KILL | ITERATE | NOT_TESTED}**
+
+### Rationale
+{Why this verdict, referencing the Decision Framework from the SPEC}
+
+### Next Action
+{If SHIP: rollout plan. If KILL: cleanup scope. If ITERATE: revised hypothesis. If NOT_TESTED: recommendation.}
+```
+
+> For experiment deferral decisions (user chose not to build experiment infrastructure), use a simplified format: log the decision with Type: Experiment, Verdict: DEFERRED, and Rationale explaining why infrastructure was skipped.

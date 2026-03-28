@@ -60,19 +60,29 @@ The final `BRIEF.md` must follow **exactly** this structure — no extra section
 - {Mitigation 1}
 
 ## Success Criteria
-<!-- 3 to 8 criteria -->
+<!-- 3 to 8 criteria total (across both types if subsections are used) -->
+<!-- Subsections are optional. Use flat format when no experiments are needed. -->
 - [x] {Measurable criterion 1}
 - [x] {Measurable criterion 2}
 - [x] {Measurable criterion 3}
 - ...
+
+<!-- ALTERNATIVE FORMAT: When experiment criteria are present, use subsections: -->
+<!--
+### Ship Criteria
+- [x] {Binary pass/fail criterion — verifiable from code or tests}
+
+### Experiment Criteria
+- [ ] EXP-{feature}-1: We believe {change} will {effect} by {threshold}
+-->
 ```
 
 ## Constraints
 
 - **Exactly 8 sections** — no extra sections (no Timeline, Stack, Dependencies, Stakeholders)
-- **Counts** — 3–7 objectives, 5–10 in-scope items, 3–8 out-of-scope items, 3–8 success criteria
+- **Counts** — 3–7 objectives, 5–10 in-scope items, 3–8 out-of-scope items, 3–8 success criteria (total across Ship and Experiment if subsections are used)
 - **Objectives** — prefixed with `✓`, action-oriented, one line each
-- **Success Criteria** — marked `[x]`, binary (pass/fail), specific, verifiable
+- **Success Criteria** — ship criteria marked `[x]`, binary (pass/fail), specific, verifiable. Experiment criteria marked `[ ]`, prefixed with `EXP-{feature}-{N}`, contain a measurable hypothesis with a threshold. Both formats are valid: flat (all `[x]`) or subsectioned (`### Ship Criteria` + `### Experiment Criteria`). The flat format is the default; subsections only appear when the user opts into experiments.
 - **Assumptions & Risks** — all three subsections optional; include only what genuinely applies
 - **Verbatims** — optional blockquotes under pain points; format: `> "Quote" — Source`
 - **Solution** — one paragraph with **bolded core design principle**

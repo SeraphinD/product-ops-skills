@@ -1,6 +1,6 @@
 ---
 name: create-brief
-description: Interactively creates a BRIEF.md for a new feature or project through structured Q&A, producing a document with Executive Summary, Problem Statement, Solution, Objectives, Scope, Assumptions & Risks, and Success Criteria. Trigger on phrases like "create a brief", "write a brief", "generate BRIEF.md", "new feature brief", "start a brief", "I have an idea for a feature", "let's start a new feature", or "kick off a project". Do NOT use for converting a brief into specs (use brief-to-specs), benchmarking (use brief-to-benchmark), editing an existing brief, or any downstream pipeline step — this skill creates new briefs from scratch only.
+description: Interactively creates a BRIEF.md for a new feature or project through structured Q&A, producing a document with Executive Summary, Problem Statement, Solution, Objectives, Scope, Assumptions & Risks, and Success Criteria (with optional A/B test experiment criteria detection). Trigger on phrases like "create a brief", "write a brief", "generate BRIEF.md", "new feature brief", "start a brief", "I have an idea for a feature", "let's start a new feature", "kick off a project", or "I want to A/B test". Do NOT use for converting a brief into specs (use brief-to-specs), benchmarking (use brief-to-benchmark), editing an existing brief, or any downstream pipeline step — this skill creates new briefs from scratch only.
 allowed-tools: "Read Write Glob"
 license: MIT
 metadata:
@@ -180,7 +180,7 @@ Propose a draft. Confirm.
 
 ### Step 11 — Success Criteria
 
-3 to 8 criteria, all marked `[x]`. Each must be:
+3 to 8 criteria total. Each ship criterion must be:
 - **Binary** — pass or fail
 - **Specific** — include exact commands, outputs, or behaviors where relevant
 - **Verifiable** — someone else can check it without ambiguity
@@ -191,6 +191,20 @@ Derive from the acceptance criteria implied by the scope and solution. If criter
 > *"How will you know this feature is done and working correctly? What would you test or check?"*
 
 Propose the list. Confirm.
+
+#### Step 11.1 — Experiment Recommendation (advisory)
+
+After the criteria list is confirmed, scan for **behavioral hypothesis patterns** — criteria that contain lift targets ("increase by X%", "reduce churn by", "improve conversion"), comparative language ("more than", "better than current"), or user behavior predictions ("users will", "adoption rate"). These signal that a criterion is a hypothesis about user behavior, not a binary ship/no-ship check.
+
+For each detected pattern, recommend:
+> *"This criterion — '{criterion text}' — looks like a hypothesis about user behavior. An A/B test would let you validate it with real data before committing to a full rollout. Would you like to mark it as an experiment criterion?"*
+
+Frame it as a suggestion, not a prompt that expects "yes."
+
+- **If the user accepts** for any criterion: assign an experiment ID (`EXP-{feature-slug}-{N}`), reformat as `- [ ] EXP-{id}: We believe [change] will [effect] by [threshold]`, and add the `### Ship Criteria` / `### Experiment Criteria` subsection headers under `## Success Criteria`.
+- **If the user declines all**: keep the flat format with no subsections. The criteria stay as regular `[x]` ship criteria. Do not re-ask or push back.
+- **If the user proactively asks** for experiment criteria (without prompting), handle it the same way as acceptance above.
+- **If no criteria match** the behavioral hypothesis patterns, skip this sub-step silently — do not ask about experiments when there is nothing to recommend.
 
 ---
 
@@ -241,9 +255,10 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 2. **Propose, don't impose** — always show a draft of each section and ask for feedback before locking it in.
 3. **No placeholders in the final file** — every field must contain real content.
 4. **Strict structure** — no extra sections (no Timeline, Stack, Dependencies, Stakeholders). Only the 8 sections defined in the template. Assumptions & Risks subsections are optional — include only those that apply.
-5. **Counts** — 3–7 objectives, 5–10 in-scope items, 3–8 out-of-scope items, 3–8 success criteria. Stay within these ranges — ask for more input if below the minimum, trim if above the maximum.
+5. **Counts** — 3–7 objectives, 5–10 in-scope items, 3–8 out-of-scope items, 3–8 success criteria (total across Ship and Experiment if subsections are used). Stay within these ranges — ask for more input if below the minimum, trim if above the maximum.
 6. **Language** — write the BRIEF.md in English, regardless of the language the user uses to interact.
 7. **One section at a time** — do not dump all questions at once. Work through sections sequentially.
+8. **Experimentation is advisory** — proactively recommend A/B testing when criteria look like behavioral hypotheses, but never force it. If the user declines, do not re-ask or push back — respect the decision and keep all criteria as ship criteria. Both the flat format (all `[x]`) and the subsectioned format (`### Ship Criteria` + `### Experiment Criteria`) are valid.
 
 ---
 

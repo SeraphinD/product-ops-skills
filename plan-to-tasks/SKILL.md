@@ -47,6 +47,8 @@ When a task does map to a known skill, use these conventions:
 | Integrate or call an AI/Claude API | `claude-developer-platform` |
 | Generate a specification from a brief | `brief-to-specs` |
 | Generate a plan from a spec | `spec-to-plan` |
+| Set up feature flags or experiment infrastructure | — (no skill; infrastructure task) |
+| Instrument analytics events for experiments | — (no skill; analytics task) |
 
 > **Note:** This table is not exhaustive. If the user has other skills installed, assign them when relevant. If unsure whether a skill exists, omit the field — it's better to leave it blank than to reference a non-existent skill.
 

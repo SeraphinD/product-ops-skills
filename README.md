@@ -34,16 +34,16 @@ Use `/pm` at any point to see where you are and what to do next.
 |---|---|---|---|
 | **pm** | *No document* — scans artifacts and recommends the next skill | Single entry point; removes the need to remember skill names | ✅ Yes |
 | **create-problem-frame** | `PROBLEM-FRAME.md` — situation context, root cause analysis, constraints, alternative framings | Prevents building the right solution to the wrong problem | ✅ Yes |
-| **create-brief** | `BRIEF.md` — problem, solution, objectives, scope, success criteria | Aligns everyone on what to build and why before any work starts | No — starting point |
-| **brief-to-benchmark** | `BENCHMARK.md` — competitors, standards, metrics, gap analysis | Grounds decisions in real-world data instead of assumptions | ✅ Yes |
+| **create-brief** | `BRIEF.md` — problem, solution, objectives, scope, success criteria (+ optional experiment criteria with `EXP-ID` hypotheses) | Aligns everyone on what to build and why before any work starts; proactively recommends A/B testing when criteria look like behavioral hypotheses | No — starting point |
+| **brief-to-benchmark** | `BENCHMARK.md` — competitors, standards, metrics, gap analysis (+ competitor experimentation practices) | Grounds decisions in real-world data instead of assumptions | ✅ Yes |
 | **brief-to-opportunity** | `OPPORTUNITY.md` — RICE score card for a single brief | Quantifies priority with structured scoring before investing in specs | ✅ Yes |
-| **brief-to-specs** | `SPEC.md` — user stories, MoSCoW/WSJF scores, Given/When/Then ACs | Turns intent into testable requirements with clear priority | No |
-| **spec-to-design** | `DESIGN.md` — design system, components, wireframes, flows *(web)*. Optionally reads tokens from Figma and scaffolds frames via MCP Figma | Catches UX issues on paper before they become code; Figma integration syncs design tokens when connected | ✅ Yes |
-| **spec-to-mobile-design** | `DESIGN.md` — same, but for native iOS/Android. Optionally reads tokens from Figma and scaffolds screen frames via MCP Figma | Same, with platform-specific patterns for iOS and Android; Figma scaffolds include safe area guides | ✅ Yes |
-| **spec-to-plan** | `PLAN.md` — phased implementation steps, file tree, critical files, verification checklist | Gives engineering a buildable sequence, not just a wish list | No |
+| **brief-to-specs** | `SPEC.md` — user stories, MoSCoW/WSJF scores, Given/When/Then ACs (+ optional experimentation strategies per variant story) | Turns intent into testable requirements with clear priority | No |
+| **spec-to-design** | `DESIGN.md` — design system, components, wireframes, flows *(web)*. Optionally reads tokens from Figma and scaffolds frames via MCP Figma. Designs both control and variant states when experiments exist | Catches UX issues on paper before they become code; Figma integration syncs design tokens when connected | ✅ Yes |
+| **spec-to-mobile-design** | `DESIGN.md` — same, but for native iOS/Android. Optionally reads tokens from Figma and scaffolds screen frames via MCP Figma. Designs both control and variant states when experiments exist | Same, with platform-specific patterns for iOS and Android; Figma scaffolds include safe area guides | ✅ Yes |
+| **spec-to-plan** | `PLAN.md` — phased implementation steps, file tree, critical files, verification checklist (+ experiment infrastructure when experiments are defined and tooling is available) | Gives engineering a buildable sequence, not just a wish list | No |
 | **plan-to-tasks** | `TASKS.md` — flat, atomic task list with statuses and optional skill assignments | Makes the plan trackable — every task maps to a plan step | No |
 | **execute-tasks** | Updates `TASKS.md` in-place — status changes, completion dates, block reasons | Bridges the gap between having a task list and having completed work; tracks execution with structured status updates | ✅ Yes |
-| **feature-retrospective** | `RETRO.md` — success criteria evaluation, metrics, process review, lessons learned | Closes the feedback loop — did we build what we set out to build? What should change next time? | ✅ Yes |
+| **feature-retrospective** | `RETRO.md` — success criteria evaluation, metrics, process review, lessons learned (+ experiment results with SHIP/KILL/ITERATE verdicts when experiments were defined) | Closes the feedback loop — did we build what we set out to build? What should change next time? | ✅ Yes |
 
 > **Design note:** `spec-to-design` (web) and `spec-to-mobile-design` (native mobile) both write to `DESIGN.md`. Run one or the other for a given feature, not both.
 
@@ -137,6 +137,10 @@ Key Objectives          ← measurable goals
 Scope                   ← what's in / what's out
 Assumptions & Risks     ← what we're betting on, what could go wrong (optional subsections)
 Success Criteria        ← how you'll know it worked
+  Ship Criteria         ← binary pass/fail checks (e.g., "Notifications delivered within 3s")
+  Experiment Criteria   ← optional behavioral hypotheses (e.g., "- [ ] EXP-push-notif-1:
+                           We believe personalized notification content will increase
+                           tap-through rate by 15%")
 ```
 
 ---
@@ -186,6 +190,19 @@ As a user, I want to receive push notifications...
 Given I have enabled notifications
 When a new message arrives
 Then I receive a push notification within 3 seconds
+
+## User Story 4 — SHOULD (WSJF: 8)
+As a user, I want to receive personalized notification content (Variant)...
+
+### Acceptance Criteria
+...
+
+### Experimentation Strategy
+#### Experiment: EXP-push-notif-1 — Personalized Content
+- Hypothesis: Personalized content will increase tap-through rate by 15%
+- Role in experiment: Variant
+- Primary Metric: tap-through rate (baseline: 12%)
+- Decision Framework: Ship if tap-through >= 13.8% with p < 0.05
 ```
 
 ---
@@ -210,10 +227,13 @@ Spacing: 8dp base unit
 
 ## Components
 NotificationBanner — toast-style overlay, swipe-to-dismiss
+  [Control: EXP-push-notif-1] — generic message preview
+  [Variant: EXP-push-notif-1] — personalized content preview
 PermissionPrompt — modal with allow/deny, TalkBack-labelled
 
 ## Screen Layouts
-[ASCII wireframe of notification list screen]
+[ASCII wireframe of notification list screen — control]
+[ASCII wireframe of notification list screen — variant]
 ```
 
 ---
@@ -228,6 +248,8 @@ Claude triggers `spec-to-plan`, reads the SPEC (and DESIGN.md if present), and p
 
 ```
 ## Phase 1 — MUST
+  1.0  Experiment Infrastructure — feature flag setup (GrowthBook),
+       analytics events for tap-through and guardrail metrics
   1.1  Design System Setup — create theme tokens, base component scaffolding
   1.2  Create NotificationService.ts — FCM/Expo integration
   1.3  Create PermissionPrompt component
@@ -235,11 +257,14 @@ Claude triggers `spec-to-plan`, reads the SPEC (and DESIGN.md if present), and p
 
 ## Phase 2 — SHOULD
   2.1  Create notification preferences screen
+  2.2  Personalized notification content (Variant: EXP-push-notif-1)
   ...
 
 ## Verification Checklist
   [ ] npx jest → all tests pass
   [ ] Push sent from dashboard → received within 3s on device
+  [ ] Feature flag toggles between control and variant
+  [ ] Tap-through events fire in both paths
 ```
 
 ---
@@ -300,11 +325,19 @@ Claude triggers `feature-retrospective`, reads all pipeline artifacts, and evalu
 | Users receive notifications within 3s | PASS | Task 1.2 completed, SPEC AC verified |
 | Opt-in rate > 60% | UNTESTABLE | Requires production data |
 
+## Experiment Results
+| EXP-ID | Hypothesis | Metric | Control | Variant | Lift | Verdict |
+|--------|-----------|--------|---------|---------|------|---------|
+| EXP-push-notif-1 | Personalized content ↑ tap-through | tap-through | 12.1% | 14.8% | +22% | SHIP |
+
 ## Metrics
 Task completion: 92% (11/12) | Blocked: 1 | Rollbacks: 0
+Experiments defined: 1 | Completed: 1 | SHIP: 1
 
 ## Lessons Learned
 - SPEC should define notification payload format upfront — blocked 1 task
+- Experiment EXP-push-notif-1 validated the personalization hypothesis —
+  ship variant to 100%
 ```
 
 ---
@@ -389,6 +422,7 @@ Every rollback is logged to `DECISION.md` with: what triggered it, which upstrea
 - **MoSCoW-aware depth** — MUST stories get full treatment at every stage. SHOULD gets moderate depth. COULD gets stubs. WON'T is never planned, designed, or tasked.
 - **Codebase-aware design** — design skills scan your project for an existing design system (Tailwind, MUI, React Native themes, Flutter `ThemeData`, `Assets.xcassets`) and extend it rather than replacing it. When MCP Figma is connected, Figma local styles and variables are used as the source of truth instead.
 - **No filler** — every generated section is grounded in the spec or prior artifacts. Generic best-practice advice not derived from your documents is never added.
+- **Experiment-aware** — the pipeline proactively identifies success criteria that look like behavioral hypotheses and recommends A/B testing, but never forces it. If you opt in, experiments are formalized in the SPEC (experimentation strategy per variant story with hypotheses, metrics, and decision frameworks), designed in DESIGN.md (control and variant wireframes), planned in the PLAN (feature flag setup, analytics instrumentation — adapted to your actual tooling), and evaluated in the RETRO (experiment results with SHIP/KILL/ITERATE verdicts). If you don't have experimentation tooling, the pipeline adapts — recommending lightweight alternatives or deferring infrastructure while keeping the features buildable. Features without experiments are completely unaffected.
 
 ---
 

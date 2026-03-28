@@ -1,6 +1,6 @@
 ---
 name: spec-to-plan
-description: Transforms a SPEC.md into a structured PLAN.md — a phased, MoSCoW-ordered implementation plan with project structure, concrete steps per file, critical files list, verification checklist, and implementation details. Trigger on phrases like "generate plan", "create PLAN.md", "convert spec to plan", "plan from spec", "write implementation plan", "spec to plan", "make a plan from the spec", "turn spec into a plan", or when the user has a SPEC.md and wants actionable implementation steps — even if they don't say "PLAN.md" explicitly. Do NOT use for generating specs from a brief (use brief-to-specs), generating a task list from a plan (use plan-to-tasks), or designing UI (use spec-to-design). This skill produces implementation plans from specifications only.
+description: Transforms a SPEC.md into a structured PLAN.md — a phased, MoSCoW-ordered implementation plan with project structure, concrete steps per file, critical files list, verification checklist, implementation details, and experiment infrastructure when A/B tests are defined. Trigger on phrases like "generate plan", "create PLAN.md", "convert spec to plan", "plan from spec", "write implementation plan", "spec to plan", "make a plan from the spec", "turn spec into a plan", "plan experiment infrastructure", or when the user has a SPEC.md and wants actionable implementation steps — even if they don't say "PLAN.md" explicitly. Do NOT use for generating specs from a brief (use brief-to-specs), generating a task list from a plan (use plan-to-tasks), or designing UI (use spec-to-design). This skill produces implementation plans from specifications only.
 allowed-tools: "Read Write Glob"
 license: MIT
 metadata:
@@ -55,6 +55,8 @@ When reading User Stories, extract the MoSCoW label from each header (e.g., `## 
 
 If the SPEC has no MoSCoW labels (generated before this convention), treat all User Stories as MUST and proceed normally.
 
+When reading User Stories, also detect `### Experimentation Strategy` blocks. Note which User Stories have experiments and collect their `EXP-IDs`. This information is needed in Steps 4 and 7.
+
 ### Step 2 — Load Prior Decisions
 
 Before generating anything, check whether a `DECISION.md` exists in the same `docs/features/{feature-name}/` directory as the SPEC.
@@ -95,6 +97,10 @@ After reading the SPEC, before generating anything, scan each section for inform
 - **Error handling** — Are error messages or exit codes specified in the spec?
 - **Test strategy** — Is there a testing framework mentioned, or should one be assumed?
 - **Design document** — Is there a DESIGN.md? If so, does it specify a styling approach (CSS-in-JS, Tailwind, plain CSS)? If not specified in either the spec or design, ask the user.
+- **Experimentation tooling** — If the SPEC contains `### Experimentation Strategy` blocks, ask: *"The SPEC includes experiments. Do you have an experimentation platform available (e.g., LaunchDarkly, Unleash, Optimizely, GrowthBook, Statsig, custom feature flags)?"* Three response paths:
+  - **Has tooling** (user names a platform): Plan experiment infrastructure using that platform. Reference its API/SDK in Implementation Details.
+  - **No tooling, wants experiments**: Recommend lightweight alternatives: *"You can run experiments without a dedicated platform. Options include: (a) environment variable-based flags, (b) percentage-based routing with a simple random seed, (c) server-side config with manual cohort assignment. Which do you prefer?"* Plan with the chosen approach.
+  - **No tooling, doesn't want experiment infrastructure**: Skip the "Experiment Infrastructure" sub-phase. Keep variant User Stories as regular implementation. Add a note in Implementation Details: *"Experiment infrastructure was deferred — variant features will be shipped directly without A/B testing."* Log this decision to DECISION.md.
 
 If any of these are ambiguous, **ask all clarifying questions in a single message** — group them by section (e.g., "Stack", "Project structure"), propose a sensible default for each, and wait for the user to confirm or correct.
 
@@ -156,6 +162,8 @@ Organize phases by MoSCoW priority order, then add Testing and Documentation at 
 
 When a DESIGN.md exists for the feature, the first sub-phase of Phase 1 (MUST) should be "Design System Setup" — creating the design tokens, base theme, and component scaffolding as defined in DESIGN.md. Subsequent steps in Phase 1 build on top of these base components.
 
+When the SPEC contains `### Experimentation Strategy` blocks **and** experimentation tooling is available (confirmed in Step 4), add an "Experiment Infrastructure" sub-phase as the first sub-phase of Phase 1 (MUST) — analogous to the "Design System Setup" sub-phase. This covers: feature flag system setup, analytics event instrumentation for primary and guardrail metrics, and variant routing logic. Ensure variant User Stories that share an `EXP-ID` are grouped under their parent experiment in the phase structure. If experimentation was deferred (no tooling), skip this sub-phase — variant stories are planned as regular implementation steps.
+
 Each step within a phase must be specific: name the file and describe what it contains, not just "add some code."
 
 ---
@@ -172,6 +180,12 @@ Pull directly from the spec's acceptance criteria. Each item must be a concrete,
 - Prefer exact commands: `python -m app hello Alice` → `Hello, Alice!` (exit 0) — exact commands prevent ambiguous checks that developers interpret differently and miss in review
 - Include the test run command as its own checklist item — a passing test suite is the minimal bar before shipping
 
+When the plan includes experiment infrastructure, add these checklist items:
+- `[ ] Feature flag toggles correctly between control and variant`
+- `[ ] Primary metric events fire in both control and variant paths`
+- `[ ] Guardrail metric events fire in both paths`
+- `[ ] Users in control group see existing behavior (no regression)`
+
 ---
 
 ### Step 10 — Fill in Implementation Details
@@ -187,6 +201,11 @@ When a DESIGN.md exists, add a dedicated subsection:
 
 ### Frontend Design Implementation
 {Derived from DESIGN.md — styling approach, component library setup, theme configuration, responsive strategy, design token values (colors, typography scale, base unit), and component architecture patterns.}
+
+When the plan includes experiment infrastructure, add a dedicated subsection:
+
+### Experimentation Infrastructure
+{Derived from SPEC Experimentation Strategy blocks — tooling choice (platform name or lightweight approach), traffic allocation mechanism (e.g., 50/50 random split, percentage-based), analytics pipeline (where events go, how they're aggregated), and kill switch procedure (how to shut down the experiment if guardrails are breached).}
 
 Only include what the spec and design specify or what is needed to implement them. Do not pad with generic best-practice advice.
 
@@ -246,6 +265,7 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 6. **Interactive and thorough** — scan the spec for gaps before writing. Ask all clarifying questions upfront in a single message, grouped by section. Propose defaults. Then propose each major section as a draft and confirm with the user before moving on. Do not generate the full PLAN in one shot without section-by-section confirmation.
 7. **Right-sized phases** — match the number of phases to the actual complexity. Don't force three phases onto a trivial feature; don't collapse a complex feature into one phase.
 8. **Respect MoSCoW ordering** — phases must follow MUST → SHOULD → COULD. Never plan a lower-priority story's implementation before all higher-priority stories are covered. WON'T stories are never planned, referenced, or included in any phase. SPECs without MoSCoW labels treat all stories as MUST.
+9. **Experimentation is adaptive** — when the SPEC has experiments, ask about tooling before planning infrastructure. Plan with the user's actual tooling, recommend lightweight alternatives if none exists, or defer experiment infrastructure entirely if the user prefers. Never assume a specific experimentation platform.
 
 ---
 

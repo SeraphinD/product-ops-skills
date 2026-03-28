@@ -103,6 +103,25 @@ else
   WARNINGS=$((WARNINGS + 1))
 fi
 
+# Check experiment infrastructure when SPEC has experiments
+echo ""
+echo "--- Experiment Infrastructure (conditional) ---"
+SPEC_REF=$(grep "Generated from:" "$FILE" 2>/dev/null | sed 's/.*Generated from: *//' | tr -d '>' | tr -d ' ')
+if [[ -n "$SPEC_REF" && -f "$SPEC_REF" ]]; then
+  if grep -q "### Experimentation Strategy" "$SPEC_REF"; then
+    if grep -qiE "(Experiment Infrastructure|feature flag|experiment infrastructure was deferred)" "$FILE"; then
+      echo "  OK: SPEC has experiments and PLAN addresses them"
+    else
+      echo "WARN: SPEC has Experimentation Strategy but PLAN has no experiment infrastructure or deferral note"
+      WARNINGS=$((WARNINGS + 1))
+    fi
+  else
+    echo "INFO: SPEC has no Experimentation Strategy — no experiment check needed"
+  fi
+else
+  echo "INFO: Could not locate source SPEC — skipping experiment cross-check"
+fi
+
 echo ""
 echo "=== Results ==="
 if [[ "$ERRORS" -eq 0 && "$WARNINGS" -eq 0 ]]; then

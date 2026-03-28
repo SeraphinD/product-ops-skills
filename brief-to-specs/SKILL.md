@@ -1,6 +1,6 @@
 ---
 name: brief-to-specs
-description: Transforms a BRIEF.md into a structured SPEC.md containing User Stories with MoSCoW/WSJF prioritization, Acceptance Criteria in Given/When/Then format, and Implementation Notes. Trigger on phrases like "generate specs", "create SPEC.md", "convert brief to specs", "specs from brief", "write specifications from brief", "brief to spec", "transform brief into spec", "write acceptance criteria", or when the user has a BRIEF.md and asks to derive user stories or a specification document from it. Do NOT use for creating a brief from scratch (use create-brief), benchmarking (use brief-to-benchmark), generating a plan from specs (use spec-to-plan), or designing UI (use spec-to-design). This skill converts an existing brief into specifications only.
+description: Transforms a BRIEF.md into a structured SPEC.md containing User Stories with MoSCoW/WSJF prioritization, Acceptance Criteria in Given/When/Then format, Implementation Notes, and optional Experimentation Strategy blocks for A/B tests. Trigger on phrases like "generate specs", "create SPEC.md", "convert brief to specs", "specs from brief", "write specifications from brief", "brief to spec", "transform brief into spec", "write acceptance criteria", "experiment strategy", or when the user has a BRIEF.md and asks to derive user stories or a specification document from it. Do NOT use for creating a brief from scratch (use create-brief), benchmarking (use brief-to-benchmark), generating a plan from specs (use spec-to-plan), or designing UI (use spec-to-design). This skill converts an existing brief into specifications only.
 allowed-tools: "Read Write Glob"
 license: MIT
 metadata:
@@ -85,6 +85,7 @@ After reading the BRIEF, before generating anything, scan each section for ambig
 - **Acceptance Criteria**: Are the expected outputs, commands, HTTP codes, or exit codes specified? Or would scenarios require pure invention?
 - **Implementation Notes**: Are there technical choices (language, framework, invocation pattern) that are mentioned but unclear?
 - **Assumptions & Risks**: If the brief has this section, review it. Unvalidated assumptions may need edge-case ACs. Listed risks may influence MoSCoW prioritization — a story that depends on a high-risk assumption might warrant a lower priority or an explicit boundary-condition scenario.
+- **Experiment Criteria**: If the BRIEF has a `### Experiment Criteria` section, check whether baseline metric values are available for each hypothesis. Missing baselines will be needed for the Experimentation Strategy's Primary Metric field — flag them as clarifying questions.
 
 If you find ambiguities, **ask all your clarifying questions in a single message** — group them by section, be specific, and propose a default answer when you have a reasonable one. Do not proceed to writing until the user has answered.
 
@@ -205,6 +206,24 @@ If a scenario requires a specific value (an error message, an HTTP code, an outp
 
 ---
 
+### Step 8.5 — Define Experimentation Strategy (advisory)
+
+This step is **optional** and has three entry paths:
+
+**Path A — BRIEF has experiment criteria (`### Experiment Criteria` exists):**
+1. For each experiment criterion, ask: *"Which User Story implements the variant for this experiment? Should the control behavior be its own story, or is it the existing behavior (no separate story needed)?"*
+2. The variant-per-story model means: if an experiment needs both a control path and a variant path as buildable code, each gets its own User Story. If the control is "do nothing" (existing behavior), only the variant story needs an `### Experimentation Strategy` block.
+3. Draft the experiment definition interactively (hypothesis, control, variant, metrics, decision framework), using the shared `EXP-ID` from the BRIEF criterion
+4. Confirm with user before moving on
+
+**Path B — BRIEF has NO experiment criteria, but SPEC writing reveals testable hypotheses:**
+If during Steps 5–8 the skill notices User Stories whose benefit clause implies a behavioral hypothesis (e.g., "so that conversion increases" or "so that users complete onboarding faster"), it may suggest: *"User Story {N}'s benefit looks like a testable hypothesis. Would an A/B test help validate it before full rollout? I can add an Experimentation Strategy for it."* If the user declines, move on without experiment sections. Do not re-ask.
+
+**Path C — No experiments at all:**
+If neither the BRIEF has experiment criteria nor the user wants any, skip Step 8.5 entirely. The SPEC is written without any Experimentation Strategy blocks.
+
+---
+
 ### Step 9 — Write Implementation Notes
 
 Extract concrete technical constraints and guidelines directly from the brief. Focus on:
@@ -272,6 +291,7 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 6. **Interactive and thorough** — scan the brief for gaps before writing. Ask all clarifying questions upfront in a single message (grouped by section). Then propose each major section (User Stories, Functional Scope, Acceptance Criteria, Implementation Notes) as a draft and confirm with the user before moving on. Do not generate the full SPEC in one shot without section-by-section confirmation.
 7. **Multiple USs when warranted** — if the brief covers distinct actors or fundamentally different capabilities, split into separate User Stories each with their own Functional Scope and AC blocks. Do not artificially merge or split.
 8. **Always prioritize** — Step 6 (MoSCoW + WSJF) runs for every SPEC, with or without a BENCHMARK.md. Never skip it. WON'T stories must be listed in the SPEC even if excluded from all other sections.
+9. **Experimentation is advisory** — when BRIEF experiment criteria exist, each should map to an Experimentation Strategy block in at least one User Story. If a criterion cannot be mapped, flag it — but the user can decide to drop it. If the user decides mid-SPEC that an experiment criterion is no longer needed, remove it and note the decision in DECISION.md. Never force experimentation — if the user declines, respect the decision.
 
 ---
 

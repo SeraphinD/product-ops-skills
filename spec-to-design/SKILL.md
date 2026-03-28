@@ -435,6 +435,7 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 9. **Concrete, not aspirational** — ASCII diagrams must show specific component placement. Color values must include hex codes. Typography must include specific sizes and weights. Avoid vague entries like "clean design" or "modern feel".
 10. **Figma is additive, never required** — Figma MCP integration enhances the skill but never blocks it. `DESIGN.md` is always the primary output. Figma scaffold and token sync are opt-in. If Figma tools fail or return errors mid-run, log the failure to `DECISION.md`, complete the `DESIGN.md` as normal, and inform the user: *"Figma scaffold failed at step {X}. DESIGN.md is complete — you can scaffold manually."*
 11. **Figma source of truth** — when `FIGMA_MODE = active`, Figma-sourced tokens always take precedence over codebase tokens for the same name. Conflicts must be resolved with the user before writing the Design System section.
+12. **Experiment-aware design** — when a User Story has an `### Experimentation Strategy` block, design both the control experience and the variant experience. Label affected components and wireframes with `[Control: EXP-ID]` and `[Variant: EXP-ID]`. Both states need full design treatment: component states, accessibility, and responsive behavior. If the control is the existing behavior (no new design needed), only the variant needs a wireframe.
 
 ---
 

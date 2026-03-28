@@ -176,6 +176,7 @@ After executing a task:
    - File created? Read it to confirm
    - Test should pass? Run it
    - Config changed? Verify the value
+   - Experiment infrastructure task? Verify: feature flag ON → variant behavior observed, feature flag OFF → control behavior observed, analytics events fire in both states
    - If verification fails, do not mark completed — fix the issue or mark as blocked
 
 2. **Update the task status** in TASKS.md:

@@ -106,6 +106,26 @@ else
   echo "INFO: No WON'T Stories section (acceptable if no stories were excluded)"
 fi
 
+# Check Experimentation Strategy (optional — warn only)
+echo ""
+echo "--- Experimentation Strategy ---"
+EXP_COUNT=$(grep -c "^### Experimentation Strategy" "$FILE" 2>/dev/null || echo "0")
+if [[ "$EXP_COUNT" -gt 0 ]]; then
+  echo "  OK: $EXP_COUNT Experimentation Strategy block(s) found"
+
+  # Extract only content within Experimentation Strategy blocks for scoped field checks
+  EXP_CONTENT=$(awk '/^### Experimentation Strategy/{found=1; next} /^### |^## /{if(found) found=0} found' "$FILE")
+  EXP_FIELDS=("Hypothesis:" "Control" "Variant" "Primary Metric:" "Guardrail Metrics:" "Decision Framework:" "EXP-")
+  for field in "${EXP_FIELDS[@]}"; do
+    if ! echo "$EXP_CONTENT" | grep -q "$field" 2>/dev/null; then
+      echo "WARN: Experimentation Strategy present but missing '$field' within strategy block"
+      WARNINGS=$((WARNINGS + 1))
+    fi
+  done
+else
+  echo "INFO: No Experimentation Strategy blocks (acceptable if no experiments planned)"
+fi
+
 echo ""
 echo "=== Results ==="
 if [[ "$ERRORS" -eq 0 && "$WARNINGS" -eq 0 ]]; then

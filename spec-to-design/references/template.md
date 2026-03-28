@@ -209,5 +209,6 @@ The final `DESIGN.md` must follow **exactly** this structure:
 - [ ] Responsive behavior defined for mobile and desktop
 - [ ] Accessibility requirements specified
 - [ ] Interactive states documented (hover, focus, loading, error)
+- [ ] Experiment variants have distinct wireframes where the UI differs
 - [ ] Design approved by stakeholders
 ```

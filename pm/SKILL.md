@@ -121,7 +121,7 @@ Determine the next logical step based on existing artifacts:
 
 1. Nothing exists → recommend `create-problem-frame` or `create-brief`
 2. `PROBLEM-FRAME.md` exists, no `BRIEF.md` → recommend `create-brief`
-3. `BRIEF.md` exists, no `SPEC.md` → recommend `brief-to-specs` (mention `brief-to-benchmark` and `brief-to-opportunity` as optional steps)
+3. `BRIEF.md` exists, no `SPEC.md` → recommend `brief-to-specs` (mention `brief-to-benchmark` and `brief-to-opportunity` as optional steps). If the BRIEF has `### Experiment Criteria`, also note: *"Your brief includes experiment criteria. The SPEC will need Experimentation Strategy sections for those, and the PLAN will include experiment infrastructure steps."*
 4. `SPEC.md` exists, no `PLAN.md` → recommend `spec-to-plan` (mention `spec-to-design` as optional step)
 5. `PLAN.md` exists, no `TASKS.md` → recommend `plan-to-tasks`
 6. `TASKS.md` exists, tasks still pending → recommend `execute-tasks` (optional — user can execute manually)

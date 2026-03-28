@@ -42,6 +42,26 @@ Structure for the retrospective artifact produced by `feature-retrospective`.
 
 ---
 
+## Experiment Results
+<!-- Include only when SPEC had Experimentation Strategy sections -->
+
+| EXP-ID | Hypothesis | Primary Metric | Control | Variant | Lift | Stat Sig? | Guardrails OK? | Verdict |
+|--------|-----------|---------------|---------|---------|------|-----------|----------------|---------|
+| {EXP-feature-N} | {hypothesis} | {metric} | {control value} | {variant value} | {+/- %} | {Yes/No (p=X)} | {Yes/No} | SHIP / KILL / ITERATE / NOT_TESTED |
+
+### Experiment Details
+
+#### {EXP-ID}: {Name}
+- **Hypothesis confirmed?** {Yes / No / Inconclusive / Not tested}
+- **Decision:** {SHIP variant to 100% / KILL variant and keep control / ITERATE with modified hypothesis / NOT_TESTED — observational data only}
+- **Rationale:** {Why, referencing the Decision Framework from SPEC}
+- **Guardrail status:** {All clear / {metric} degraded by {amount} — within tolerance / breached}
+- **Next steps:** {If ITERATE: what changes to test next. If SHIP: rollout timeline. If KILL: cleanup tasks. If NOT_TESTED: recommendation for tooling.}
+
+{If experiment is PENDING: move to Open Risks instead of this section.}
+
+---
+
 ## Metrics
 
 | Metric | Value | Source |
@@ -55,6 +75,9 @@ Structure for the retrospective artifact produced by `feature-retrospective`.
 | AC coverage (scenarios with tasks) | {N}% ({covered}/{total}) | SPEC.md + TASKS.md |
 | Effort estimate (OPPORTUNITY) | {N} person-weeks | OPPORTUNITY.md |
 | Actual task count | {N} | TASKS.md |
+| Experiments defined | {N} | SPEC.md |
+| Experiments completed (SHIP/KILL) | {N} | RETRO evaluation |
+| Experiments NOT_TESTED | {N} | RETRO evaluation |
 
 {Skip rows whose source artifact was not found.}
 

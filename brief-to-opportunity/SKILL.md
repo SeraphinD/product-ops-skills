@@ -177,6 +177,8 @@ Three levels:
 
 If a `BENCHMARK.md` exists with verified (non-⚠️) metrics, that supports higher confidence. If most claims are unverified or the brief has many untested assumptions, confidence is lower.
 
+If the BRIEF has `### Experiment Criteria`, confidence should reflect whether the hypotheses have prior evidence. Experiment criteria with no supporting data (no benchmark, no user research) default to lower confidence — experimentation is how you move from 50% to 80%.
+
 Propose a level with rationale. Confirm.
 
 ---

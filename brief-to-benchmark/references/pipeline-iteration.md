@@ -57,3 +57,37 @@ When logging a rollback to `DECISION.md`, use this format:
 ```
 
 > For minor rollbacks (e.g., a missing bullet point, a vague sentence), keep the entry lightweight — skip Downstream Impact if the change is clearly contained. Use the full format for rollbacks that affect multiple downstream artifacts.
+
+---
+
+## Experiment Iteration
+
+When experiment results require changes, follow these protocols in addition to the standard rollback rules above.
+
+### KILL Teardown
+
+When a RETRO verdict is **KILL** (control wins, variant is rejected):
+
+1. Flag to the user which PLAN phases and TASKS are affected — specifically the variant User Stories and experiment infrastructure tasks
+2. Propose a cleanup task list: remove variant code paths, remove feature flag configuration, remove variant-specific analytics instrumentation. The control path remains untouched.
+3. Log the KILL decision to `DECISION.md` using the Experiment Decision format
+4. Do not remove the Experimentation Strategy from the SPEC — it documents what was tested and why it was rejected
+
+### ITERATE Re-entry
+
+When a RETRO verdict is **ITERATE** (inconclusive, hypothesis needs revision):
+
+1. The feedback loop is: RETRO (lesson learned) → BRIEF (refine experiment hypothesis in `### Experiment Criteria`) → SPEC (adjust Experimentation Strategy — new hypothesis, revised metrics or thresholds) → PLAN (update infrastructure if needed) → TASKS (new or modified tasks)
+2. Each stage regenerates only experiment-affected sections — do not regenerate the entire document
+3. The `EXP-ID` is preserved (e.g., `EXP-feature-1`) to maintain traceability across iterations
+4. Log the ITERATE decision with the revised hypothesis in `DECISION.md`
+
+### Retroactive Experiment Addition
+
+When experiment criteria are added to a BRIEF after downstream artifacts (SPEC, PLAN, TASKS) already exist:
+
+1. Treat it as a scope expansion — flag affected SPEC stories that need `### Experimentation Strategy` blocks
+2. Add Experimentation Strategy blocks to the relevant User Stories in the SPEC
+3. Regenerate the PLAN with an experiment infrastructure sub-phase (or deferral note if no tooling)
+4. Regenerate TASKS from the updated PLAN
+5. Log as a Rollback decision with Type: Experiment Addition

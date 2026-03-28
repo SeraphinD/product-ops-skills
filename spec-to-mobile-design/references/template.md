@@ -309,5 +309,6 @@ The final `DESIGN.md` must follow **exactly** this structure:
 - [ ] Safe areas accounted for in screen layouts
 - [ ] Adaptive layout defined for device size categories
 - [ ] Interactive states documented (press, loading, error)
+- [ ] Experiment variants have distinct screen wireframes per platform where the UI differs
 - [ ] Design approved by stakeholders
 ```

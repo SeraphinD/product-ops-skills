@@ -33,6 +33,13 @@ The final `PLAN.md` must follow **exactly** this structure:
 ## Implementation Steps
 
 ### Phase 1 — MUST: {Phase Name}
+
+#### Sub-Phase 1.0 — Experiment Infrastructure
+<!-- Include only when SPEC has Experimentation Strategy sections and tooling is available -->
+1. {Feature flag system setup} — {configure flags for each EXP-ID}
+2. {Analytics event instrumentation} — {track primary and guardrail metrics}
+3. {Variant routing logic} — {assign users to control/variant}
+
 1. {File or component to create} — {what it does}
 2. {File or component to create} — {what it does}
 
@@ -59,6 +66,9 @@ The final `PLAN.md` must follow **exactly** this structure:
 ## Verification Checklist
 - [ ] {Acceptance criterion taken verbatim or paraphrased from SPEC}
 - [ ] All tests pass: `{test command}`
+- [ ] Feature flag toggles correctly between control and variant
+- [ ] Primary metric events fire in both control and variant paths
+- [ ] Guardrail metric events fire in both paths
 
 ## Implementation Details
 
@@ -71,4 +81,8 @@ The final `PLAN.md` must follow **exactly** this structure:
 ### Constraints & Guidelines
 - {Implementation guideline or constraint from the spec}
 - {Library or tool choice rationale}
+
+### Experimentation Infrastructure
+<!-- Include only when experiment infrastructure is planned -->
+{Tooling choice, traffic allocation mechanism, analytics pipeline, kill switch procedure}
 ```
