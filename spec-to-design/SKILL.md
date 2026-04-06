@@ -1,13 +1,13 @@
 ---
 name: spec-to-design
-description: Transforms a SPEC.md into a structured DESIGN.md for frontend features — covering design system (colors, typography, spacing), components with states and variants, page layouts with ASCII wireframes, user flows, interactions, and WCAG 2.1 AA accessibility requirements. Optionally integrates with MCP Figma to read existing design tokens from a Figma file and scaffold frames directly in Figma after writing DESIGN.md. Trigger on phrases like "generate design", "create DESIGN.md", "design from spec", "spec to design", "create UI design", "design system from spec", "component design from spec", "frontend design", "write design document from spec", or "design the feature". Do NOT use for backend-only features, CLI tools, or API-only services without a user interface — this skill is frontend-specific. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
+description: Transforms a SPEC.md into a structured DESIGN.md for frontend features — covering design system (colors, typography, spacing), components with states and variants, page layouts with ASCII wireframes, user flows, interactions, and WCAG 2.1 AA accessibility requirements. Optionally integrates with a design tool MCP (Figma or Paper) to read existing design tokens and scaffold frames directly in the design tool after writing DESIGN.md. Trigger on phrases like "generate design", "create DESIGN.md", "design from spec", "spec to design", "create UI design", "design system from spec", "component design from spec", "frontend design", "write design document from spec", or "design the feature". Do NOT use for backend-only features, CLI tools, or API-only services without a user interface — this skill is frontend-specific. Do NOT use for generating implementation plans (use spec-to-plan) or task lists (use plan-to-tasks).
 allowed-tools: "Read Write Glob Grep"
 license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.1.0
   category: feature-pipeline
-  tags: [design, ui, frontend, design-system, components, accessibility, wireframes, figma, mcp]
+  tags: [design, ui, frontend, design-system, components, accessibility, wireframes, figma, paper, mcp]
 ---
 
 # SPEC → DESIGN Skill
@@ -48,21 +48,36 @@ Work section by section. For each section:
 
 ## Step-by-Step Process
 
-### Step 1 — Detect Figma MCP (always run first)
+### Step 1 — Detect Design Tool MCP (always run first)
 
-Before doing anything else, check whether Figma MCP tools are available in this session.
+Before doing anything else, check whether a design tool MCP is available in this session. The skill supports **Figma MCP** and **Paper MCP**.
 
-**Detection:** Scan available tools for names matching patterns like `figma_*`, `get_figma_data`, `figma-mcp-*`, or any tool whose description references Figma. Tool names vary by MCP implementation — look for the presence of at least one Figma-related tool.
+**Detection:**
+- **Figma MCP**: Scan available tools for names matching `figma_*`, `get_figma_data`, `figma-mcp-*`, or any tool whose description references Figma.
+- **Paper MCP**: Scan available tools for names matching `paper_*`, `*_paper_*`, or any tool whose description references Paper as a design tool. Look for tools like `create_artboard`, `write_html`, `get_computed_styles`, `get_screenshot`.
 
-**If Figma MCP tools are detected:**
+Tool names vary by MCP implementation — look for the presence of at least one design-tool-related tool.
+
+**If both Figma and Paper MCP tools are detected:**
+Ask: *"I detected both Figma MCP and Paper MCP. Which design tool would you like to connect for this feature? (Figma / Paper / Neither — markdown only)"*
+Set the chosen tool's mode to `active` and the other to `unavailable`. If the user declines both, set both to `markdown-only`.
+
+**If only Figma MCP tools are detected:**
 1. Check if a Figma file URL or key is already in context (user message, BRIEF.md, or SPEC.md — look for `figma.com/file/` links or a `figmaFileKey` annotation).
 2. If not found, ask: *"I detected Figma MCP. Do you want to connect this design to a Figma file? If yes, share the file URL or key — I'll read your existing styles from it and optionally scaffold the design directly in Figma."*
 3. If the user provides a file URL or key, store it as `FIGMA_FILE_KEY` and set `FIGMA_MODE = active`.
 4. If the user declines or provides nothing, set `FIGMA_MODE = markdown-only` and proceed as a normal run.
-5. Log to `DECISION.md`: `Figma MCP detected — mode: [active with file key {key} / markdown-only]`.
 
-**If no Figma MCP tools are detected:**
-Set `FIGMA_MODE = unavailable`. Proceed normally — the skill produces `DESIGN.md` only. No Figma-related prompts or steps apply for the rest of this run.
+**If only Paper MCP tools are detected:**
+1. Verify connectivity by calling `get_basic_info` to confirm Paper is reachable and a file is open.
+2. Ask: *"I detected Paper MCP. Would you like me to read your existing styles from Paper and optionally scaffold the design directly in Paper after writing DESIGN.md?"*
+3. If the user confirms, set `PAPER_MODE = active`.
+4. If the user declines, set `PAPER_MODE = markdown-only` and proceed as a normal run.
+
+**If no design tool MCP is detected:**
+Set `FIGMA_MODE = unavailable` and `PAPER_MODE = unavailable`. Proceed normally — the skill produces `DESIGN.md` only. No design-tool-related prompts or steps apply for the rest of this run.
+
+Log to `DECISION.md`: `Design tool MCP detected — {Figma: [active with file key {key} / markdown-only / unavailable], Paper: [active / markdown-only / unavailable]}`.
 
 ---
 
@@ -156,7 +171,22 @@ Skip to **What to do with findings** after this — do not repeat the codebase-o
 
 ---
 
-**If `FIGMA_MODE = markdown-only` or `unavailable` — codebase-only path:**
+**If `PAPER_MODE = active` — Paper-first path:**
+
+Query the Paper file before scanning the codebase — Paper is the source of truth when connected.
+
+1. **Get document overview**: call `get_tree_summary` to understand the document structure — existing pages, artboards, and component hierarchy.
+2. **Extract styles**: call `get_computed_styles` on key nodes (artboards, text nodes, containers) to extract color values, font families, sizes, weights, and spacing. If the file has a dedicated styles/tokens page or component library, prioritize reading from those nodes.
+3. **Extract font info**: call `get_font_family_info` to identify the font families in use across the document.
+4. **Report findings**: *"I found {N} color values, {M} text styles, and {K} font families in your Paper file. I'll treat these as the existing design system."* Mark all Paper-sourced tokens as `✦ Paper` in the Design System section.
+5. **Then scan the codebase** (using the patterns below) to find any implementation-side tokens not yet reflected in Paper. Mark these as `⚠ Codebase-only (not synced to Paper)` and flag them to the user.
+6. **Resolve conflicts**: if the same token name carries different values in Paper vs the codebase, ask: *"Token `{name}` differs between Paper ({paper value}) and the codebase ({code value}). Which is the design source of truth?"* Log the resolution to `DECISION.md`.
+
+Skip to **What to do with findings** after this — do not repeat the codebase-only flow for tokens already resolved from Paper.
+
+---
+
+**If all design tool modes are `markdown-only` or `unavailable` — codebase-only path:**
 
 Before asking the user anything about design tokens, proactively scan the codebase for an existing design system. Search for:
 
@@ -397,9 +427,13 @@ Once all sections are confirmed:
 4. Write the file using the Write tool.
 5. Confirm: *"Done — `DESIGN.md` written to `{path}`."*
 
-**If `FIGMA_MODE = active` — Optional Figma Scaffold (Step 19):**
+**If `FIGMA_MODE = active` — Optional Figma Scaffold:**
 
 Follow the scaffold procedure in `references/figma-scaffold.md`.
+
+**If `PAPER_MODE = active` — Optional Paper Scaffold:**
+
+Follow the scaffold procedure in `references/paper-scaffold.md`.
 
 ---
 
@@ -433,8 +467,8 @@ For entry format, shared exclusions, and writing rules, see `references/decision
 7. **Interactive and thorough** — scan the spec for gaps before writing. Ask all clarifying questions upfront in a single message, grouped by topic. Then propose each major section (Design System, Components, Page Layouts, User Flows, Interactions, Accessibility) as a draft and confirm with the user before moving on. Do not generate the full DESIGN in one shot without section-by-section confirmation.
 8. **Benchmark-informed, not benchmark-bound** — if BENCHMARK.md visual references exist, use them as inspiration but never copy competitor layouts. Propose original designs informed by research.
 9. **Concrete, not aspirational** — ASCII diagrams must show specific component placement. Color values must include hex codes. Typography must include specific sizes and weights. Avoid vague entries like "clean design" or "modern feel".
-10. **Figma is additive, never required** — Figma MCP integration enhances the skill but never blocks it. `DESIGN.md` is always the primary output. Figma scaffold and token sync are opt-in. If Figma tools fail or return errors mid-run, log the failure to `DECISION.md`, complete the `DESIGN.md` as normal, and inform the user: *"Figma scaffold failed at step {X}. DESIGN.md is complete — you can scaffold manually."*
-11. **Figma source of truth** — when `FIGMA_MODE = active`, Figma-sourced tokens always take precedence over codebase tokens for the same name. Conflicts must be resolved with the user before writing the Design System section.
+10. **Design tool is additive, never required** — Design tool MCP integration (Figma or Paper) enhances the skill but never blocks it. `DESIGN.md` is always the primary output. Scaffold and token sync are opt-in. If design tool calls fail or return errors mid-run, log the failure to `DECISION.md`, complete the `DESIGN.md` as normal, and inform the user: *"{Tool} scaffold failed at step {X}. DESIGN.md is complete — you can scaffold manually."*
+11. **Design tool source of truth** — when `FIGMA_MODE = active` or `PAPER_MODE = active`, design-tool-sourced tokens always take precedence over codebase tokens for the same name. Conflicts must be resolved with the user before writing the Design System section.
 12. **Experiment-aware design** — when a User Story has an `### Experimentation Strategy` block, design both the control experience and the variant experience. Label affected components and wireframes with `[Control: EXP-ID]` and `[Variant: EXP-ID]`. Both states need full design treatment: component states, accessibility, and responsive behavior. If the control is the existing behavior (no new design needed), only the variant needs a wireframe.
 
 ---
