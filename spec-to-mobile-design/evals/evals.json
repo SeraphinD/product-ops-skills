@@ -32,6 +32,18 @@
       "type": "no-trigger",
       "prompt": "Generate an implementation plan from the mobile spec",
       "description": "Should trigger spec-to-plan, not spec-to-mobile-design — planning, not design"
+    },
+    {
+      "id": "trigger-paper-mobile",
+      "type": "trigger",
+      "prompt": "Design the mobile screens from the spec and scaffold them in Paper",
+      "description": "Trigger with explicit Paper MCP mention — still a mobile design task"
+    },
+    {
+      "id": "trigger-figma-mobile",
+      "type": "trigger",
+      "prompt": "Create a mobile DESIGN.md for our Flutter app using our Figma file tokens",
+      "description": "Trigger with Figma MCP + mobile framework — mobile design, not web"
     }
   ]
 }

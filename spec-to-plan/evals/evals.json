@@ -32,6 +32,24 @@
       "type": "no-trigger",
       "prompt": "Design the UI from the spec",
       "description": "Should trigger spec-to-design, not spec-to-plan — design step"
+    },
+    {
+      "id": "trigger-plan-with-figma-context",
+      "type": "trigger",
+      "prompt": "Generate a plan from the spec, there are mockups in our Figma file",
+      "description": "Trigger — planning task even with Figma context; design tool read is supplementary"
+    },
+    {
+      "id": "trigger-plan-with-paper-context",
+      "type": "trigger",
+      "prompt": "Create an implementation plan, we have Paper artboards for the feature",
+      "description": "Trigger — planning task even with Paper context; design tool read is supplementary"
+    },
+    {
+      "id": "no-trigger-scaffold-paper",
+      "type": "no-trigger",
+      "prompt": "Scaffold the design in Paper from our DESIGN.md",
+      "description": "Should trigger spec-to-design or spec-to-mobile-design — scaffolding, not planning"
     }
   ]
 }

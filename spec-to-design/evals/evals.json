@@ -38,6 +38,24 @@
       "type": "no-trigger",
       "prompt": "Design the REST API endpoints for the authentication service",
       "description": "Should NOT trigger spec-to-design — backend/API, no user interface"
+    },
+    {
+      "id": "trigger-paper-design",
+      "type": "trigger",
+      "prompt": "Design the feature from the spec and scaffold it in Paper",
+      "description": "Trigger with explicit Paper MCP mention — still a web design task"
+    },
+    {
+      "id": "trigger-figma-design",
+      "type": "trigger",
+      "prompt": "Create a DESIGN.md for the dashboard and sync tokens from our Figma file",
+      "description": "Trigger with explicit Figma MCP mention — still a web design task"
+    },
+    {
+      "id": "trigger-design-tool-generic",
+      "type": "trigger",
+      "prompt": "Generate a UI design from the spec, we have mockups in our design tool",
+      "description": "Trigger via generic design tool mention — web design with tool context"
     }
   ]
 }

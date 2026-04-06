@@ -37,3 +37,23 @@
 ## Problem: Design needs to support both portrait and landscape
 **Cause:** The SPEC or user requires landscape support (e.g., media playback, data tables).
 **Solution:** Document both orientations in the Screen Layouts section with separate ASCII wireframes. Specify which components reflow and which stay fixed. Note landscape support in the Adaptive Layout section under Orientation.
+
+## Problem: Both Figma and Paper MCP are detected
+**Cause:** The user has both design tool MCPs configured in their environment.
+**Solution:** The skill asks the user to pick one: *"I detected both Figma MCP and Paper MCP. Which design tool would you like to connect?"* Only one design tool can be `active` at a time. Log the choice to `DECISION.md`.
+
+## Problem: Design tool MCP fails mid-run (Figma or Paper)
+**Cause:** The MCP server disconnected, the design file was closed, or a tool call returned an error.
+**Solution:** Log the failure to `DECISION.md`, complete the `DESIGN.md` as normal (markdown is always the primary output), and inform the user: *"{Tool} failed at step {X}. DESIGN.md is complete — you can scaffold manually."* Never block the DESIGN.md output on a design tool failure.
+
+## Problem: Paper scaffold creates artboards but styles don't apply
+**Cause:** `write_html` succeeded but `update_styles` failed — often due to node ID mismatch or unsupported CSS property.
+**Solution:** Call `get_screenshot` to verify the current state. If styles are missing, re-read the node IDs with `get_tree_summary` and retry `update_styles` on the correct nodes. If the issue persists, complete the scaffold without styles and note it: *"Artboards created but styles need manual application."*
+
+## Problem: Figma token extraction returns empty results
+**Cause:** `get_variable_defs` or `get_design_context` returned no data — the file may have no local styles/variables, or the node ID targets an empty section.
+**Solution:** Try `get_metadata` first to find the right page/node with design system content. If the file genuinely has no tokens, fall back to codebase-only path and inform the user: *"No design tokens found in your Figma file. I'll scan the codebase instead."*
+
+## Problem: Paper MCP can't find platform-specific artboards
+**Cause:** `get_tree_summary` returns artboards but none are labeled with iOS/Android platform identifiers.
+**Solution:** Create platform-labeled artboards from scratch: `[Screen Name] — iOS` and `[Screen Name] — Android`. Don't assume existing artboards map to specific platforms unless clearly named.

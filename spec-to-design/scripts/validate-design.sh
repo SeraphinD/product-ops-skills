@@ -105,6 +105,30 @@ else
   WARNINGS=$((WARNINGS + 1))
 fi
 
+# Check for Design Files & References section
+echo ""
+echo "--- Design Tool Integration ---"
+if grep -qiE "^## Design Files" "$FILE"; then
+  echo "  OK: Design Files & References section present"
+  # Check for Figma or Paper reference
+  if grep -qiE "Figma:|Paper:" "$FILE"; then
+    echo "  OK: Design tool reference found (Figma and/or Paper)"
+  else
+    echo "WARN: Design Files section exists but no Figma or Paper reference"
+    WARNINGS=$((WARNINGS + 1))
+  fi
+  # Check for design tool integration line
+  if grep -qi "Design Tool Integration:" "$FILE"; then
+    echo "  OK: Design Tool Integration status documented"
+  else
+    echo "WARN: No 'Design Tool Integration:' status line — should indicate tool used or N/A"
+    WARNINGS=$((WARNINGS + 1))
+  fi
+else
+  echo "WARN: Missing 'Design Files & References' section"
+  WARNINGS=$((WARNINGS + 1))
+fi
+
 echo ""
 echo "=== Results ==="
 if [[ "$ERRORS" -eq 0 && "$WARNINGS" -eq 0 ]]; then

@@ -31,3 +31,11 @@
 ## Problem: Critical files list is too long
 **Cause:** Every file feels critical when the feature is complex.
 **Solution:** Critical files are only those whose absence *breaks* the feature — entry point, core logic module, and primary test file. Supporting files (utilities, configs, documentation) are important but not critical. Limit to 3-7 files.
+
+## Problem: Design tool MCP is available but screenshots fail
+**Cause:** The Figma or Paper MCP is connected but `get_screenshot` returns an error — the file may be closed, the node ID invalid, or the tool timed out.
+**Solution:** Step 3b is supplementary — screenshot failures never block the plan. Log the failure: *"Could not load mockups from {tool} — proceeding with DESIGN.md text only."* The plan is fully derivable from DESIGN.md without visual mockups.
+
+## Problem: DESIGN.md references a design tool but no MCP is available
+**Cause:** The DESIGN.md was created with Figma or Paper active, but the MCP is not connected in the current session.
+**Solution:** Skip Step 3b entirely. The plan uses DESIGN.md as the sole design input. No design tool prompts or steps apply. This is the normal fallback — Step 3b is optional.
