@@ -44,27 +44,27 @@ The final `DESIGN.md` must follow **exactly** this structure:
 | **On Primary** | {Color name} | `#XXXXXX` | {iOS token} | {Android token} | {ratio} >= 4.5:1 |
 
 ### Typography
-| Element | Font (iOS) | Size (pt) | Font (Android) | Size (sp) | Weight | Usage |
-|---------|-----------|-----------|----------------|-----------|--------|-------|
-| **Large Title** | SF Pro Display | 34pt | Roboto | 34sp | Bold | Screen titles |
-| **Title** | SF Pro | 22pt | Roboto | 22sp | Bold | Section headers |
-| **Headline** | SF Pro | 17pt | Roboto | 16sp | Semibold | Card titles |
-| **Body** | SF Pro | 17pt | Roboto | 16sp | Regular | Paragraph text |
-| **Callout** | SF Pro | 16pt | Roboto | 14sp | Regular | Secondary info |
-| **Caption** | SF Pro | 12pt | Roboto | 12sp | Regular | Labels, timestamps |
-| **Button** | SF Pro | 17pt | Roboto Medium | 14sp | Semibold | Button labels |
+| Usage | iOS Style | Font (iOS) | Size (pt) | Android Style (MD3) | Font (Android) | Size (sp) | Weight |
+|-------|-----------|-----------|-----------|---------------------|----------------|-----------|--------|
+| **Screen titles** | Large Title | SF Pro Display | 34pt | Display Small | Roboto | 36sp | Regular |
+| **Section headers** | Title 2 | SF Pro | 22pt | Headline Small | Roboto | 24sp | Regular |
+| **Card titles** | Headline | SF Pro | 17pt | Title Medium | Roboto Medium | 16sp | Medium |
+| **Paragraph text** | Body | SF Pro | 17pt | Body Large | Roboto | 16sp | Regular |
+| **Secondary info** | Callout | SF Pro | 16pt | Body Medium | Roboto | 14sp | Regular |
+| **Labels, timestamps** | Caption 1 | SF Pro | 12pt | Label Small | Roboto | 11sp | Medium |
+| **Button labels** | Body (Semibold) | SF Pro | 17pt | Label Large | Roboto Medium | 14sp | Medium |
 
 ### Spacing & Safe Areas
 - **Base Unit:** {e.g., 8pt / 8dp}
 - **Spacing Scale:** {e.g., 4, 8, 12, 16, 24, 32, 48}
-- **Safe Areas:**
+- **Safe Areas** *(values are approximate — vary by device model; always use `safeAreaInsets` (iOS) or `WindowInsets` (Android) at runtime)*:
   - iOS top: {e.g., 59pt (iPhone with Dynamic Island), 47pt (iPhone with notch), 20pt (no notch)}
   - iOS bottom: {e.g., 34pt (home indicator), 0pt (home button)}
   - Android top: {e.g., 24dp (status bar)}
   - Android bottom: {e.g., 48dp (3-button nav), 0dp (gesture nav)}
 - **Touch Targets:**
-  - iOS minimum: 44x44pt
-  - Android minimum: 48x48dp
+  - iOS minimum: 44x44pt (HIG)
+  - Android minimum: 48x48dp (Material Design)
 
 ---
 

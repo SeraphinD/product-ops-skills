@@ -34,6 +34,50 @@ Detailed patterns loaded on demand by `spec-to-mobile-design`. Reference this fi
 
 ---
 
+## Typography Scale Reference (Step 10)
+
+Map iOS Dynamic Type levels to Material Design 3 type roles. Do NOT mirror iOS names into the Android column.
+
+### iOS Dynamic Type Scale
+| Style | Default Size | Weight | Usage |
+|-------|-------------|--------|-------|
+| Large Title | 34pt | Regular | Top-level screen titles |
+| Title 1 | 28pt | Regular | Primary section headers |
+| Title 2 | 22pt | Regular | Secondary section headers |
+| Title 3 | 20pt | Regular | Tertiary headers |
+| Headline | 17pt | Semibold | Card titles, emphasized body |
+| Body | 17pt | Regular | Paragraph text |
+| Callout | 16pt | Regular | Secondary descriptive text |
+| Subheadline | 15pt | Regular | Supporting text |
+| Footnote | 13pt | Regular | Footnotes, annotations |
+| Caption 1 | 12pt | Regular | Labels, timestamps |
+| Caption 2 | 11pt | Regular | Smallest readable text |
+
+Font: SF Pro (SF Pro Display for Large Title and Title 1). All sizes scale with Dynamic Type — never hardcode sizes without supporting `UIContentSizeCategory`.
+
+### Material Design 3 Type Scale
+| Role | Default Size | Weight | Usage |
+|------|-------------|--------|-------|
+| Display Large | 57sp | Regular | Hero text, large numbers |
+| Display Medium | 45sp | Regular | Large promotional text |
+| Display Small | 36sp | Regular | Screen titles (maps to iOS Large Title) |
+| Headline Large | 32sp | Regular | Primary section headers |
+| Headline Medium | 28sp | Regular | Section headers |
+| Headline Small | 24sp | Regular | Subsection headers (maps to iOS Title 2) |
+| Title Large | 22sp | Regular | App bar titles |
+| Title Medium | 16sp | Medium | Card titles (maps to iOS Headline) |
+| Title Small | 14sp | Medium | Tabs, small titles |
+| Body Large | 16sp | Regular | Paragraph text (maps to iOS Body) |
+| Body Medium | 14sp | Regular | Secondary text (maps to iOS Callout) |
+| Body Small | 12sp | Regular | Captions |
+| Label Large | 14sp | Medium | Buttons, prominent labels (maps to iOS Button) |
+| Label Medium | 12sp | Medium | Navigation labels |
+| Label Small | 11sp | Medium | Timestamps, badges (maps to iOS Caption 1) |
+
+Font: Roboto (default). All sizes must respect `fontScale` from system accessibility settings — use `sp` for text, never `dp`.
+
+---
+
 ## Component Vocabulary Mapping (Step 11)
 
 Use native component names, not web terminology:
@@ -114,6 +158,8 @@ Dynamic Color (Android 12+) automatically generates a palette from the system wa
 ---
 
 ## Adaptive Layout APIs (Step 18)
+
+> **Note:** Safe area inset values (status bar, notch, Dynamic Island, home indicator, navigation bar) vary by device model. The values in the template are design-time approximations. At runtime, always use `safeAreaInsets` (SwiftUI) / `view.safeAreaInsets` (UIKit) on iOS and `WindowInsets` (Compose) / `ViewCompat.setOnApplyWindowInsetsListener` (Views) on Android.
 
 ### iOS Size Classes
 - **Compact width** (iPhone portrait, iPhone landscape on small devices): stack layouts, single-column

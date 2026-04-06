@@ -272,7 +272,7 @@ Generate Color Palette, Typography, and Spacing & Safe Areas — with platform-s
 - If Step 7 detected a UI library but no custom tokens, align proposed values with the library's conventions and defaults
 - If Step 7 found nothing, propose a minimal, accessible palette from scratch and confirm with the user
 - All colors must meet WCAG 2.1 AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
-- **Typography must use platform-native units:** pt for iOS, sp for Android text, dp for Android non-text elements. Include the font families that are default for each platform (SF Pro for iOS, Roboto for Android) unless the project uses custom fonts.
+- **Typography must use platform-native units and type scale names:** pt for iOS, sp for Android text, dp for Android non-text elements. Use iOS Dynamic Type style names (Large Title, Title 1/2/3, Headline, Body, etc.) and Material Design 3 type role names (Display Large, Headline Small, Body Large, Label Large, etc.) — never mirror iOS names into the Android column. Include the font families that are default for each platform (SF Pro for iOS, Roboto for Android) unless the project uses custom fonts. See `references/platforms.md` → "Typography Scale Reference" for the full mapping.
 - **Spacing must use platform-native units:** pt for iOS, dp for Android. Define safe area insets (top for status bar / Dynamic Island / notch, bottom for home indicator / navigation bar).
 - All values must be concrete — hex codes, specific sizes and weights. No vague entries.
 
