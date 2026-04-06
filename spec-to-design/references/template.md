@@ -192,7 +192,9 @@ The final `DESIGN.md` must follow **exactly** this structure:
 
 ## Design Files & References
 
-- **Figma:** {Link or "N/A — design defined in this document"}
+- **Figma:** {Link or "N/A"}
+- **Paper:** {Link or "N/A"}
+- **Design Tool Integration:** {e.g., "Tokens extracted from Figma (✦ Figma)" | "Scaffolded in Paper" | "N/A — design defined in this document"}
 - **Design System:** {Link to external system or "Defined above"}
 - **Brand Guidelines:** {Link or "N/A"}
 - **Benchmark References:** {Reference to BENCHMARK.md visual references if used, or "N/A"}

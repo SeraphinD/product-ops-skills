@@ -1,13 +1,13 @@
 ---
 name: spec-to-plan
-description: Transforms a SPEC.md into a structured PLAN.md — a phased, MoSCoW-ordered implementation plan with project structure, concrete steps per file, critical files list, verification checklist, implementation details, and experiment infrastructure when A/B tests are defined. Trigger on phrases like "generate plan", "create PLAN.md", "convert spec to plan", "plan from spec", "write implementation plan", "spec to plan", "make a plan from the spec", "turn spec into a plan", "plan experiment infrastructure", or when the user has a SPEC.md and wants actionable implementation steps — even if they don't say "PLAN.md" explicitly. Do NOT use for generating specs from a brief (use brief-to-specs), generating a task list from a plan (use plan-to-tasks), or designing UI (use spec-to-design). This skill produces implementation plans from specifications only.
+description: Transforms a SPEC.md into a structured PLAN.md — a phased, MoSCoW-ordered implementation plan with project structure, concrete steps per file, critical files list, verification checklist, implementation details, and experiment infrastructure when A/B tests are defined. Optionally reads visual mockups from a design tool MCP (Figma or Paper) when a DESIGN.md references one, providing visual context alongside the structured design document. Trigger on phrases like "generate plan", "create PLAN.md", "convert spec to plan", "plan from spec", "write implementation plan", "spec to plan", "make a plan from the spec", "turn spec into a plan", "plan experiment infrastructure", or when the user has a SPEC.md and wants actionable implementation steps — even if they don't say "PLAN.md" explicitly. Do NOT use for generating specs from a brief (use brief-to-specs), generating a task list from a plan (use plan-to-tasks), or designing UI (use spec-to-design). This skill produces implementation plans from specifications only.
 allowed-tools: "Read Write Glob"
 license: MIT
 metadata:
   author: seraphindesumeur
   version: 1.0.0
   category: feature-pipeline
-  tags: [plan, implementation, architecture, project-structure, phases]
+  tags: [plan, implementation, architecture, project-structure, phases, figma, paper, mcp]
 ---
 
 # SPEC → PLAN Skill
@@ -83,6 +83,29 @@ If it exists, read it in full. Then use it to inform the plan:
 If a DESIGN.md component uses specific states or variants, ensure the plan includes steps to implement each state.
 
 If no `DESIGN.md` is found, proceed without it — this phase is optional.
+
+---
+
+### Step 3b — Load Visual Mockups from Design Tool (if available)
+
+If a `DESIGN.md` was loaded in Step 3 and it references a design tool in its "Design Files & References" section (a Figma link/file key or a Paper link/file), check whether the corresponding design tool MCP is available in this session.
+
+**Detection:**
+- **Figma MCP**: Look for tools like `get_metadata`, `get_design_context`, `get_variable_defs`, `get_screenshot` whose descriptions reference Figma.
+- **Paper MCP**: Look for tools like `get_tree_summary`, `get_screenshot`, `get_computed_styles`, `get_basic_info` whose descriptions reference Paper.
+
+**If the referenced design tool MCP is available:**
+
+1. **Figma**: call `get_metadata` to identify the pages and frames relevant to this feature (look for a page named `[Feature Name] — Generated` or matching the feature name). Then call `get_screenshot` on each key frame to capture the current visual state of the mockups.
+2. **Paper**: call `get_tree_summary` to identify the artboards relevant to this feature. Then call `get_screenshot` on each key artboard to capture the current visual state.
+
+Use the screenshots as **supplementary visual context** alongside the structured DESIGN.md data. They help assess:
+- **Visual complexity** — how dense are the layouts, how many distinct elements per screen
+- **Component fidelity** — whether the mockups have been fleshed out beyond the initial scaffold
+- **Spacing and layout precision** — details that ASCII wireframes can't capture
+- **Implementation effort** — visual complexity informs step granularity in the plan
+
+This step is **read-only** — no modifications to the design tool. If the design tool MCP is not available or the DESIGN.md doesn't reference one, skip this step and rely on the DESIGN.md text alone.
 
 ---
 
