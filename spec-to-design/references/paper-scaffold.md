@@ -6,7 +6,7 @@ Instructions for the optional Paper scaffold sub-step after writing `DESIGN.md`.
 
 ## Trigger
 
-After writing `DESIGN.md`, ask: *"DESIGN.md is written. Would you like me to scaffold this design in Paper?"*
+After writing `DESIGN.md`, ask: *"DESIGN.md is written. Would you like me to scaffold this design in Paper? I'll create artboards, write layout structure, and apply design tokens. Nothing will be written to Paper until you confirm."*
 
 If the user declines, `DESIGN.md` is the complete output — no further action needed.
 
@@ -16,7 +16,16 @@ If the user declines, `DESIGN.md` is the complete output — no further action n
 
 If the user confirms:
 
-1. **Create artboards** for each page layout defined in Step 12, at the correct dimensions:
+1. **Preview what will be written**: before any write operation, present a summary of all planned changes:
+   - Artboards to create: list each layout with its dimensions (Desktop `1440 × 900`, Tablet `768 × 1024`, Mobile `375 × 812`)
+   - New tokens to apply: list each `★ New` color, text style, and spacing value from the Design System section
+   - Layout structure: list the major regions per artboard (header, sidebar, content, footer, etc.)
+
+   Ask: *"Here's what I'll add to your Paper file. Proceed?"*
+
+   **Do not call any write tool until the user explicitly confirms.**
+
+2. **Create artboards** for each page layout defined in Step 12, at the correct dimensions:
    - Desktop: `1440 × 900`
    - Tablet: `768 × 1024`
    - Mobile: `375 × 812`

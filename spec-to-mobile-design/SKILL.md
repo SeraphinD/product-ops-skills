@@ -55,10 +55,8 @@ Work section by section. For each section:
 Before doing anything else, check whether a design tool MCP is available in this session. The skill supports **Figma MCP** and **Paper MCP**.
 
 **Detection:**
-- **Figma MCP**: Scan available tools for names matching `figma_*`, `get_figma_data`, `figma-mcp-*`, or any tool whose description references Figma.
-- **Paper MCP**: Scan available tools for names matching `paper_*`, `*_paper_*`, or any tool whose description references Paper as a design tool. Look for tools like `create_artboard`, `write_html`, `get_computed_styles`, `get_screenshot`.
-
-Tool names vary by MCP implementation — look for the presence of at least one design-tool-related tool.
+- **Figma MCP**: Look for tools like `get_metadata`, `get_design_context`, `get_variable_defs`, `get_screenshot`, `create_design_system_rules`, `add_code_connect_map` whose descriptions reference Figma.
+- **Paper MCP**: Look for tools like `create_artboard`, `write_html`, `get_computed_styles`, `get_screenshot`, `get_tree_summary`, `get_basic_info`, `update_styles`, `set_text_content`.
 
 **If both Figma and Paper MCP tools are detected:**
 Ask: *"I detected both Figma MCP and Paper MCP. Which design tool would you like to connect for this feature? (Figma / Paper / Neither — markdown only)"*
@@ -66,7 +64,7 @@ Set the chosen tool's mode to `active` and the other to `unavailable`. If the us
 
 **If only Figma MCP tools are detected:**
 1. Check if a Figma file URL or key is already in context (user message, BRIEF.md, or SPEC.md — look for `figma.com/file/` links or a `figmaFileKey` annotation).
-2. If not found, ask: *"I detected Figma MCP. Do you want to connect this design to a Figma file? If yes, share the file URL or key — I'll read your existing mobile styles from it and optionally scaffold screens directly in Figma."*
+2. If not found, ask: *"I detected Figma MCP. Do you want to connect this design to a Figma file? If yes, share the file URL or key — I'll read your existing mobile styles and variables from it, and optionally scaffold screens directly in Figma."*
 3. If the user provides a file URL or key, store it as `FIGMA_FILE_KEY` and set `FIGMA_MODE = active`.
 4. If the user declines or provides nothing, set `FIGMA_MODE = markdown-only` and proceed as a normal run.
 
@@ -163,11 +161,13 @@ Log the feature type detection to `DECISION.md`.
 
 Query the Figma file before scanning the codebase — Figma is the source of truth when connected.
 
-1. **Query local styles**: fetch color styles (fills), text styles, and effect styles from the file. Extract names, hex values, font families, sizes in the platform's native units (pt for iOS, sp/dp for Android).
-2. **Query local variables**: if the file uses variable collections (common in design systems targeting both iOS and Android), extract color, spacing, and typography variable sets including any platform-specific modes (e.g., "iOS" vs "Android" modes in a multi-platform variable set).
-3. **Report findings**: *"I found {N} color styles, {M} text styles{, and {K} variable sets} in your Figma file. I'll treat these as the existing mobile design system."* Mark all Figma-sourced tokens as `✦ Figma` in the Design System section.
-4. **Then scan the codebase** using the patterns in `references/platforms.md` → "Design System Detection Patterns" to find any implementation-side tokens not yet reflected in Figma. Mark these as `⚠ Codebase-only (not synced to Figma)` and flag them to the user.
-5. **Resolve conflicts**: if the same token name carries different values in Figma vs the codebase, ask: *"Token `{name}` differs between Figma ({figma value}) and the codebase ({code value}). Which is the design source of truth?"* Log the resolution to `DECISION.md`.
+1. **Get document structure**: call `get_metadata` to get an overview of the file — page names, node IDs, layer types, positions, and sizes. Identify pages that contain mobile design system components, style guides, or token definitions. Look for platform-specific pages (e.g., "iOS Components", "Android Components").
+2. **Extract variables**: call `get_variable_defs` on relevant nodes to extract variable definitions — colors, fonts, sizes, and spacings. Look for platform-specific variable modes (e.g., "iOS" vs "Android" modes in a multi-platform variable set) with values in native units (pt for iOS, sp/dp for Android).
+3. **Extract design context**: call `get_design_context` on key nodes (component frames, style guide sections) to extract detailed style information — fills, strokes, text properties (font families, sizes, weights), effects, and layout data.
+4. **Visual verification**: call `get_screenshot` on the design system page or key component frames to visually confirm what was extracted.
+5. **Report findings**: *"I found {N} color variables, {M} text styles, and {K} spacing tokens in your Figma file. I'll treat these as the existing mobile design system."* Mark all Figma-sourced tokens as `✦ Figma` in the Design System section.
+6. **Then scan the codebase** using the patterns in `references/platforms.md` → "Design System Detection Patterns" to find any implementation-side tokens not yet reflected in Figma. Mark these as `⚠ Codebase-only (not synced to Figma)` and flag them to the user.
+7. **Resolve conflicts**: if the same token name carries different values in Figma vs the codebase, ask: *"Token `{name}` differs between Figma ({figma value}) and the codebase ({code value}). Which is the design source of truth?"* Log the resolution to `DECISION.md`.
 
 Skip to **What to do with findings** after this — do not repeat the codebase-only flow for tokens already resolved from Figma.
 
@@ -469,11 +469,11 @@ Once all sections are confirmed:
 
 **If `FIGMA_MODE = active` — Optional Figma Scaffold:**
 
-Follow the scaffold procedure in `references/figma-scaffold.md`.
+Follow the scaffold procedure in `references/figma-scaffold.md`. **Always ask for explicit confirmation before any write operation.**
 
 **If `PAPER_MODE = active` — Optional Paper Scaffold:**
 
-Follow the scaffold procedure in `references/paper-scaffold.md`.
+Follow the scaffold procedure in `references/paper-scaffold.md`. **Always ask for explicit confirmation before any write operation.**
 
 ---
 
