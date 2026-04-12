@@ -1,6 +1,6 @@
 # Product Ops Skills
 
-A set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for building software features — from idea to delivery to retrospective — through structured documents.
+A modular set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills that guide software teams from idea to delivery through structured, collaborative documents. Fully compatible with LLM tools like Gemini CLI, Cursor, and OpenAI.
 
 Each skill takes one document as input and produces the next. You confirm each section before anything is written.
 
