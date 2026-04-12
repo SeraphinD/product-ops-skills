@@ -1,0 +1,117 @@
+{
+  "skill": "gdpr-review",
+  "version": "1.0",
+  "description": "Evals for gdpr-review — verifies triggering accuracy and functional behavior across review modes (triage, deep, verify)",
+  "evals": [
+    {
+      "id": "trigger-canonical",
+      "type": "trigger",
+      "prompt": "GDPR review",
+      "description": "Direct trigger using the canonical command phrase"
+    },
+    {
+      "id": "trigger-rgpd",
+      "type": "trigger",
+      "prompt": "Run an RGPD review on the user registration spec",
+      "description": "Trigger using French acronym RGPD"
+    },
+    {
+      "id": "trigger-privacy",
+      "type": "trigger",
+      "prompt": "Check the privacy compliance of our notification feature",
+      "description": "Trigger via intent — user wants privacy review without using 'GDPR' explicitly"
+    },
+    {
+      "id": "trigger-data-protection",
+      "type": "trigger",
+      "prompt": "Data protection check on the analytics brief",
+      "description": "Trigger using 'data protection' synonym"
+    },
+    {
+      "id": "no-trigger-accessibility",
+      "type": "no-trigger",
+      "prompt": "Check accessibility compliance of the dashboard",
+      "description": "Should trigger accessibility-review, not gdpr-review"
+    },
+    {
+      "id": "no-trigger-ai-act",
+      "type": "no-trigger",
+      "prompt": "AI Act compliance review on the recommendation engine",
+      "description": "Should trigger ai-act-review, not gdpr-review"
+    },
+    {
+      "id": "no-trigger-spec",
+      "type": "no-trigger",
+      "prompt": "Generate specs from the brief",
+      "description": "Should trigger brief-to-specs, not gdpr-review"
+    },
+    {
+      "id": "func-triage-brief",
+      "type": "functional",
+      "prompt": "GDPR review on the user registration brief at docs/features/user-registration/BRIEF.md",
+      "description": "Given a BRIEF that mentions user accounts and email, does the agent run triage mode and detect personal data?",
+      "expected_behavior": [
+        "Detects BRIEF artifact type and enters Triage mode",
+        "Identifies personal data elements (email, name, password)",
+        "Classifies data categories",
+        "Produces Initial Risk Assessment",
+        "Produces Recommendations for SPEC",
+        "Includes legal disclaimer",
+        "Passes validate-gdpr-review.sh"
+      ]
+    },
+    {
+      "id": "func-deep-spec",
+      "type": "functional",
+      "prompt": "Run a GDPR review on the analytics dashboard spec at docs/features/analytics-dashboard/SPEC.md",
+      "description": "Given a SPEC with tracking and user behavior data, does the agent run deep mode with full data inventory and legal basis assessment?",
+      "expected_behavior": [
+        "Detects SPEC artifact type and enters Deep mode",
+        "Builds Personal Data Inventory table",
+        "Assesses legal basis for each processing activity",
+        "Checks data subject rights coverage",
+        "Assesses privacy by design",
+        "Evaluates DPIA triggers",
+        "Produces compliance acceptance criteria in Given/When/Then format",
+        "Cites GDPR articles"
+      ]
+    },
+    {
+      "id": "func-verify-plan",
+      "type": "functional",
+      "prompt": "Check GDPR compliance of the notification system plan at docs/features/notification-system/PLAN.md",
+      "description": "Given a PLAN and a prior GDPR-REVIEW.md, does the agent run verify mode and produce a gap report?",
+      "expected_behavior": [
+        "Detects PLAN artifact type and enters Verify mode",
+        "Loads prior GDPR-REVIEW.md",
+        "Cross-references GDPR requirements against plan steps",
+        "Produces Coverage Check table",
+        "Produces Gap Report with severity levels",
+        "Does not re-run full deep analysis"
+      ]
+    },
+    {
+      "id": "func-section-confirmation",
+      "type": "functional",
+      "prompt": "GDPR review on the authentication spec at docs/features/auth-system/SPEC.md",
+      "description": "Does the agent confirm each section with the user before moving on?",
+      "expected_behavior": [
+        "Proposes Data Inventory and waits for confirmation",
+        "Proposes Legal Basis Assessment and waits for confirmation",
+        "Proposes Data Subject Rights Coverage and waits for confirmation",
+        "Does NOT output the full review without intermediate confirmations"
+      ]
+    },
+    {
+      "id": "func-english-output",
+      "type": "functional",
+      "prompt": "Fais une revue RGPD sur le brief d'inscription utilisateur",
+      "description": "If the conversation is in French, is the GDPR-REVIEW.md still written in English?",
+      "expected_behavior": [
+        "Responds to the user (may use French for conversation)",
+        "Writes GDPR-REVIEW.md content entirely in English",
+        "Section headers, findings, recommendations — all in English"
+      ]
+    }
+  ]
+}

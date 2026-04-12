@@ -26,6 +26,8 @@ This pipeline enforces the discipline that prevents those failures:
                                         /pm
                                          ↓
 [PROBLEM FRAME] → BRIEF → [BENCHMARK] → [OPPORTUNITY] → SPEC → [DESIGN] → PLAN → TASKS → [EXECUTION] → [RETRO]
+                     ↑                                      ↑        ↑         ↑                        ↑
+                     └──── Compliance Specialists (GDPR, Accessibility, AI Act) ─ review any stage ─────┘
 ```
 
 Use `/pm` at any point to see where you are and what to do next.
@@ -47,6 +49,18 @@ Use `/pm` at any point to see where you are and what to do next.
 
 > **Design note:** `spec-to-design` (web) and `spec-to-mobile-design` (native mobile) both write to `DESIGN.md`. Run one or the other for a given feature, not both.
 
+### Compliance Specialists (Cross-Cutting)
+
+These review skills can run against **any** pipeline artifact at **any** stage. They are not sequential stages — invoke them when the feature touches their domain. The PM router detects relevant signals and suggests them automatically.
+
+| Specialist | What it produces | When to use | Optional? |
+|---|---|---|---|
+| **gdpr-review** | `GDPR-REVIEW.md` — data inventory, legal basis, consent requirements, DPIA assessment | Feature collects, processes, or stores personal data | ✅ Yes |
+| **accessibility-review** | `ACCESSIBILITY-REVIEW.md` — WCAG/RGAA audit (web), VoiceOver/TalkBack audit (mobile), compliance ACs | Feature has a user interface (web, iOS, Android, cross-platform) | ✅ Yes |
+| **ai-act-review** | `AI-ACT-REVIEW.md` — risk classification, transparency obligations, human oversight, conformity assessment | Feature uses AI/ML, automated decision-making, or generative AI | ✅ Yes |
+
+Best time to run them: **after the SPEC exists and before generating the PLAN**. The plan skill loads review artifacts automatically and injects compliance steps.
+
 All files are written to `docs/features/{feature-name}/`. Every non-obvious decision is logged to `DECISION.md` in the same folder and carried forward by subsequent skills.
 
 ---
@@ -58,7 +72,7 @@ Clone the repo and symlink each skill into your user-level Claude Code skills di
 ```bash
 REPO="/path/to/product-ops-skills"
 
-for skill in pm create-problem-frame create-brief brief-to-benchmark brief-to-opportunity brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks execute-tasks feature-retrospective; do
+for skill in pm create-problem-frame create-brief brief-to-benchmark brief-to-opportunity brief-to-specs spec-to-design spec-to-mobile-design spec-to-plan plan-to-tasks execute-tasks feature-retrospective gdpr-review accessibility-review ai-act-review; do
   ln -sf "$REPO/$skill" "$HOME/.claude/skills/$skill"
 done
 ```
@@ -207,6 +221,35 @@ As a user, I want to receive personalized notification content (Variant)...
 
 ---
 
+### Step 5b — Compliance Reviews (optional)
+
+After the SPEC exists, run any relevant compliance specialists. These produce review artifacts that downstream skills (`spec-to-plan`, `spec-to-design`) will load automatically.
+
+**GDPR review** — if the feature handles personal data:
+> **You:** GDPR review on the spec
+
+Claude triggers `gdpr-review`, reads the SPEC in deep mode, builds a data inventory, assesses legal bases, checks data subject rights coverage, evaluates DPIA triggers, and proposes compliance acceptance criteria.
+
+**Output:** `docs/features/push-notifications/GDPR-REVIEW.md`
+
+**Accessibility review** — if the feature has a UI:
+> **You:** Accessibility review on the spec
+
+Claude triggers `accessibility-review`, detects the platform (React Native in this case), and audits the SPEC against both iOS (VoiceOver) and Android (TalkBack) accessibility checklists, plus universal WCAG criteria.
+
+**Output:** `docs/features/push-notifications/ACCESSIBILITY-REVIEW.md`
+
+**AI Act review** — if the feature uses AI/ML:
+> **You:** AI Act review on the spec
+
+Claude triggers `ai-act-review`, classifies the AI system's risk level, assesses transparency and human oversight obligations, and proposes compliance acceptance criteria.
+
+**Output:** `docs/features/push-notifications/AI-ACT-REVIEW.md`
+
+Skip any specialist that doesn't apply. When you generate the PLAN next, it will automatically incorporate findings from any review artifacts present.
+
+---
+
 ### Step 6 — Design (optional)
 
 **Web feature:**
@@ -348,16 +391,19 @@ After the full pipeline, your feature folder looks like this:
 
 ```
 docs/features/push-notifications/
-├── PROBLEM-FRAME.md← validated problem definition (optional)
-├── BRIEF.md        ← problem, solution, objectives, scope
-├── BENCHMARK.md    ← competitive research (optional)
-├── OPPORTUNITY.md  ← RICE score card (optional)
-├── SPEC.md         ← user stories + acceptance criteria
-├── DESIGN.md       ← UI/UX design (optional)
-├── PLAN.md         ← phased implementation steps
-├── TASKS.md        ← atomic task list (updated in-place during execution)
-├── RETRO.md        ← retrospective with success evaluation (optional)
-└── DECISION.md     ← full log of every decision made
+├── PROBLEM-FRAME.md         ← validated problem definition (optional)
+├── BRIEF.md                 ← problem, solution, objectives, scope
+├── BENCHMARK.md             ← competitive research (optional)
+├── OPPORTUNITY.md           ← RICE score card (optional)
+├── SPEC.md                  ← user stories + acceptance criteria
+├── GDPR-REVIEW.md           ← GDPR compliance review (optional)
+├── ACCESSIBILITY-REVIEW.md  ← accessibility compliance review (optional)
+├── AI-ACT-REVIEW.md         ← AI Act compliance review (optional)
+├── DESIGN.md                ← UI/UX design (optional)
+├── PLAN.md                  ← phased implementation steps
+├── TASKS.md                 ← atomic task list (updated in-place during execution)
+├── RETRO.md                 ← retrospective with success evaluation (optional)
+└── DECISION.md              ← full log of every decision made
 ```
 
 You can enter the pipeline at any stage — if you already have a SPEC, start from Step 5. If you have a PLAN, start from Step 8. If the problem is already clear, skip Step 1 and start with the Brief.
