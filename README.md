@@ -1,22 +1,18 @@
 # Product Ops Skills
 
-A set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills that guide you through building a software feature — from raw idea to delivery and retrospective — with structured documents at every step.
+A set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for building software features — from idea to delivery to retrospective — through structured documents.
 
-Each skill takes one document as input and produces the next. You confirm each section before anything is written, so nothing gets generated behind your back.
+Each skill takes one document as input and produces the next. You confirm each section before anything is written.
 
 **Don't know where to start?** Use `/pm` — the pipeline router. It scans your existing artifacts, tells you where you are, and recommends the next skill to invoke.
 
-### Why this matters for Product Ops
+### What this gives Product Ops
 
-Most teams lose clarity somewhere between ideation and delivery. A feature starts as a Slack message, turns into a vague Jira ticket, and arrives in development with half the context missing — no one remembers *why* a decision was made, what was deliberately left out, or what "done" actually looks like. The result is rework, scope creep, and misaligned expectations across PM, design, and engineering.
-
-This pipeline enforces the discipline that prevents those failures:
-
-- **Every decision is traceable.** Each skill logs its non-obvious choices to `DECISION.md`. When a developer asks "why is this MUST and not SHOULD?" or "why did we choose tab navigation over a drawer?", the answer is in writing — not locked in someone's memory or a meeting recording.
-- **Scope is decided once and respected everywhere.** WON'T stories defined in the SPEC are never designed, never planned, never tasked. Downstream skills read and enforce upstream decisions rather than reopening them.
-- **Handoffs have a defined format.** BRIEF → SPEC → PLAN → TASKS is a structured contract between roles. A PM writes the brief; the spec gives engineering a shared language; the plan gives a technical lead what they need to estimate; the task list is ready for sprint planning. No translation layer needed.
-- **Nothing is generated without your sign-off.** Each skill works section by section and waits for confirmation before writing. This keeps Claude as a collaborator, not an autonomous agent producing documents you then have to undo.
-- **You can enter at any stage.** Already have a spec? Skip to `spec-to-plan`. Already have a plan? Skip to `plan-to-tasks`. The pipeline is a full path, not a mandatory process.
+- **Decision traceability.** Every non-obvious choice is logged to `DECISION.md` — why something is MUST vs. SHOULD, why one approach was picked over another. Context survives team turnover and long backlogs.
+- **Scope enforcement.** WON'T stories defined in the SPEC are never designed, planned, or tasked. Downstream skills read upstream decisions and respect them — scope doesn't reopen at each handoff.
+- **Structured handoffs.** BRIEF → SPEC → PLAN → TASKS maps directly to roles: PM writes the brief, spec gives engineering testable requirements, plan gives a tech lead an estimable sequence, task list is ready for sprint planning.
+- **Section-by-section confirmation.** Nothing is written without your approval. Claude proposes, you decide.
+- **Enter at any stage.** Already have a spec? Start at `spec-to-plan`. Already have a plan? Start at `plan-to-tasks`.
 
 ---
 
